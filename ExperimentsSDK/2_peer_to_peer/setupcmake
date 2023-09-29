@@ -1,0 +1,3 @@
+mkdir build
+cd build
+cmake -DPICO_BOARD=pico_w -DPICO_SDK_PATH=/home/jon/pico/pico-sdk ..

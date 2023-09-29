@@ -1,0 +1,48 @@
+(kicad_sch (version 20230121) (generator eeschema)
+
+  (uuid b6f73a49-ac1f-4895-a0f9-8f6954ee587f)
+
+  (paper "A4")
+
+  (lib_symbols
+  )
+
+
+  (sheet (at 57.15 69.85) (size 72.39 66.04) (fields_autoplaced)
+    (stroke (width 0.1524) (type solid))
+    (fill (color 0 0 0 0.0000))
+    (uuid 52688484-ab73-49f2-b49e-ffc3daf8c274)
+    (property "Sheetname" "Audio" (at 57.15 69.1384 0)
+      (effects (font (size 1.27 1.27)) (justify left bottom))
+    )
+    (property "Sheetfile" "audio.kicad_sch" (at 57.15 136.4746 0)
+      (effects (font (size 1.27 1.27)) (justify left top))
+    )
+    (instances
+      (project "pico_rx"
+        (path "/b6f73a49-ac1f-4895-a0f9-8f6954ee587f" (page "3"))
+      )
+    )
+  )
+
+  (sheet (at 185.42 82.55) (size 54.61 53.34) (fields_autoplaced)
+    (stroke (width 0.1524) (type solid))
+    (fill (color 0 0 0 0.0000))
+    (uuid ef5e145d-7cd2-41fd-85f8-55f3445b8dc3)
+    (property "Sheetname" "PI Pico" (at 185.42 81.8384 0)
+      (effects (font (size 1.27 1.27)) (justify left bottom))
+    )
+    (property "Sheetfile" "pi_pico.kicad_sch" (at 185.42 136.4746 0)
+      (effects (font (size 1.27 1.27)) (justify left top))
+    )
+    (instances
+      (project "pico_rx"
+        (path "/b6f73a49-ac1f-4895-a0f9-8f6954ee587f" (page "5"))
+      )
+    )
+  )
+
+  (sheet_instances
+    (path "/" (page "1"))
+  )
+)

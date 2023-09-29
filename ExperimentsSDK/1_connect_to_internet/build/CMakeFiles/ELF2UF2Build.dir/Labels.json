@@ -1,0 +1,43 @@
+{
+	"sources" : 
+	[
+		{
+			"file" : "/home/jon/101ThingsToMake/Experiments SDK/build/CMakeFiles/ELF2UF2Build"
+		},
+		{
+			"file" : "/home/jon/101ThingsToMake/Experiments SDK/build/CMakeFiles/ELF2UF2Build.rule"
+		},
+		{
+			"file" : "/home/jon/101ThingsToMake/Experiments SDK/build/CMakeFiles/ELF2UF2Build-complete.rule"
+		},
+		{
+			"file" : "/home/jon/101ThingsToMake/Experiments SDK/build/elf2uf2/src/ELF2UF2Build-stamp/ELF2UF2Build-build.rule"
+		},
+		{
+			"file" : "/home/jon/101ThingsToMake/Experiments SDK/build/elf2uf2/src/ELF2UF2Build-stamp/ELF2UF2Build-configure.rule"
+		},
+		{
+			"file" : "/home/jon/101ThingsToMake/Experiments SDK/build/elf2uf2/src/ELF2UF2Build-stamp/ELF2UF2Build-download.rule"
+		},
+		{
+			"file" : "/home/jon/101ThingsToMake/Experiments SDK/build/elf2uf2/src/ELF2UF2Build-stamp/ELF2UF2Build-install.rule"
+		},
+		{
+			"file" : "/home/jon/101ThingsToMake/Experiments SDK/build/elf2uf2/src/ELF2UF2Build-stamp/ELF2UF2Build-mkdir.rule"
+		},
+		{
+			"file" : "/home/jon/101ThingsToMake/Experiments SDK/build/elf2uf2/src/ELF2UF2Build-stamp/ELF2UF2Build-patch.rule"
+		},
+		{
+			"file" : "/home/jon/101ThingsToMake/Experiments SDK/build/elf2uf2/src/ELF2UF2Build-stamp/ELF2UF2Build-update.rule"
+		}
+	],
+	"target" : 
+	{
+		"labels" : 
+		[
+			"ELF2UF2Build"
+		],
+		"name" : "ELF2UF2Build"
+	}
+}

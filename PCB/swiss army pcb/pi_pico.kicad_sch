@@ -1325,7 +1325,7 @@
           (reference "H?") (unit 1)
         )
       )
-      (project "pico_rx"
+      (project "things"
         (path "/b6f73a49-ac1f-4895-a0f9-8f6954ee587f/ef5e145d-7cd2-41fd-85f8-55f3445b8dc3"
           (reference "H4") (unit 1)
         )
@@ -1342,7 +1342,7 @@
     (property "Value" "Pico" (at 142.24 48.26 0)
       (effects (font (size 1.27 1.27)))
     )
-    (property "Footprint" "reciever:RPi_Pico_SMD_TH" (at 142.24 77.47 0)
+    (property "Footprint" "things:RPi_Pico_SMD_TH" (at 142.24 77.47 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Datasheet" "" (at 142.24 77.47 0)
@@ -1392,7 +1392,7 @@
     (pin "8" (uuid 42dd3b22-a808-41a7-9a62-a8651a9224b8))
     (pin "9" (uuid 0c9acd1d-933d-4234-96a5-6c8ad03a2e62))
     (instances
-      (project "pico_rx"
+      (project "things"
         (path "/b6f73a49-ac1f-4895-a0f9-8f6954ee587f/ef5e145d-7cd2-41fd-85f8-55f3445b8dc3"
           (reference "U3") (unit 1)
         )
@@ -1419,7 +1419,7 @@
     (pin "2" (uuid b51edda0-e92c-430e-99ac-e15a1936a70a))
     (pin "3" (uuid 874d48d7-4ce6-4cf6-8cb8-d4193e4584b5))
     (instances
-      (project "pico_rx"
+      (project "things"
         (path "/b6f73a49-ac1f-4895-a0f9-8f6954ee587f/ef5e145d-7cd2-41fd-85f8-55f3445b8dc3"
           (reference "SW1") (unit 1)
         )
@@ -1450,7 +1450,7 @@
           (reference "SW?") (unit 1)
         )
       )
-      (project "pico_rx"
+      (project "things"
         (path "/b6f73a49-ac1f-4895-a0f9-8f6954ee587f/ef5e145d-7cd2-41fd-85f8-55f3445b8dc3"
           (reference "SW2") (unit 1)
         )
@@ -1481,7 +1481,7 @@
           (reference "J?") (unit 1)
         )
       )
-      (project "pico_rx"
+      (project "things"
         (path "/b6f73a49-ac1f-4895-a0f9-8f6954ee587f/ef5e145d-7cd2-41fd-85f8-55f3445b8dc3"
           (reference "J6") (unit 1)
         )
@@ -1511,7 +1511,7 @@
           (reference "H?") (unit 1)
         )
       )
-      (project "pico_rx"
+      (project "things"
         (path "/b6f73a49-ac1f-4895-a0f9-8f6954ee587f/ef5e145d-7cd2-41fd-85f8-55f3445b8dc3"
           (reference "H3") (unit 1)
         )
@@ -1541,7 +1541,7 @@
           (reference "#PWR?") (unit 1)
         )
       )
-      (project "pico_rx"
+      (project "things"
         (path "/b6f73a49-ac1f-4895-a0f9-8f6954ee587f/ef5e145d-7cd2-41fd-85f8-55f3445b8dc3"
           (reference "#PWR017") (unit 1)
         )
@@ -1571,7 +1571,7 @@
           (reference "#PWR?") (unit 1)
         )
       )
-      (project "pico_rx"
+      (project "things"
         (path "/b6f73a49-ac1f-4895-a0f9-8f6954ee587f/ef5e145d-7cd2-41fd-85f8-55f3445b8dc3"
           (reference "#PWR015") (unit 1)
         )
@@ -1601,7 +1601,7 @@
           (reference "#PWR?") (unit 1)
         )
       )
-      (project "pico_rx"
+      (project "things"
         (path "/b6f73a49-ac1f-4895-a0f9-8f6954ee587f/ef5e145d-7cd2-41fd-85f8-55f3445b8dc3"
           (reference "#PWR016") (unit 1)
         )
@@ -1631,7 +1631,7 @@
           (reference "#PWR?") (unit 1)
         )
       )
-      (project "pico_rx"
+      (project "things"
         (path "/b6f73a49-ac1f-4895-a0f9-8f6954ee587f/ef5e145d-7cd2-41fd-85f8-55f3445b8dc3"
           (reference "#PWR013") (unit 1)
         )
@@ -1648,7 +1648,7 @@
     (property "Value" "Conn_01x07_Pin" (at 57.785 161.29 0)
       (effects (font (size 1.27 1.27)))
     )
-    (property "Footprint" "reciever:BOB-00544 MicroSD" (at 57.15 170.815 0)
+    (property "Footprint" "things:BOB-00544 MicroSD" (at 57.15 170.815 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Datasheet" "~" (at 57.15 170.815 0)
@@ -1662,7 +1662,7 @@
     (pin "6" (uuid 27a47d08-4a33-4d6d-a449-5da04d35bd2c))
     (pin "7" (uuid 578ec479-1516-4a10-9284-c2388feb3cf9))
     (instances
-      (project "pico_rx"
+      (project "things"
         (path "/b6f73a49-ac1f-4895-a0f9-8f6954ee587f/ef5e145d-7cd2-41fd-85f8-55f3445b8dc3"
           (reference "J7") (unit 1)
         )
@@ -1692,7 +1692,7 @@
           (reference "#PWR?") (unit 1)
         )
       )
-      (project "pico_rx"
+      (project "things"
         (path "/b6f73a49-ac1f-4895-a0f9-8f6954ee587f/ef5e145d-7cd2-41fd-85f8-55f3445b8dc3"
           (reference "#PWR022") (unit 1)
         )
@@ -1722,7 +1722,7 @@
           (reference "#PWR?") (unit 1)
         )
       )
-      (project "pico_rx"
+      (project "things"
         (path "/b6f73a49-ac1f-4895-a0f9-8f6954ee587f/ef5e145d-7cd2-41fd-85f8-55f3445b8dc3"
           (reference "#PWR021") (unit 1)
         )
@@ -1752,7 +1752,7 @@
           (reference "#PWR?") (unit 1)
         )
       )
-      (project "pico_rx"
+      (project "things"
         (path "/b6f73a49-ac1f-4895-a0f9-8f6954ee587f/ef5e145d-7cd2-41fd-85f8-55f3445b8dc3"
           (reference "#PWR026") (unit 1)
         )
@@ -1782,7 +1782,7 @@
           (reference "#PWR?") (unit 1)
         )
       )
-      (project "pico_rx"
+      (project "things"
         (path "/b6f73a49-ac1f-4895-a0f9-8f6954ee587f/ef5e145d-7cd2-41fd-85f8-55f3445b8dc3"
           (reference "#PWR018") (unit 1)
         )
@@ -1799,7 +1799,7 @@
     (property "Value" "I2C Display" (at 259.08 62.23 0)
       (effects (font (size 1.27 1.27)) (justify left))
     )
-    (property "Footprint" "reciever:SDD1306" (at 257.81 59.69 0)
+    (property "Footprint" "things:SDD1306" (at 257.81 59.69 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Datasheet" "~" (at 257.81 59.69 0)
@@ -1810,7 +1810,7 @@
     (pin "3" (uuid 573d42eb-6cc7-437e-bd6e-dc4386052453))
     (pin "4" (uuid 371c104d-9206-467f-8313-a550a39806cf))
     (instances
-      (project "pico_rx"
+      (project "things"
         (path "/b6f73a49-ac1f-4895-a0f9-8f6954ee587f/ef5e145d-7cd2-41fd-85f8-55f3445b8dc3"
           (reference "J8") (unit 1)
         )
@@ -1841,7 +1841,7 @@
           (reference "FB?") (unit 1)
         )
       )
-      (project "pico_rx"
+      (project "things"
         (path "/b6f73a49-ac1f-4895-a0f9-8f6954ee587f/ef5e145d-7cd2-41fd-85f8-55f3445b8dc3"
           (reference "FB1") (unit 1)
         )
@@ -1871,7 +1871,7 @@
           (reference "#PWR?") (unit 1)
         )
       )
-      (project "pico_rx"
+      (project "things"
         (path "/b6f73a49-ac1f-4895-a0f9-8f6954ee587f/ef5e145d-7cd2-41fd-85f8-55f3445b8dc3"
           (reference "#PWR012") (unit 1)
         )
@@ -1901,7 +1901,7 @@
           (reference "#PWR?") (unit 1)
         )
       )
-      (project "pico_rx"
+      (project "things"
         (path "/b6f73a49-ac1f-4895-a0f9-8f6954ee587f/ef5e145d-7cd2-41fd-85f8-55f3445b8dc3"
           (reference "#PWR020") (unit 1)
         )
@@ -1932,7 +1932,7 @@
           (reference "SW?") (unit 1)
         )
       )
-      (project "pico_rx"
+      (project "things"
         (path "/b6f73a49-ac1f-4895-a0f9-8f6954ee587f/ef5e145d-7cd2-41fd-85f8-55f3445b8dc3"
           (reference "SW4") (unit 1)
         )
@@ -1963,7 +1963,7 @@
           (reference "FB?") (unit 1)
         )
       )
-      (project "pico_rx"
+      (project "things"
         (path "/b6f73a49-ac1f-4895-a0f9-8f6954ee587f/ef5e145d-7cd2-41fd-85f8-55f3445b8dc3"
           (reference "FB2") (unit 1)
         )
@@ -1993,7 +1993,7 @@
           (reference "#PWR?") (unit 1)
         )
       )
-      (project "pico_rx"
+      (project "things"
         (path "/b6f73a49-ac1f-4895-a0f9-8f6954ee587f/ef5e145d-7cd2-41fd-85f8-55f3445b8dc3"
           (reference "#PWR014") (unit 1)
         )
@@ -2023,7 +2023,7 @@
           (reference "#PWR?") (unit 1)
         )
       )
-      (project "pico_rx"
+      (project "things"
         (path "/b6f73a49-ac1f-4895-a0f9-8f6954ee587f/ef5e145d-7cd2-41fd-85f8-55f3445b8dc3"
           (reference "#PWR011") (unit 1)
         )
@@ -2053,7 +2053,7 @@
           (reference "H?") (unit 1)
         )
       )
-      (project "pico_rx"
+      (project "things"
         (path "/b6f73a49-ac1f-4895-a0f9-8f6954ee587f/ef5e145d-7cd2-41fd-85f8-55f3445b8dc3"
           (reference "H1") (unit 1)
         )
@@ -2083,7 +2083,7 @@
           (reference "#PWR?") (unit 1)
         )
       )
-      (project "pico_rx"
+      (project "things"
         (path "/b6f73a49-ac1f-4895-a0f9-8f6954ee587f/ef5e145d-7cd2-41fd-85f8-55f3445b8dc3"
           (reference "#PWR023") (unit 1)
         )
@@ -2114,7 +2114,7 @@
           (reference "SW?") (unit 1)
         )
       )
-      (project "pico_rx"
+      (project "things"
         (path "/b6f73a49-ac1f-4895-a0f9-8f6954ee587f/ef5e145d-7cd2-41fd-85f8-55f3445b8dc3"
           (reference "SW5") (unit 1)
         )
@@ -2144,7 +2144,7 @@
           (reference "#PWR?") (unit 1)
         )
       )
-      (project "pico_rx"
+      (project "things"
         (path "/b6f73a49-ac1f-4895-a0f9-8f6954ee587f/ef5e145d-7cd2-41fd-85f8-55f3445b8dc3"
           (reference "#PWR019") (unit 1)
         )
@@ -2174,7 +2174,7 @@
           (reference "#PWR?") (unit 1)
         )
       )
-      (project "pico_rx"
+      (project "things"
         (path "/b6f73a49-ac1f-4895-a0f9-8f6954ee587f/ef5e145d-7cd2-41fd-85f8-55f3445b8dc3"
           (reference "#PWR024") (unit 1)
         )
@@ -2204,7 +2204,7 @@
           (reference "H?") (unit 1)
         )
       )
-      (project "pico_rx"
+      (project "things"
         (path "/b6f73a49-ac1f-4895-a0f9-8f6954ee587f/ef5e145d-7cd2-41fd-85f8-55f3445b8dc3"
           (reference "H2") (unit 1)
         )
@@ -2235,7 +2235,7 @@
           (reference "SW?") (unit 1)
         )
       )
-      (project "pico_rx"
+      (project "things"
         (path "/b6f73a49-ac1f-4895-a0f9-8f6954ee587f/ef5e145d-7cd2-41fd-85f8-55f3445b8dc3"
           (reference "SW3") (unit 1)
         )

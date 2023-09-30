@@ -19,7 +19,7 @@
       (effects (font (size 1.27 1.27)) (justify left top))
     )
     (instances
-      (project "pico_rx"
+      (project "things"
         (path "/b6f73a49-ac1f-4895-a0f9-8f6954ee587f" (page "3"))
       )
     )
@@ -36,7 +36,7 @@
       (effects (font (size 1.27 1.27)) (justify left top))
     )
     (instances
-      (project "pico_rx"
+      (project "things"
         (path "/b6f73a49-ac1f-4895-a0f9-8f6954ee587f" (page "5"))
       )
     )

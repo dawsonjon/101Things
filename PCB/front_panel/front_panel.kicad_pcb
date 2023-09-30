@@ -40,13 +40,13 @@
   (setup
     (pad_to_mask_clearance 0)
     (pcbplotparams
-      (layerselection 0x00010fc_ffffffff)
+      (layerselection 0x00010f0_ffffffff)
       (plot_on_all_layers_selection 0x0000000_00000000)
       (disableapertmacros false)
       (usegerberextensions true)
       (usegerberattributes false)
       (usegerberadvancedattributes false)
-      (creategerberjobfile true)
+      (creategerberjobfile false)
       (dashed_line_dash_ratio 12.000000)
       (dashed_line_gap_ratio 3.000000)
       (svgprecision 4)
@@ -208,7 +208,7 @@
     (descr "Mounting Hole 2.1mm, no annular")
     (tags "mounting hole 2.1mm no annular")
     (attr exclude_from_pos_files exclude_from_bom)
-    (fp_text reference "REF**" (at 0 -3.2) (layer "F.SilkS")
+    (fp_text reference "REF**" (at 0 -3.2) (layer "F.SilkS") hide
         (effects (font (size 1 1) (thickness 0.15)))
       (tstamp 6407fcec-d1eb-4c6d-99ce-84d7e77b0ef1)
     )

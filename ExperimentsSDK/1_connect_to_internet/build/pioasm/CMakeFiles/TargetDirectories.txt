@@ -1,3 +1,0 @@
-/home/jon/101ThingsToMake/Experiments SDK/build/pioasm/CMakeFiles/pioasm.dir
-/home/jon/101ThingsToMake/Experiments SDK/build/pioasm/CMakeFiles/edit_cache.dir
-/home/jon/101ThingsToMake/Experiments SDK/build/pioasm/CMakeFiles/rebuild_cache.dir

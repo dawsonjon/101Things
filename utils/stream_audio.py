@@ -9,7 +9,7 @@ SERVER_PORT = 4242
 
 while 1:
 
-    process = subprocess.Popen(["rec", "--buffer", "17", "-c", "1", "-t", "u8", "-r", "12000", "-"], stdout=subprocess.PIPE)
+    process = subprocess.Popen(["rec", "--buffer", "17", "-c", "1", "-t", "u8", "-r", "10000", "-"], stdout=subprocess.PIPE)
     
 
     #play clip

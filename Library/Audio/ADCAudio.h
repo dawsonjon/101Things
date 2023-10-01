@@ -11,7 +11,7 @@ class ADCAudio
 
     public:
     ADCAudio(const uint8_t audio_pin, const uint16_t audio_sample_rate);
-    void InputSamples(uint16_t*& samples);
+    void input_samples(uint16_t*& samples);
 
     private:
     int adc_dma;

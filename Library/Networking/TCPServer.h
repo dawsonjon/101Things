@@ -53,7 +53,7 @@ class TCPServer
     //close the connection
     bool close();
 
-    bool isConnected() {
+    bool is_connected() {
         return (state==CONNECTION_OPEN) || (state==CONNECTION_CLOSING);
     }
 
@@ -63,10 +63,10 @@ class TCPServer
     struct tcp_pcb *pcb = NULL;
     struct tcp_pcb *server_pcb = NULL;
     estate state = CONNECTION_CLOSED;
-    uint8_t receiveBuffer[TCP_WND];
-    uint16_t readPointer=0;
-    uint16_t writePointer=0;
-    uint16_t bytesStored=0;
+    uint8_t receive_buffer[TCP_WND];
+    uint16_t read_pointer=0;
+    uint16_t write_pointer=0;
+    uint16_t bytes_stored=0;
 
 };
 

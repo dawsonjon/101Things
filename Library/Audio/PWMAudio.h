@@ -11,8 +11,8 @@ class PWMAudio
 {
 
     public:
-    PWMAudio(int audio_pin, int audio_sample_rate);
-    void OutputSamples(uint16_t samples[], uint16_t len);
+    PWMAudio(const int audio_pin, const int audio_sample_rate);
+    void output_samples(const uint16_t samples[], const uint16_t len);
 
     private:
     int pwm_dma;

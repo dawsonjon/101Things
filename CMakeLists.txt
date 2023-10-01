@@ -10,6 +10,7 @@ include(cmake/clang-cxx-dev-tools.cmake)
 add_subdirectory(01_microphone_streaming)
 add_subdirectory(02_speaker_streaming)
 add_subdirectory(03_microphone_loopback)
+add_subdirectory(07_duplex_streaming)
 add_subdirectory(Library)
 
 

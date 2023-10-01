@@ -11,6 +11,8 @@ add_subdirectory(01_microphone_streaming)
 add_subdirectory(02_speaker_streaming)
 add_subdirectory(03_microphone_loopback)
 add_subdirectory(07_duplex_streaming)
+add_subdirectory(08_voice_changer)
+add_subdirectory(09_dalek)
 add_subdirectory(Library)
 
 

@@ -2,28 +2,14 @@
 
 #include "PWMAudio.h"
 #include "TCPServer.h"
+#include "get_wifi.h"
 #include "pico/stdlib.h"
-#include "secrets.h"
 #include <math.h>
 
 int main() {
   stdio_init_all();
 
-  if (cyw43_arch_init()) {
-    printf("failed to initialise\n");
-    return 1;
-  }
-
-  cyw43_arch_enable_sta_mode();
-
-  printf("Connecting to WiFi...\n");
-  if (cyw43_arch_wifi_connect_timeout_ms(ssid, pass, CYW43_AUTH_WPA2_AES_PSK,
-                                         30000)) {
-    printf("failed to connect to WIFI\n");
-    return 1;
-  } else {
-    printf("Connected to WIFI.\n");
-  }
+  if(!get_wifi()) return 1;
 
   TCPServer server;
   PWMAudio audio_output(0, 10000);

@@ -2,28 +2,13 @@
 
 #include "ADCAudio.h"
 #include "TCPServer.h"
+#include "get_wifi.h"
 #include "pico/stdlib.h"
-#include "secrets.h"
 #include <math.h>
 
 int main() {
   stdio_init_all();
-
-  if (cyw43_arch_init()) {
-    printf("failed to initialise\n");
-    return 1;
-  }
-
-  cyw43_arch_enable_sta_mode();
-
-  printf("Connecting to WiFi...\n");
-  if (cyw43_arch_wifi_connect_timeout_ms(ssid, pass, CYW43_AUTH_WPA2_AES_PSK,
-                                         30000)) {
-    printf("failed to connect to WIFI\n");
-    return 1;
-  } else {
-    printf("Connected to WIFI.\n");
-  }
+  if(!get_wifi()) return 1;
 
   TCPServer server;
   ADCAudio audio_input(16, 10000);
@@ -44,7 +29,8 @@ int main() {
 
         audio_input.input_samples(samples);
         for (uint16_t i = 0; i < 1024; i++) {
-          bytes[i] = samples[i] >> 4; // form 8 bit sample from 12 bit sample
+          // form 8 bit sample from 12 bit sample
+          bytes[i] = samples[i] >> 4; 
         }
 
         uint16_t sent = 0;

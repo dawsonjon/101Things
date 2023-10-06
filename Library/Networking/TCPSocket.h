@@ -16,12 +16,13 @@
 enum estate 
 {
 CONNECTION_CLOSED,
+CONNECTION_CONNECTING,
 CONNECTION_LISTENING,
 CONNECTION_OPEN,
 CONNECTION_CLOSING
 };
 
-class TCPServer
+class TCPSocket
 {
 
     public:
@@ -32,6 +33,7 @@ class TCPServer
     err_t on_poll(struct tcp_pcb *tpcb);
     void on_err(err_t err);
     err_t on_accept(struct tcp_pcb *cpcb, err_t err);
+    err_t on_connected(struct tcp_pcb *tpcb, err_t err);
 
     //user interface
 
@@ -39,9 +41,9 @@ class TCPServer
     //return true if successful.
     bool listen(uint16_t port);
 
-    //accept connection
-    //return true if connection established
-    bool accept();
+    //connect to a remote server
+    //return true if successful.
+    bool open(const char * remote_ip_address, uint16_t port);
 
     //recieve bytes
     //returns number of bytes recieved which will be maxNumBytes at most
@@ -76,5 +78,6 @@ err_t server_recv_callback(void *arg, struct tcp_pcb *tpcb, struct pbuf *p, err_
 err_t server_poll_callback(void *arg, struct tcp_pcb *tpcb);
 void server_err_callback(void *arg, err_t err);
 err_t accept_callback(void *arg, struct tcp_pcb *client_pcb, err_t err);
+err_t connected_callback(void *arg, struct tcp_pcb *tpcb, err_t err);
 
 #endif

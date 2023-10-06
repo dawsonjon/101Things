@@ -5,7 +5,9 @@
 #include "pico/cyw43_arch.h"
 #include "pico/multicore.h"
 #include <hardware/flash.h>
-
+extern "C" {
+#include "dhcpserver.h"
+}
 #include "get_wifi.h"
 
 static const uint32_t MAX_NUM_SSIDS=256;
@@ -43,6 +45,24 @@ static int scan_result(void *env, const cyw43_ev_scan_result_t *result)
       }
   }
   return 0;
+}
+
+bool get_wifi_ap(const char *ap_name, const char *password)
+{
+  if (cyw43_arch_init()) return false; 
+
+  cyw43_arch_enable_ap_mode(ap_name, password, CYW43_AUTH_WPA2_AES_PSK);
+  ip4_addr_t gw, mask;
+  IP4_ADDR(&gw, 192, 168, 4, 1);
+  IP4_ADDR(&mask, 255, 255, 255, 0);
+
+  // Start the dhcp server
+  dhcp_server_t dhcp_server;
+  dhcp_server_init(&dhcp_server, &gw, &mask);
+
+  printf("WIFI Access Point Started\n"); 
+
+  return true;
 }
 
 bool get_wifi()

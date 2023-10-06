@@ -1,6 +1,7 @@
 
 add_library(networking
-  TCPServer.cpp
+  TCPSocket.cpp
+  dhcpserver/dhcpserver.c
   get_wifi.cpp
 )
 
@@ -14,5 +15,8 @@ else ()
     )
 endif()
 
-target_include_directories(networking PUBLIC ${CMAKE_CURRENT_LIST_DIR})
+target_include_directories(networking PUBLIC 
+    ${CMAKE_CURRENT_LIST_DIR}
+    ${CMAKE_CURRENT_LIST_DIR}/dhcpserver
+  )
 target_link_libraries(networking pico_stdlib pico_cyw43_arch_lwip_poll hardware_flash pico_multicore)

@@ -2,9 +2,56 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "TCPServer.h"
+#include "TCPSocket.h"
 
-bool TCPServer::listen(uint16_t port) {
+bool TCPSocket::open(const char * remote_ip_address, uint16_t port) {
+    if (state != CONNECTION_CLOSED) {
+      DEBUG_printf("Connection not closed\n");
+      return false;
+    }
+
+    ip4_addr_t remote_addr;
+    ip4addr_aton(remote_ip_address, &remote_addr);
+    pcb = tcp_new_ip_type(IP_GET_TYPE(remote_addr));
+    if (pcb==NULL) {
+        DEBUG_printf("failed to create pcb\n");
+        return false;
+    }
+
+    read_pointer = 0;
+    write_pointer = 0;
+    bytes_stored = 0;
+
+    tcp_arg(pcb, this);
+    tcp_sent(pcb, server_sent_callback);
+    tcp_recv(pcb, server_recv_callback);
+    tcp_poll(pcb, server_poll_callback, POLL_TIME_S * 2);
+    tcp_err(pcb, server_err_callback);
+
+    // cyw43_arch_lwip_begin/end should be used around calls into lwIP to ensure correct locking.
+    // You can omit them if you are in a callback from lwIP. Note that when using pico_cyw_arch_poll
+    // these calls are a no-op and can be omitted, but it is a good practice to use them in
+    // case you switch the cyw43_arch type later.
+    cyw43_arch_lwip_begin();
+    err_t err = tcp_connect(pcb, &remote_addr, port, connected_callback);
+    cyw43_arch_lwip_end();
+    if(err != ERR_OK) return false;
+
+    state = CONNECTION_CONNECTING;
+    while (state == CONNECTION_CONNECTING) {
+  #if PICO_CYW43_ARCH_POLL
+      // if you are using pico_cyw43_arch_poll, then you must poll periodically
+      // from your main loop (not from a timer) to check for WiFi driver or lwIP
+      // work that needs to be done.
+      cyw43_arch_poll();
+  #endif
+      sleep_ms(1);
+    }
+    return state == CONNECTION_OPEN;
+
+}
+
+bool TCPSocket::listen(uint16_t port) {
   if (state != CONNECTION_CLOSED) {
     DEBUG_printf("Connection not closed\n");
     return false;
@@ -37,10 +84,6 @@ bool TCPServer::listen(uint16_t port) {
   tcp_accept(pcb, accept_callback);
 
   state = CONNECTION_LISTENING;
-  return true;
-}
-
-bool TCPServer::accept() {
   while (state == CONNECTION_LISTENING) {
 #if PICO_CYW43_ARCH_POLL
     // if you are using pico_cyw43_arch_poll, then you must poll periodically
@@ -53,7 +96,16 @@ bool TCPServer::accept() {
   return state == CONNECTION_OPEN;
 }
 
-uint16_t TCPServer::receive(uint8_t *dest, uint16_t max_num_bytes) {
+err_t TCPSocket::on_connected(struct tcp_pcb *tpcb, err_t err) {
+    if (err != ERR_OK) {
+        state = CONNECTION_CLOSED;
+        return close();
+    }
+    state = CONNECTION_OPEN;
+    return ERR_OK;
+}
+
+uint16_t TCPSocket::receive(uint8_t *dest, uint16_t max_num_bytes) {
 #if PICO_CYW43_ARCH_POLL
   // if you are using pico_cyw43_arch_poll, then you must poll periodically from
   // your main loop (not from a timer) to check for WiFi driver or lwIP work
@@ -97,7 +149,7 @@ uint16_t TCPServer::receive(uint8_t *dest, uint16_t max_num_bytes) {
   return transfer_bytes;
 }
 
-uint16_t TCPServer::send(uint8_t *src, uint16_t max_num_bytes) {
+uint16_t TCPSocket::send(uint8_t *src, uint16_t max_num_bytes) {
 #if PICO_CYW43_ARCH_POLL
   // if you are using pico_cyw43_arch_poll, then you must poll periodically from
   // your main loop (not from a timer) to check for WiFi driver or lwIP work
@@ -117,7 +169,7 @@ uint16_t TCPServer::send(uint8_t *src, uint16_t max_num_bytes) {
 }
 
 // close connection
-bool TCPServer::close() {
+bool TCPSocket::close() {
   err_t err = ERR_OK;
   if (pcb != NULL) {
 
@@ -149,9 +201,9 @@ bool TCPServer::close() {
 
 // This function gets called by LWIP when the server has accepted data that we
 // sent
-err_t TCPServer::on_sent(struct tcp_pcb *tpcb, u16_t len) { return ERR_OK; }
+err_t TCPSocket::on_sent(struct tcp_pcb *tpcb, u16_t len) { return ERR_OK; }
 
-err_t TCPServer::on_recv(struct tcp_pcb *tpcb, struct pbuf *p, err_t err) {
+err_t TCPSocket::on_recv(struct tcp_pcb *tpcb, struct pbuf *p, err_t err) {
 
   if (p == NULL) {
     state = CONNECTION_CLOSING;
@@ -205,13 +257,13 @@ err_t TCPServer::on_recv(struct tcp_pcb *tpcb, struct pbuf *p, err_t err) {
 }
 
 // called periodically by lwip when idle
-err_t TCPServer::on_poll(struct tcp_pcb *tpcb) { return ERR_OK; }
+err_t TCPSocket::on_poll(struct tcp_pcb *tpcb) { return ERR_OK; }
 
 // called when lwip encounters an error
-void TCPServer::on_err(err_t err) {}
+void TCPSocket::on_err(err_t err) {}
 
 // This function gets called by LWIP when the server has accepted a connection
-err_t TCPServer::on_accept(struct tcp_pcb *new_pcb, err_t err) {
+err_t TCPSocket::on_accept(struct tcp_pcb *new_pcb, err_t err) {
   if (err != ERR_OK || new_pcb == NULL) {
     state = CONNECTION_CLOSED;
     return ERR_VAL;
@@ -234,29 +286,33 @@ err_t TCPServer::on_accept(struct tcp_pcb *new_pcb, err_t err) {
 // Implement LWIP callack functions
 // All the callbacks use the server instance as their argument
 // The callbacks all link back to a corresponding handler in the server class
+err_t connected_callback(void *arg, struct tcp_pcb *tpcb, err_t err) {
+  TCPSocket *server = (TCPSocket *)arg;
+  return server->on_connected(tpcb, err);
+}
 
 err_t server_sent_callback(void *arg, struct tcp_pcb *tpcb, u16_t len) {
-  TCPServer *server = (TCPServer *)arg;
+  TCPSocket *server = (TCPSocket *)arg;
   return server->on_sent(tpcb, len);
 }
 
 err_t server_recv_callback(void *arg, struct tcp_pcb *tpcb, struct pbuf *p,
                            err_t err) {
-  TCPServer *server = (TCPServer *)arg;
+  TCPSocket *server = (TCPSocket *)arg;
   return server->on_recv(tpcb, p, err);
 }
 
 err_t server_poll_callback(void *arg, struct tcp_pcb *tpcb) {
-  TCPServer *server = (TCPServer *)arg;
+  TCPSocket *server = (TCPSocket *)arg;
   return server->on_poll(tpcb);
 }
 
 void server_err_callback(void *arg, err_t err) {
-  TCPServer *server = (TCPServer *)arg;
+  TCPSocket *server = (TCPSocket *)arg;
   return server->on_err(err);
 }
 
 err_t accept_callback(void *arg, struct tcp_pcb *client_pcb, err_t err) {
-  TCPServer *server = (TCPServer *)arg;
+  TCPSocket *server = (TCPSocket *)arg;
   return server->on_accept(client_pcb, err);
 }

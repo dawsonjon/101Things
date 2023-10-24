@@ -7,12 +7,20 @@ pico_sdk_init()
 
 include(cmake/clang-cxx-dev-tools.cmake)
 
-add_subdirectory(01_microphone_streaming)
-add_subdirectory(02_speaker_streaming)
+if (PICO_CYW43_SUPPORTED)
+  add_compile_definitions(PICO_W)
+  add_subdirectory(01_microphone_streaming)
+  add_subdirectory(02_speaker_streaming)
+  add_subdirectory(07_duplex_streaming)
+endif()
+
 add_subdirectory(03_microphone_loopback)
-add_subdirectory(07_duplex_streaming)
 add_subdirectory(08_voice_changer)
 add_subdirectory(09_dalek)
+add_subdirectory(10_tuner)
+add_subdirectory(11_display)
+add_subdirectory(12_capture_audio)
+add_subdirectory(13_guitar_effects)
 add_subdirectory(Library)
 
 

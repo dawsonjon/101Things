@@ -1,2 +1,5 @@
 add_subdirectory(Audio)
-add_subdirectory(Networking)
+if (PICO_CYW43_SUPPORTED)
+  add_subdirectory(Networking)
+endif()
+add_subdirectory(Display)

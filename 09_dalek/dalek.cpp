@@ -4,9 +4,18 @@
 #include "ADCAudio.h"
 #include "PWMAudio.h"
 #include "pico/stdlib.h"
+#ifdef PICO_W
+#include "pico/cyw43_arch.h"
+#endif
 
 int main() {
   stdio_init_all();
+
+#ifdef PICO_W
+  //put regulator into PWM mode
+  cyw43_arch_init();
+  cyw43_arch_gpio_put(1, 1);
+#endif
 
   uint16_t audio_sample_rate_Hz = 10000;
 
@@ -19,11 +28,11 @@ int main() {
   int32_t accumulator = 0;
 
   //pre-generate sin/cos lookup tables
-  int16_t sin_table[1024];
+  float sin_table[1024];
   float scaling_factor = (1 << 15) - 1;
   for(uint16_t idx=0; idx<1024; idx++)
   {
-    sin_table[idx] = sin(2.0*M_PI*idx/1024.0) * scaling_factor;
+    sin_table[idx] = sin(2.0*M_PI*idx/1024.0);
   }
 
 
@@ -42,7 +51,8 @@ int main() {
       //apply modulator
       uint32_t phase_MSB = phase >> 22; //keep 10 MSBs of phase 32-10 = 22
       phase += frequency;
-      int16_t i_new = ((int32_t)i * sin_table[phase_MSB]) >> 15;
+      float magnitude = (sin_table[phase_MSB] + 1.0f)*0.5f; //scale to 0.0 to 1.0
+      float i_new = (i * magnitude);
 
       //convert to unsigned
       samples[idx] = i_new + 2048;

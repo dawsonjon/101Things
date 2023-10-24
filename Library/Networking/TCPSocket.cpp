@@ -5,18 +5,12 @@
 #include "TCPSocket.h"
 
 bool TCPSocket::open(const char * remote_ip_address, uint16_t port) {
-    if (state != CONNECTION_CLOSED) {
-      DEBUG_printf("Connection not closed\n");
-      return false;
-    }
+    if (state != CONNECTION_CLOSED) return false;
 
     ip4_addr_t remote_addr;
     ip4addr_aton(remote_ip_address, &remote_addr);
     pcb = tcp_new_ip_type(IP_GET_TYPE(remote_addr));
-    if (pcb==NULL) {
-        DEBUG_printf("failed to create pcb\n");
-        return false;
-    }
+    if (pcb==NULL) return false;
 
     read_pointer = 0;
     write_pointer = 0;
@@ -35,7 +29,11 @@ bool TCPSocket::open(const char * remote_ip_address, uint16_t port) {
     cyw43_arch_lwip_begin();
     err_t err = tcp_connect(pcb, &remote_addr, port, connected_callback);
     cyw43_arch_lwip_end();
-    if(err != ERR_OK) return false;
+    if(err != ERR_OK)
+    {
+      close();
+      return false;
+    }
 
     state = CONNECTION_CONNECTING;
     while (state == CONNECTION_CONNECTING) {
@@ -47,25 +45,33 @@ bool TCPSocket::open(const char * remote_ip_address, uint16_t port) {
   #endif
       sleep_ms(1);
     }
-    return state == CONNECTION_OPEN;
+    if(state == CONNECTION_OPEN) return true;
+    else
+    {
+      close();
+      return false;
+    }
 
 }
 
 bool TCPSocket::listen(uint16_t port) {
   if (state != CONNECTION_CLOSED) {
-    DEBUG_printf("Connection not closed\n");
+    printf("A\n");
     return false;
   }
 
   struct tcp_pcb *new_pcb = tcp_new_ip_type(IPADDR_TYPE_ANY);
   if (new_pcb == NULL) {
     state = CONNECTION_CLOSED;
+    printf("B\n");
     return false;
   }
 
   err_t err = tcp_bind(new_pcb, NULL, port);
   if (err != ERR_OK) {
+    tcp_close(new_pcb);
     state = CONNECTION_CLOSED;
+    printf("C\n");
     return false;
   }
 
@@ -75,6 +81,7 @@ bool TCPSocket::listen(uint16_t port) {
       tcp_close(new_pcb);
     }
     state = CONNECTION_CLOSED;
+    printf("D\n");
     return false;
   }
 
@@ -93,7 +100,13 @@ bool TCPSocket::listen(uint16_t port) {
 #endif
     sleep_ms(1);
   }
-  return state == CONNECTION_OPEN;
+  if(state == CONNECTION_OPEN) return true;
+  else
+  {
+    close();
+    printf("E\n");
+    return false;
+  }
 }
 
 err_t TCPSocket::on_connected(struct tcp_pcb *tpcb, err_t err) {

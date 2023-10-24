@@ -10,6 +10,10 @@ int main() {
   stdio_init_all();
   if(!get_wifi()) return 1;
 
+  //put regulator into PWM mode
+  cyw43_arch_init();
+  cyw43_arch_gpio_put(1, 1);
+
   TCPSocket socket;
   ADCAudio audio_input(16, 10000);
   while (true) {

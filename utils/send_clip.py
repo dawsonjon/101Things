@@ -4,7 +4,7 @@ import os
 import numpy as np
 from matplotlib import pyplot as plt
 
-SERVER_ADDR = '192.168.1.120'
+SERVER_ADDR = '192.168.1.121'
 SERVER_PORT = 4242
 
 while 1:

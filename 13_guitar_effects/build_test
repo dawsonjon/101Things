@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+g++ test_harness.cpp effects.cpp -lm -o test_harness
+if [ $? -eq 0 ]; then
+  ./test_harness
+  play -t s16 -r 20000 outfile
+fi
+

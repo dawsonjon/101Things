@@ -6,6 +6,7 @@ import subprocess
 import numpy as np
 import serial
 import serial.tools.list_ports
+from matplotlib import pyplot as plt
 
 #get a list of available serial ports
 print("Available Ports")
@@ -40,10 +41,9 @@ if len(sys.argv) > 1:
           samples = np.frombuffer(samples, dtype="<u2") * 16
           output_file.write(samples.tobytes())
 else:
-  process = subprocess.Popen(["play", "-t", "u16", "-L", "-r", "20000", "-"], stdin=subprocess.PIPE)
   with serial.Serial(port, 12000000, rtscts=1) as ser:
       header = ser.read(8)
-      buffer = ser.read(128+8)
+      buffer = ser.read(2048+8)
       offset = buffer.find(b"AAAACCCC")
       ser.read(offset)
       while 1: 
@@ -51,6 +51,12 @@ else:
         if header != b"AAAACCCC":
           print(header)
           print("sync lost")
-        samples = ser.read(128)
-        samples = np.frombuffer(samples, dtype="<u2")
-        process.stdin.write(samples.tobytes())
+        samples = ser.read(2048)
+        samples = np.frombuffer(samples, dtype="<u2") * 16
+        plt.plot(samples)
+        plt.show()
+        dc = np.mean(samples)
+        samples = samples - dc
+        spectrum = np.abs(np.fft.fftshift(np.fft.fft(samples)))
+        plt.plot(spectrum)
+        plt.show()

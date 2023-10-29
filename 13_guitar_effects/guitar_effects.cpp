@@ -21,19 +21,39 @@ int main() {
   gpio_put(23, 1);
 #endif
 
-  ADCAudio audio_input(16, 10000);
-  PWMAudio audio_output(0, 10000);
+  const uint8_t oversample = 16;
+  ADCAudio audio_input(16, oversample * 20000);
+  PWMAudio audio_output(0, 20000);
   effects e; 
   e.initialise();
+
+  uint16_t *input_samples;
+  uint8_t ping = 0;
+  uint16_t output_samples[2][64];
+
   while (true) {
-    uint16_t *samples;
-    audio_input.input_samples(samples);
-    for(uint16_t idx = 0; idx<1024; idx++)
+    audio_input.input_samples(input_samples);
+
+    uint16_t input_sample_number = 0;
+    for(uint16_t output_sample_number = 0; output_sample_number<64; output_sample_number++)
     {
-      int16_t sample = samples[idx]-32768;
-      e.process_sample(sample);
-      samples[idx] = (sample+32768) >> 4;
+      //sum 16 samples to give 1
+      int16_t sample = 0;
+      for(uint8_t j = 0; j<oversample; j++) 
+      {
+          sample += input_samples[input_sample_number++];
+      }
+
+      //convert to signed
+      sample -= 32768;
+
+      //apply effects
+      //e.process_sample(sample);
+
+      //convert to unsigned 8-bit
+      output_samples[ping][output_sample_number] = (sample+32768) >> 4;
     }
-    audio_output.output_samples(samples, 1024);
+    audio_output.output_samples(output_samples[ping], 64);
+    ping ^= 1;
   }
 }

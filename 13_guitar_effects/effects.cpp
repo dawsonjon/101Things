@@ -2,23 +2,23 @@
 #include <cstdio>
 #include <cmath>
 
-const float audio_sample_rate_Hz = 10000;
+const float audio_sample_rate_Hz = 20000;
 const float samples_per_ms = audio_sample_rate_Hz/1000.0f;
 enum e_modulator_effect {MODULATOR_OFF, CHORUS, FLANGER, TREMOLO, VIBRATO, PITCH_SHIFT};
 enum e_delay_effect {DELAY_OFF, DELAY, REVERB};
-enum e_distortion_effect {DISTORTION_OFF, CUBIC, QUADRATIC, FULL_WAVE, HALF_WAVE};
+enum e_distortion_effect {DISTORTION_OFF, CUBIC, QUADRATIC, FULL_WAVE, HALF_WAVE, FUZZ};
 
 float sin_table[1024];
 
 //settings
-const float pre_gain = 16.0f;
+const float pre_gain = 1.0f;
 float eq_gains[5] = {1.0, 1.0, 1.0, 1.0, 1.0};
 
-const e_distortion_effect distortion_effect = HALF_WAVE;
+const e_distortion_effect distortion_effect = DISTORTION_OFF;
 const float distortion_offset = 0.0f;
-const float distortion_gain = 4.0f;
+const float distortion_gain = 1.0f;
 
-const e_delay_effect delay_effect = REVERB;
+const e_delay_effect delay_effect = DELAY_OFF;
 const float delay_delay_ms = 400.0f;
 const float delay_feedback = 0.8;
 const float reverb_delay_ms = 100.0f;
@@ -76,7 +76,6 @@ void effects :: process_sample(int16_t & sample)
     temp -= dc;
 
     temp *= pre_gain;
-
     //temp = eq1.applyfilter(temp, eq_gains);
 
     //Distortion
@@ -143,6 +142,15 @@ void effects :: process_sample(int16_t & sample)
         if(temp < 0)
         {
           temp = 0;
+        }
+        break;
+
+      case FUZZ:
+        temp *= distortion_gain;
+        temp += distortion_offset;
+        if(temp > 0)
+        {
+          temp = 1.0f;
         }
         break;
 

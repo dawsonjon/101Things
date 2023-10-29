@@ -20,11 +20,19 @@ int main() {
   gpio_put(23, 1);
 #endif
 
-  ADCAudio audio_input(16, 20000);
+  ADCAudio audio_input(16, 20000*16);
   while (true) {
     uint16_t *samples;
+    uint16_t new_samples[64];
     audio_input.input_samples(samples);
+    for(uint16_t j=0; j<64; j++){
+      int16_t acc = 0;
+      for(uint16_t i=0; i<16; i++){
+        acc += samples[j*16+i];
+      } 
+      new_samples[j] = acc;
+    }
     fwrite("AAAACCCC", 1, 8, stdout); 
-    fwrite(samples, 2, 1024, stdout); 
+    fwrite(new_samples, 2, 64, stdout); 
   }
 }

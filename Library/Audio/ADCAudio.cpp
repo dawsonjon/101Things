@@ -1,7 +1,7 @@
 #include "ADCAudio.h"
 #include <stdio.h>
 
-ADCAudio ::ADCAudio(const uint8_t audio_pin, const uint16_t audio_sample_rate) {
+ADCAudio ::ADCAudio(const uint8_t audio_pin, const uint32_t audio_sample_rate) {
 
   // ADC Configuration
   adc_init();

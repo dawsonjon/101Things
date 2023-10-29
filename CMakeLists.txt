@@ -21,6 +21,7 @@ add_subdirectory(10_tuner)
 add_subdirectory(11_display)
 add_subdirectory(12_capture_audio)
 add_subdirectory(13_guitar_effects)
+add_subdirectory(14_timer)
 add_subdirectory(Library)
 
 

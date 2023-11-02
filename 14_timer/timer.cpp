@@ -69,7 +69,7 @@ int main() {
   number_entry minutes_entry("Minutes", 0, 0, 59, 1);
   number_entry hours_entry("Hours", 0, 0, 23, 1);
   menu_item *menu_items[] = {&minutes_entry, &hours_entry};
-  menu my_menu("Menu", "Minutes#Hours", menu_items, 0, 1);
+  menu my_menu("Menu", "Minutes#Hours", menu_items, 1);
 
   uint8_t hours = 0;
   uint8_t minutes = 0;

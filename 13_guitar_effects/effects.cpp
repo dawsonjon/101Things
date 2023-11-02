@@ -4,47 +4,7 @@
 
 const float audio_sample_rate_Hz = 20000;
 const float samples_per_ms = audio_sample_rate_Hz/1000.0f;
-enum e_modulator_effect {MODULATOR_OFF, CHORUS, FLANGER, TREMOLO, VIBRATO, PITCH_SHIFT};
-enum e_delay_effect {DELAY_OFF, DELAY, REVERB};
-enum e_distortion_effect {DISTORTION_OFF, CUBIC, QUADRATIC, FULL_WAVE, HALF_WAVE, FUZZ};
-
 float sin_table[1024];
-
-//settings
-const float pre_gain = 1.0f;
-float eq_gains[5] = {1.0, 1.0, 1.0, 1.0, 1.0};
-
-const e_distortion_effect distortion_effect = DISTORTION_OFF;
-const float distortion_offset = 0.0f;
-const float distortion_gain = 1.0f;
-
-const e_delay_effect delay_effect = DELAY_OFF;
-const float delay_delay_ms = 400.0f;
-const float delay_feedback = 0.8;
-const float reverb_delay_ms = 100.0f;
-const float reverb_feedback = 0.8;
-
-const e_modulator_effect modulator_effect = CHORUS;
-const float pitch = 1.0f;
-const float flanger_depth_ms = 1.0f; // e.g 1-2 ms
-const float flanger_rate_Hz = 1.0f; //rate in Hz e.g. 0.1 - 4
-const float flanger_delay_ms = 1.0f; //delay in ms e.g. 1 - 5
-const float flanger_feedback = 0.5f; //e.g. 0.0 to 1.0
-const float chorus1_depth_ms = 2.0f; // e.g 1-2 ms
-const float chorus1_rate_Hz = 1.0f; //rate in Hz e.g. 0.1 - 5
-const float chorus1_delay_ms = 20.0f; //delay in ms e.g. 20 - 50
-const float chorus1_feedback = 0.5f; //e.g. 0.0 to 1.0
-const float chorus2_depth_ms = 2.0f; // e.g 1-2 ms
-const float chorus2_rate_Hz = 2.0f; //rate in Hz e.g. 0.1 - 5
-const float chorus2_delay_ms = 30.0f; //delay in ms e.g. 20 - 50
-const float chorus2_feedback = 0.5f; //e.g. 0.0 to 1.0
-const float chorus3_depth_ms = 2.0f; // e.g 1-2 ms
-const float chorus3_rate_Hz = 4.0f; //rate in Hz e.g. 0.1 - 5
-const float chorus3_delay_ms = 40.0f; //delay in ms e.g. 20 - 50
-const float chorus3_feedback = 0.8f; //e.g. 0.0 to 1.0
-const float tremolo_rate_Hz = 20.0f; //rate in Hz e.g. 0.1 - 100
-const float vibrato_depth_ms = 4.0f; // e.g 1-2 ms
-const float vibrato_rate_Hz = 2.0f; //rate in Hz e.g. 0.1 - 5
 
 //Low Frequency Oscillator Class
 float lfo :: get_sample(float frequency_Hz, float amplitude, float audio_sample_rate)
@@ -68,23 +28,23 @@ float delay_line :: tap(uint16_t delay)
 }
 
 //Effects Class
-void effects :: process_sample(int16_t & sample)
+void effects :: process_sample(int16_t & sample, s_effect & settings)
 {
     //pre gain
     float temp = sample/32767.0f;
     dc += (temp - dc)/2.0f;
     temp -= dc;
 
-    temp *= pre_gain;
+    temp *= settings.pre_gain;
     //temp = eq1.applyfilter(temp, eq_gains);
 
     //Distortion
-    switch(distortion_effect)
+    switch(settings.distortion_effect)
     {
 
       case CUBIC:
-        temp *= distortion_gain;
-        temp += distortion_offset;
+        temp *= settings.distortion_gain;
+        temp += settings.distortion_offset;
         if(temp > 1.0f)
         {
           temp = 2.0f/3.0f;
@@ -101,8 +61,8 @@ void effects :: process_sample(int16_t & sample)
         break;
 
       case QUADRATIC:
-        temp *= distortion_gain;
-        temp += distortion_offset;
+        temp *= settings.distortion_gain;
+        temp += settings.distortion_offset;
         if(temp > 2.0f/3.0f)
         {
           temp = 1.0f;
@@ -128,8 +88,8 @@ void effects :: process_sample(int16_t & sample)
         break;
 
       case FULL_WAVE:
-        temp *= distortion_gain;
-        temp += distortion_offset;
+        temp *= settings.distortion_gain;
+        temp += settings.distortion_offset;
         if(temp < 0)
         {
           temp = -temp;
@@ -137,8 +97,8 @@ void effects :: process_sample(int16_t & sample)
         break;
 
       case HALF_WAVE:
-        temp *= distortion_gain;
-        temp += distortion_offset;
+        temp *= settings.distortion_gain;
+        temp += settings.distortion_offset;
         if(temp < 0)
         {
           temp = 0;
@@ -146,8 +106,8 @@ void effects :: process_sample(int16_t & sample)
         break;
 
       case FUZZ:
-        temp *= distortion_gain;
-        temp += distortion_offset;
+        temp *= settings.distortion_gain;
+        temp += settings.distortion_offset;
         if(temp > 0)
         {
           temp = 1.0f;
@@ -157,48 +117,48 @@ void effects :: process_sample(int16_t & sample)
     }
 
     //reverb
-    switch(delay_effect)
+    switch(settings.delay_effect)
     {
       case DELAY:
         delay_line2.input_sample(temp);
-        temp += delay_line2.tap(delay_delay_ms * samples_per_ms) * delay_feedback;
+        temp += delay_line2.tap(settings.delay_delay_ms * samples_per_ms) * settings.delay_feedback;
         break;
 
       case REVERB:
-        temp += delay_line2.tap(reverb_delay_ms * samples_per_ms) * reverb_feedback;
+        temp += delay_line2.tap(settings.reverb_delay_ms * samples_per_ms) * settings.reverb_feedback;
         delay_line2.input_sample(temp);
         break;
     }
 
     //Modulation Effects
-    const float vibrato_delay_ms = vibrato_depth_ms * 2.0f;
-    switch(modulator_effect)
+    const float vibrato_delay_ms = settings.vibrato_depth_ms * 2.0f;
+    switch(settings.modulator_effect)
     {
       case PITCH_SHIFT:
         delay_line1.input_sample(temp);
         temp = delay_line1.tap(sweep);
-        sweep -= pitch;
+        sweep -= settings.pitch;
         break;
 
       case VIBRATO:
         delay_line1.input_sample(temp);
-        temp = delay_line1.tap(vibrato_delay_ms * samples_per_ms + lfo1.get_sample(vibrato_rate_Hz, vibrato_depth_ms * samples_per_ms, audio_sample_rate_Hz));
+        temp = delay_line1.tap(vibrato_delay_ms * samples_per_ms + lfo1.get_sample(settings.vibrato_rate_Hz, settings.vibrato_depth_ms * samples_per_ms, audio_sample_rate_Hz));
         break;
 
       case TREMOLO:
-        temp *= lfo1.get_sample(tremolo_rate_Hz, 0.5f, audio_sample_rate_Hz) + 0.5f;
+        temp *= lfo1.get_sample(settings.tremolo_rate_Hz, 0.5f, audio_sample_rate_Hz) + 0.5f;
         break;
 
       case CHORUS:
         delay_line1.input_sample(temp);
-        temp += delay_line1.tap(chorus1_delay_ms * samples_per_ms + lfo1.get_sample(chorus1_rate_Hz, chorus1_depth_ms * samples_per_ms, audio_sample_rate_Hz)) * chorus1_feedback;
-        temp += delay_line1.tap(chorus2_delay_ms * samples_per_ms + lfo2.get_sample(chorus2_rate_Hz, chorus2_depth_ms * samples_per_ms, audio_sample_rate_Hz)) * chorus2_feedback;
-        temp += delay_line1.tap(chorus3_delay_ms * samples_per_ms + lfo3.get_sample(chorus3_rate_Hz, chorus3_depth_ms * samples_per_ms, audio_sample_rate_Hz)) * chorus3_feedback;
+        temp += delay_line1.tap(settings.chorus1_delay_ms * samples_per_ms + lfo1.get_sample(settings.chorus1_rate_Hz, settings.chorus1_depth_ms * samples_per_ms, audio_sample_rate_Hz)) * settings.chorus1_feedback;
+        temp += delay_line1.tap(settings.chorus2_delay_ms * samples_per_ms + lfo2.get_sample(settings.chorus2_rate_Hz, settings.chorus2_depth_ms * samples_per_ms, audio_sample_rate_Hz)) * settings.chorus2_feedback;
+        temp += delay_line1.tap(settings.chorus3_delay_ms * samples_per_ms + lfo3.get_sample(settings.chorus3_rate_Hz, settings.chorus3_depth_ms * samples_per_ms, audio_sample_rate_Hz)) * settings.chorus3_feedback;
         break;
 
       case FLANGER:
         delay_line1.input_sample(temp);
-        temp += delay_line1.tap(flanger_delay_ms * samples_per_ms + lfo1.get_sample(flanger_rate_Hz, flanger_depth_ms * samples_per_ms, audio_sample_rate_Hz)) * flanger_feedback;
+        temp += delay_line1.tap(settings.flanger_delay_ms * samples_per_ms + lfo1.get_sample(settings.flanger_rate_Hz, settings.flanger_depth_ms * samples_per_ms, audio_sample_rate_Hz)) * settings.flanger_feedback;
         break;
     }
 

@@ -37,6 +37,8 @@ class menu_item
 {
   public:
   virtual bool poll()=0;
+  virtual void draw()=0;
+  virtual bool is_menu()=0;
 };
 
 class number_entry : public menu_item
@@ -45,57 +47,81 @@ class number_entry : public menu_item
   const int32_t m_min;
   const int32_t m_max;
   const int32_t m_step;
-  int32_t temp_value;
-  enum e_state {idle, working};
-  e_state state = idle;
-  const char *m_title;
 
   public:
+  bool m_redraw = true;
   int32_t m_value;
 
   number_entry(const char *title, const int32_t value, const int32_t min, const int32_t max, const int32_t step) 
-  : m_title(title), m_min(min), m_max(max), m_step(step), m_value(value){}
+  : m_min(min), m_max(max), m_step(step), m_value(value){}
   virtual bool poll();
+  virtual void draw();
+  virtual bool is_menu()
+  {
+    return false;
+  }
+};
 
+class float_entry : public menu_item
+{
+  private:
+  const float m_min;
+  const float m_max;
+  const float m_step;
+
+  public:
+  bool m_redraw = true;
+  float m_value;
+
+  float_entry(const float value, const float min, const float max, const float step) 
+  : m_min(min), m_max(max), m_step(step), m_value(value){}
+  virtual bool poll();
+  virtual void draw();
+  virtual bool is_menu()
+  {
+    return false;
+  }
 };
 
 class enum_entry : public menu_item
 {
   private:
   const int32_t m_max;
-  int32_t temp_value;
-  enum e_state {idle, working};
-  e_state state = idle;
-  const char *m_title;
   const char *m_names;
 
   public:
+  bool m_redraw = true;
   int32_t m_value;
 
-  enum_entry(const char *title, const char *names, const int32_t value, const int32_t max) 
-  : m_title(title), m_names(names), m_max(max), m_value(value){}
+  enum_entry(const char *names, const int32_t max) 
+  : m_names(names), m_max(max), m_value(0){}
   virtual bool poll();
-
+  virtual void draw();
+  virtual bool is_menu()
+  {
+    return false;
+  }
 };
 
 class menu : public menu_item
 {
   private:
   const int32_t m_max;
-  int32_t temp_value;
-  enum e_state {idle, working, item_active};
-  e_state state = idle;
+  int32_t m_temp_value;
   const char *m_title;
   const char *m_names;
   menu_item **m_menu_items;
+  bool submenu_active = false;
 
   public:
-  int32_t m_value;
-
-  menu(const char *title, const char *names, menu_item **menu_items, const int32_t value, const int32_t max) 
-  : m_title(title), m_names(names), m_menu_items(menu_items), m_max(max), m_value(value){}
+  bool m_redraw = true;
+  menu(const char *title, const char *names, menu_item **menu_items, const int32_t max) 
+  : m_title(title), m_names(names), m_menu_items(menu_items), m_max(max), m_temp_value(0){}
   virtual bool poll();
-
+  virtual void draw();
+  virtual bool is_menu()
+  {
+    return true;
+  }
 };
-
 #endif

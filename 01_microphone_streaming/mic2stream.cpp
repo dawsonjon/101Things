@@ -3,6 +3,7 @@
 #include "ADCAudio.h"
 #include "TCPSocket.h"
 #include "get_wifi.h"
+#include "psu_mode.h"
 #include "pico/stdlib.h"
 #include <math.h>
 
@@ -10,9 +11,8 @@ int main() {
   stdio_init_all();
   if(!get_wifi()) return 1;
 
-  //put regulator into PWM mode
-  cyw43_arch_init();
-  cyw43_arch_gpio_put(1, 1);
+  //reduces noise in ADC measurements 
+  disable_power_save(); 
 
   TCPSocket socket;
   ADCAudio audio_input(16, 10000);

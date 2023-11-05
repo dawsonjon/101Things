@@ -39,6 +39,7 @@ void effects :: process_sample(int16_t & sample, s_effect & settings)
     //temp = eq1.applyfilter(temp, eq_gains);
 
     //Distortion
+    float magnitude, sign;
     switch(settings.distortion_effect)
     {
 
@@ -105,10 +106,32 @@ void effects :: process_sample(int16_t & sample, s_effect & settings)
         }
         break;
 
-      case FUZZ:
+      case FOLDBACK:
         temp *= settings.distortion_gain;
         temp += settings.distortion_offset;
-        if(temp > 0)
+        magnitude = fabsf(temp);
+        sign = copysignf(1.0f, temp);
+        magnitude = -(4.0f * magnitude * magnitude) + (4.0f * magnitude);
+        temp = sign * magnitude;
+        break;
+
+      case FUZZ1:
+        temp *= settings.distortion_gain;
+        temp += settings.distortion_offset;
+        if(temp > 0.66f)
+        {
+          temp = 1.0f;
+        }
+        if(temp < -0.66f)
+        {
+          temp = -1.0f;
+        }
+        break;
+
+      case FUZZ2:
+        temp *= settings.distortion_gain;
+        temp += settings.distortion_offset;
+        if(temp > 0.66f)
         {
           temp = 1.0f;
         }
@@ -116,7 +139,7 @@ void effects :: process_sample(int16_t & sample, s_effect & settings)
 
     }
 
-    //reverb
+    //delay
     switch(settings.delay_effect)
     {
       case DELAY:
@@ -124,8 +147,8 @@ void effects :: process_sample(int16_t & sample, s_effect & settings)
         temp += delay_line2.tap(settings.delay_delay_ms * samples_per_ms) * settings.delay_feedback;
         break;
 
-      case REVERB:
-        temp += delay_line2.tap(settings.reverb_delay_ms * samples_per_ms) * settings.reverb_feedback;
+      case ECHO:
+        temp += delay_line2.tap(settings.echo_delay_ms * samples_per_ms) * settings.echo_feedback;
         delay_line2.input_sample(temp);
         break;
     }

@@ -3,6 +3,7 @@
 
 #include "ADCAudio.h"
 #include "pico/stdlib.h"
+#include "psu_mode.h"
 
 
 unsigned bit_reverse(unsigned forward, unsigned m){
@@ -74,6 +75,7 @@ float interpolate(float real[], float imag[], uint16_t f)
 
 int main() {
   stdio_init_all();
+  disable_power_save();
 
   uint16_t audio_sample_rate_Hz = 10000;
 

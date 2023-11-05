@@ -5,9 +5,12 @@
 #include "PWMAudio.h"
 #include "half_band_filter2.h"
 #include "pico/stdlib.h"
+#include "psu_mode.h"
 
 int main() {
   stdio_init_all();
+
+  disable_power_save();
 
   uint16_t audio_sample_rate_Hz = 10000;
   double frequency_shift_Hz = 900;

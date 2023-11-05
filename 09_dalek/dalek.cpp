@@ -3,19 +3,14 @@
 
 #include "ADCAudio.h"
 #include "PWMAudio.h"
+#include "psu_mode.h"
 #include "pico/stdlib.h"
-#ifdef PICO_W
-#include "pico/cyw43_arch.h"
-#endif
 
 int main() {
   stdio_init_all();
 
-#ifdef PICO_W
-  //put regulator into PWM mode
-  cyw43_arch_init();
-  cyw43_arch_gpio_put(1, 1);
-#endif
+  //reduces noise in ADC
+  disable_power_save();
 
   uint16_t audio_sample_rate_Hz = 10000;
 

@@ -2,10 +2,10 @@
 
 #include "ADCAudio.h"
 #include "PWMAudio.h"
+#include "psu_mode.h"
 #include "effects.h"
 #include "ui.h"
 #include "pico/stdlib.h"
-//#include "pico/cyw43_arch.h"
 #include <math.h>
 
 int main() {
@@ -15,15 +15,8 @@ int main() {
   //ssd1306_poweroff(&disp);
   ssd1306_contrast(&disp, 0x01);
 
-//configure SMPS into power save mode
-#if PICO_W
-  cyw43_arch_init();
-  cyw43_arch_gpio_put(1, 1);
-#else
-  gpio_init(23);
-  gpio_set_dir(23, GPIO_OUT);
-  gpio_put(23, 1);
-#endif
+  //reduces noise in ADC measurements
+  disable_power_save();
 
   //preamp
   float_entry preamp_gain(1.0f, 1.0f, 100.0f, 1.0f);
@@ -31,14 +24,14 @@ int main() {
   menu preamp_menu("Preamp", "Preamp Gain", preamp_menu_items, 0);
 
   //Distorion Menus
-  enum_entry distortion_effect("Off#Cubic#Quadratic#Full Wave#Half Wave#Fuzz", 5);
+  enum_entry distortion_effect("Off#Cubic#Quadratic#Full Wave#Half Wave#Foldback#Fuzz1#Fuzz2", 7);
   float_entry distortion_gain(1.0f, 1.0f, 100.0f, 1.0f);
-  float_entry distortion_offset(0.0f, -1.0f, 1.0f, 0.05f);
+  float_entry distortion_offset(0.0f, -1.0f, 1.0f, 0.01f);
   menu_item *distortion_menu_items[] = {&distortion_effect, &distortion_gain, &distortion_offset};
   menu distortion_menu("Distortion", "Effect#Gain#Offset", distortion_menu_items, 2);
 
   //Delay Menus
-  enum_entry delay_effect("Off#Delay#Reverb", 2);
+  enum_entry delay_effect("Off#Delay#Echo", 2);
   float_entry delay_ms(100.0f, 100.0f, 400.0f, 1.0f);
   float_entry delay_feedback(0.8f, 0.0f, 1.0f, 0.1f);
   menu_item *delay_menu_items[] = {&delay_effect, &delay_ms, &delay_feedback};
@@ -155,8 +148,8 @@ int main() {
     settings.delay_effect = static_cast<e_delay_effect>(delay_effect.m_value);
     settings.delay_delay_ms = delay_ms.m_value;
     settings.delay_feedback = delay_feedback.m_value;
-    settings.reverb_delay_ms = delay_ms.m_value;
-    settings.reverb_feedback = delay_feedback.m_value;
+    settings.echo_delay_ms = delay_ms.m_value;
+    settings.echo_feedback = delay_feedback.m_value;
     settings.modulator_effect = static_cast<e_modulator_effect>(modulator_effect.m_value);
     settings.pitch = 1.0f;
     settings.flanger_depth_ms = flanger_depth_ms.m_value;

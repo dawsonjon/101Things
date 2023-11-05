@@ -6,6 +6,7 @@
 #include "get_wifi.h"
 #include "pico/stdlib.h"
 #include <math.h>
+#include "psu_mode.h"
 
 void transfer_data(PWMAudio &audio_output, ADCAudio &audio_input,
                    TCPSocket &socket) {
@@ -61,6 +62,8 @@ int main() {
   #else
   #error
   #endif
+
+  disable_power_save();
 
   TCPSocket socket;
   PWMAudio audio_output(0, 10000);

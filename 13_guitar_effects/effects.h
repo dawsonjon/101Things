@@ -4,8 +4,8 @@
 #include "eq.h"
 
 enum e_modulator_effect {MODULATOR_OFF, CHORUS, FLANGER, TREMOLO, VIBRATO, PITCH_SHIFT}; 
-enum e_delay_effect {DELAY_OFF, DELAY, REVERB}; 
-enum e_distortion_effect {DISTORTION_OFF, CUBIC, QUADRATIC, FULL_WAVE, HALF_WAVE, FUZZ};
+enum e_delay_effect {DELAY_OFF, DELAY, ECHO}; 
+enum e_distortion_effect {DISTORTION_OFF, CUBIC, QUADRATIC, FULL_WAVE, HALF_WAVE, FOLDBACK, FUZZ1, FUZZ2};
 
 struct s_effect
 {
@@ -19,8 +19,8 @@ struct s_effect
   e_delay_effect delay_effect = DELAY_OFF;
   float delay_delay_ms = 400.0f;
   float delay_feedback = 0.8;
-  float reverb_delay_ms = 100.0f;
-  float reverb_feedback = 0.8;
+  float echo_delay_ms = 100.0f;
+  float echo_feedback = 0.8;
 
   e_modulator_effect modulator_effect = CHORUS;
   float pitch = 1.0f;

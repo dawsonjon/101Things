@@ -5,4 +5,4 @@ add_executable(tuner
 pico_enable_stdio_usb(tuner 1)
 pico_add_extra_outputs(tuner)
 target_include_directories(tuner PRIVATE ${CMAKE_CURRENT_LIST_DIR} )
-target_link_libraries(tuner pico_stdlib audio)
+target_link_libraries(tuner pico_stdlib audio psu_mode)

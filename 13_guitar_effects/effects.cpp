@@ -34,9 +34,11 @@ void effects :: process_sample(int16_t & sample, s_effect & settings)
     float temp = sample/32767.0f;
     dc += (temp - dc)/2.0f;
     temp -= dc;
-
     temp *= settings.pre_gain;
-    //temp = eq1.applyfilter(temp, eq_gains);
+
+    //graphic equalizer
+    eq1.set_eq(settings.eq_gains);
+    eq1.process_sample(temp);
 
     //Distortion
     float magnitude, sign;

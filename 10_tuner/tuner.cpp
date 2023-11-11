@@ -61,7 +61,6 @@ void fft(float reals[], float imaginaries[], unsigned m){
         }
 
     }
-
 }
 
 float interpolate(float real[], float imag[], uint16_t f)

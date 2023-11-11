@@ -23,6 +23,15 @@ int main() {
   menu_item *preamp_menu_items[] = {&preamp_gain};
   menu preamp_menu("Preamp", "Preamp Gain", preamp_menu_items, 0);
 
+  //EQ Menus
+  float_entry eq_band1(1.0f, 0.0f, 100.0f, 1.0f);
+  float_entry eq_band2(1.0f, 0.0f, 100.0f, 1.0f);
+  float_entry eq_band3(1.0f, 0.0f, 100.0f, 1.0f);
+  float_entry eq_band4(1.0f, 0.0f, 100.0f, 1.0f);
+  float_entry eq_band5(1.0f, 0.0f, 100.0f, 1.0f);
+  menu_item *eq_menu_items[] = {&eq_band1, &eq_band2, &eq_band3, &eq_band4, &eq_band5};
+  menu eq_menu("EQ", "Band 1#Band 2#Band 3#Band 4#Band 5", eq_menu_items, 4);
+
   //Distorion Menus
   enum_entry distortion_effect("Off#Cubic#Quadratic#Full Wave#Half Wave#Foldback#Fuzz1#Fuzz2", 7);
   float_entry distortion_gain(1.0f, 1.0f, 100.0f, 1.0f);
@@ -77,8 +86,8 @@ int main() {
   menu modulator_menu("Modulator", "Effect#Flanger Settings#Chorus Settings#Tremolo Settings#Vibrato Settings", modulator_items, 4);
 
   //main menu
-  menu_item *menu_items[] = {&preamp_menu, &distortion_menu, &delay_menu, &modulator_menu};
-  menu main_menu("Menu", "Preamp#Distorion#Delay#Modulator", menu_items, 3);
+  menu_item *menu_items[] = {&preamp_menu, &eq_menu, &distortion_menu, &delay_menu, &modulator_menu};
+  menu main_menu("Menu", "Preamp#EQ#Distorion#Delay#Modulator", menu_items, 3);
 
   const uint8_t oversample = 16;
   ADCAudio audio_input(16, oversample * 20000);
@@ -137,11 +146,11 @@ int main() {
 
     //apply settings
     settings.pre_gain = preamp_gain.m_value;
-    settings.eq_gains[0] = 1.0;
-    settings.eq_gains[1] = 1.0;
-    settings.eq_gains[2] = 1.0;
-    settings.eq_gains[3] = 1.0;
-    settings.eq_gains[4] = 1.0;
+    settings.eq_gains[0] = eq_band1.m_value;
+    settings.eq_gains[1] = eq_band2.m_value;
+    settings.eq_gains[2] = eq_band3.m_value;
+    settings.eq_gains[3] = eq_band4.m_value;
+    settings.eq_gains[4] = eq_band5.m_value;
     settings.distortion_effect = static_cast<e_distortion_effect>(distortion_effect.m_value);
     settings.distortion_offset = distortion_offset.m_value;
     settings.distortion_gain = distortion_gain.m_value;

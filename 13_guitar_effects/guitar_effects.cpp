@@ -4,6 +4,7 @@
 #include "PWMAudio.h"
 #include "psu_mode.h"
 #include "effects.h"
+#include "fixed.h"
 #include "ui.h"
 #include "pico/stdlib.h"
 #include <math.h>
@@ -12,7 +13,6 @@ int main() {
   stdio_init_all();
   stdio_set_translate_crlf(&stdio_usb, false);
   init_ui();
-  //ssd1306_poweroff(&disp);
   ssd1306_contrast(&disp, 0x01);
 
   //reduces noise in ADC measurements
@@ -24,11 +24,11 @@ int main() {
   menu preamp_menu("Preamp", "Preamp Gain", preamp_menu_items, 0);
 
   //EQ Menus
-  float_entry eq_band1(1.0f, 0.0f, 100.0f, 1.0f);
-  float_entry eq_band2(1.0f, 0.0f, 100.0f, 1.0f);
-  float_entry eq_band3(1.0f, 0.0f, 100.0f, 1.0f);
-  float_entry eq_band4(1.0f, 0.0f, 100.0f, 1.0f);
-  float_entry eq_band5(1.0f, 0.0f, 100.0f, 1.0f);
+  float_entry eq_band1(1.0f, 0.0f, 10.0f, 0.1f);
+  float_entry eq_band2(1.0f, 0.0f, 10.0f, 0.1f);
+  float_entry eq_band3(1.0f, 0.0f, 10.0f, 0.1f);
+  float_entry eq_band4(1.0f, 0.0f, 10.0f, 0.1f);
+  float_entry eq_band5(1.0f, 0.0f, 10.0f, 0.1f);
   menu_item *eq_menu_items[] = {&eq_band1, &eq_band2, &eq_band3, &eq_band4, &eq_band5};
   menu eq_menu("EQ", "Band 1#Band 2#Band 3#Band 4#Band 5", eq_menu_items, 4);
 
@@ -87,7 +87,7 @@ int main() {
 
   //main menu
   menu_item *menu_items[] = {&preamp_menu, &eq_menu, &distortion_menu, &delay_menu, &modulator_menu};
-  menu main_menu("Menu", "Preamp#EQ#Distorion#Delay#Modulator", menu_items, 3);
+  menu main_menu("Menu", "Preamp#EQ#Distorion#Delay#Modulator", menu_items, 4);
 
   const uint8_t oversample = 16;
   ADCAudio audio_input(16, oversample * 20000);
@@ -102,11 +102,15 @@ int main() {
   bool show_menu = true;
 
   while (true) {
+
+
+    //process a block of data
     for(uint8_t i=0; i<20; i++)
     {
       audio_input.input_samples(input_samples);
 
       uint16_t input_sample_number = 0;
+      uint64_t start = time_us_64();
       for(uint16_t output_sample_number = 0; output_sample_number<64; output_sample_number++)
       {
         //sum 16 samples to give 1
@@ -120,15 +124,19 @@ int main() {
         sample -= 32768;
 
         //apply effects
-        e.process_sample(sample, settings);
+        e.process_sample(sample);
 
         //convert to unsigned 8-bit
         output_samples[ping][output_sample_number] = (sample+32768) >> 4;
       }
+      float elapsed = time_us_64()-start;
+      printf("time: %f us\n", elapsed/64);
       audio_output.output_samples(output_samples[ping], 64);
       ping ^= 1;
     }
 
+
+    //interact with user
     if(show_menu)
     {
       show_menu = main_menu.poll();
@@ -136,50 +144,51 @@ int main() {
       {
         ssd1306_poweroff(&disp);
       }
+
+      //apply settings
+      settings.pre_gain = float2fixed(preamp_gain.m_value);
+      settings.eq_gains[0] = eq_band1.m_value;
+      settings.eq_gains[1] = eq_band2.m_value;
+      settings.eq_gains[2] = eq_band3.m_value;
+      settings.eq_gains[3] = eq_band4.m_value;
+      settings.eq_gains[4] = eq_band5.m_value;
+      settings.distortion_effect = static_cast<e_distortion_effect>(distortion_effect.m_value);
+      settings.distortion_offset = distortion_offset.m_value;
+      settings.distortion_gain = distortion_gain.m_value;
+      settings.delay_effect = static_cast<e_delay_effect>(delay_effect.m_value);
+      settings.delay_delay_ms = delay_ms.m_value;
+      settings.delay_feedback = delay_feedback.m_value;
+      settings.echo_delay_ms = delay_ms.m_value;
+      settings.echo_feedback = delay_feedback.m_value;
+      settings.modulator_effect = static_cast<e_modulator_effect>(modulator_effect.m_value);
+      settings.pitch = 1.0f;
+      settings.flanger_depth_ms = flanger_depth_ms.m_value;
+      settings.flanger_rate_Hz = flanger_rate_Hz.m_value;
+      settings.flanger_delay_ms = flanger_delay_ms.m_value;
+      settings.flanger_feedback = flanger_feedback.m_value;
+      settings.chorus1_depth_ms = chorus1_depth_ms.m_value;
+      settings.chorus1_rate_Hz = chorus1_rate_Hz.m_value;
+      settings.chorus1_delay_ms = chorus1_delay_ms.m_value;
+      settings.chorus1_feedback = chorus1_feedback.m_value;
+      settings.chorus2_depth_ms = chorus2_depth_ms.m_value;
+      settings.chorus2_rate_Hz = chorus2_rate_Hz.m_value;
+      settings.chorus2_delay_ms = chorus2_delay_ms.m_value;
+      settings.chorus2_feedback = chorus2_feedback.m_value;
+      settings.chorus3_depth_ms = chorus3_depth_ms.m_value;
+      settings.chorus3_rate_Hz = chorus3_rate_Hz.m_value;
+      settings.chorus3_delay_ms = chorus3_delay_ms.m_value;
+      settings.chorus3_feedback = chorus3_feedback.m_value;
+      settings.tremolo_rate_Hz = tremolo_rate_Hz.m_value;
+      settings.vibrato_depth_ms = vibrato_depth_ms.m_value;
+      settings.vibrato_rate_Hz = vibrato_rate_Hz.m_value;
+      e.update_settings(settings);
     }
     else if(button_back.poll() || button_fwd.poll() || button_up.poll() || button_down.poll())
     {
       show_menu = true; 
-      //main_menu.focus();
       ssd1306_poweron(&disp);
     }
 
-    //apply settings
-    settings.pre_gain = preamp_gain.m_value;
-    settings.eq_gains[0] = eq_band1.m_value;
-    settings.eq_gains[1] = eq_band2.m_value;
-    settings.eq_gains[2] = eq_band3.m_value;
-    settings.eq_gains[3] = eq_band4.m_value;
-    settings.eq_gains[4] = eq_band5.m_value;
-    settings.distortion_effect = static_cast<e_distortion_effect>(distortion_effect.m_value);
-    settings.distortion_offset = distortion_offset.m_value;
-    settings.distortion_gain = distortion_gain.m_value;
-    settings.delay_effect = static_cast<e_delay_effect>(delay_effect.m_value);
-    settings.delay_delay_ms = delay_ms.m_value;
-    settings.delay_feedback = delay_feedback.m_value;
-    settings.echo_delay_ms = delay_ms.m_value;
-    settings.echo_feedback = delay_feedback.m_value;
-    settings.modulator_effect = static_cast<e_modulator_effect>(modulator_effect.m_value);
-    settings.pitch = 1.0f;
-    settings.flanger_depth_ms = flanger_depth_ms.m_value;
-    settings.flanger_rate_Hz = flanger_rate_Hz.m_value;
-    settings.flanger_delay_ms = flanger_delay_ms.m_value;
-    settings.flanger_feedback = flanger_feedback.m_value;
-    settings.chorus1_depth_ms = chorus1_depth_ms.m_value;
-    settings.chorus1_rate_Hz = chorus1_rate_Hz.m_value;
-    settings.chorus1_delay_ms = chorus1_delay_ms.m_value;
-    settings.chorus1_feedback = chorus1_feedback.m_value;
-    settings.chorus2_depth_ms = chorus2_depth_ms.m_value;
-    settings.chorus2_rate_Hz = chorus2_rate_Hz.m_value;
-    settings.chorus2_delay_ms = chorus2_delay_ms.m_value;
-    settings.chorus2_feedback = chorus2_feedback.m_value;
-    settings.chorus3_depth_ms = chorus3_depth_ms.m_value;
-    settings.chorus3_rate_Hz = chorus3_rate_Hz.m_value;
-    settings.chorus3_delay_ms = chorus3_delay_ms.m_value;
-    settings.chorus3_feedback = chorus3_feedback.m_value;
-    settings.tremolo_rate_Hz = tremolo_rate_Hz.m_value;
-    settings.vibrato_depth_ms = vibrato_depth_ms.m_value;
-    settings.vibrato_rate_Hz = vibrato_rate_Hz.m_value;
 
   }
 }

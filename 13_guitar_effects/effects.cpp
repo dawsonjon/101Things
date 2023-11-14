@@ -27,27 +27,33 @@ float delay_line :: tap(uint16_t delay)
     return buffer[(input_pointer - delay + 1) & 0xfff];
 }
 
+void effects :: update_settings(s_effect & settings)
+{
+  m_settings = settings;
+  eq1.set_eq(m_settings.eq_gains);
+}
+
 //Effects Class
-void effects :: process_sample(int16_t & sample, s_effect & settings)
+void effects :: process_sample(int16_t & sample)
 {
     //pre gain
-    float temp = sample/32767.0f;
-    dc += (temp - dc)/2.0f;
-    temp -= dc;
-    temp *= settings.pre_gain;
+    dc += (sample - dc)/2.0f;
+    int32_t extended_sample = sample - dc;
+    extended_sample = product(extended_sample, m_settings.pre_gain);
 
     //graphic equalizer
-    eq1.set_eq(settings.eq_gains);
-    eq1.process_sample(temp);
+    eq1.process_sample(extended_sample);
+
+    float temp = extended_sample/32767.0f;
 
     //Distortion
     float magnitude, sign;
-    switch(settings.distortion_effect)
+    switch(m_settings.distortion_effect)
     {
 
       case CUBIC:
-        temp *= settings.distortion_gain;
-        temp += settings.distortion_offset;
+        temp *= m_settings.distortion_gain;
+        temp += m_settings.distortion_offset;
         if(temp > 1.0f)
         {
           temp = 2.0f/3.0f;
@@ -64,8 +70,8 @@ void effects :: process_sample(int16_t & sample, s_effect & settings)
         break;
 
       case QUADRATIC:
-        temp *= settings.distortion_gain;
-        temp += settings.distortion_offset;
+        temp *= m_settings.distortion_gain;
+        temp += m_settings.distortion_offset;
         if(temp > 2.0f/3.0f)
         {
           temp = 1.0f;
@@ -91,8 +97,8 @@ void effects :: process_sample(int16_t & sample, s_effect & settings)
         break;
 
       case FULL_WAVE:
-        temp *= settings.distortion_gain;
-        temp += settings.distortion_offset;
+        temp *= m_settings.distortion_gain;
+        temp += m_settings.distortion_offset;
         if(temp < 0)
         {
           temp = -temp;
@@ -100,8 +106,8 @@ void effects :: process_sample(int16_t & sample, s_effect & settings)
         break;
 
       case HALF_WAVE:
-        temp *= settings.distortion_gain;
-        temp += settings.distortion_offset;
+        temp *= m_settings.distortion_gain;
+        temp += m_settings.distortion_offset;
         if(temp < 0)
         {
           temp = 0;
@@ -109,8 +115,8 @@ void effects :: process_sample(int16_t & sample, s_effect & settings)
         break;
 
       case FOLDBACK:
-        temp *= settings.distortion_gain;
-        temp += settings.distortion_offset;
+        temp *= m_settings.distortion_gain;
+        temp += m_settings.distortion_offset;
         magnitude = fabsf(temp);
         sign = copysignf(1.0f, temp);
         magnitude = -(4.0f * magnitude * magnitude) + (4.0f * magnitude);
@@ -118,8 +124,8 @@ void effects :: process_sample(int16_t & sample, s_effect & settings)
         break;
 
       case FUZZ1:
-        temp *= settings.distortion_gain;
-        temp += settings.distortion_offset;
+        temp *= m_settings.distortion_gain;
+        temp += m_settings.distortion_offset;
         if(temp > 0.66f)
         {
           temp = 1.0f;
@@ -131,8 +137,8 @@ void effects :: process_sample(int16_t & sample, s_effect & settings)
         break;
 
       case FUZZ2:
-        temp *= settings.distortion_gain;
-        temp += settings.distortion_offset;
+        temp *= m_settings.distortion_gain;
+        temp += m_settings.distortion_offset;
         if(temp > 0.66f)
         {
           temp = 1.0f;
@@ -142,48 +148,48 @@ void effects :: process_sample(int16_t & sample, s_effect & settings)
     }
 
     //delay
-    switch(settings.delay_effect)
+    switch(m_settings.delay_effect)
     {
       case DELAY:
         delay_line2.input_sample(temp);
-        temp += delay_line2.tap(settings.delay_delay_ms * samples_per_ms) * settings.delay_feedback;
+        temp += delay_line2.tap(m_settings.delay_delay_ms * samples_per_ms) * m_settings.delay_feedback;
         break;
 
       case ECHO:
-        temp += delay_line2.tap(settings.echo_delay_ms * samples_per_ms) * settings.echo_feedback;
+        temp += delay_line2.tap(m_settings.echo_delay_ms * samples_per_ms) * m_settings.echo_feedback;
         delay_line2.input_sample(temp);
         break;
     }
 
     //Modulation Effects
-    const float vibrato_delay_ms = settings.vibrato_depth_ms * 2.0f;
-    switch(settings.modulator_effect)
+    const float vibrato_delay_ms = m_settings.vibrato_depth_ms * 2.0f;
+    switch(m_settings.modulator_effect)
     {
       case PITCH_SHIFT:
         delay_line1.input_sample(temp);
         temp = delay_line1.tap(sweep);
-        sweep -= settings.pitch;
+        sweep -= m_settings.pitch;
         break;
 
       case VIBRATO:
         delay_line1.input_sample(temp);
-        temp = delay_line1.tap(vibrato_delay_ms * samples_per_ms + lfo1.get_sample(settings.vibrato_rate_Hz, settings.vibrato_depth_ms * samples_per_ms, audio_sample_rate_Hz));
+        temp = delay_line1.tap(vibrato_delay_ms * samples_per_ms + lfo1.get_sample(m_settings.vibrato_rate_Hz, m_settings.vibrato_depth_ms * samples_per_ms, audio_sample_rate_Hz));
         break;
 
       case TREMOLO:
-        temp *= lfo1.get_sample(settings.tremolo_rate_Hz, 0.5f, audio_sample_rate_Hz) + 0.5f;
+        temp *= lfo1.get_sample(m_settings.tremolo_rate_Hz, 0.5f, audio_sample_rate_Hz) + 0.5f;
         break;
 
       case CHORUS:
         delay_line1.input_sample(temp);
-        temp += delay_line1.tap(settings.chorus1_delay_ms * samples_per_ms + lfo1.get_sample(settings.chorus1_rate_Hz, settings.chorus1_depth_ms * samples_per_ms, audio_sample_rate_Hz)) * settings.chorus1_feedback;
-        temp += delay_line1.tap(settings.chorus2_delay_ms * samples_per_ms + lfo2.get_sample(settings.chorus2_rate_Hz, settings.chorus2_depth_ms * samples_per_ms, audio_sample_rate_Hz)) * settings.chorus2_feedback;
-        temp += delay_line1.tap(settings.chorus3_delay_ms * samples_per_ms + lfo3.get_sample(settings.chorus3_rate_Hz, settings.chorus3_depth_ms * samples_per_ms, audio_sample_rate_Hz)) * settings.chorus3_feedback;
+        temp += delay_line1.tap(m_settings.chorus1_delay_ms * samples_per_ms + lfo1.get_sample(m_settings.chorus1_rate_Hz, m_settings.chorus1_depth_ms * samples_per_ms, audio_sample_rate_Hz)) * m_settings.chorus1_feedback;
+        temp += delay_line1.tap(m_settings.chorus2_delay_ms * samples_per_ms + lfo2.get_sample(m_settings.chorus2_rate_Hz, m_settings.chorus2_depth_ms * samples_per_ms, audio_sample_rate_Hz)) * m_settings.chorus2_feedback;
+        temp += delay_line1.tap(m_settings.chorus3_delay_ms * samples_per_ms + lfo3.get_sample(m_settings.chorus3_rate_Hz, m_settings.chorus3_depth_ms * samples_per_ms, audio_sample_rate_Hz)) * m_settings.chorus3_feedback;
         break;
 
       case FLANGER:
         delay_line1.input_sample(temp);
-        temp += delay_line1.tap(settings.flanger_delay_ms * samples_per_ms + lfo1.get_sample(settings.flanger_rate_Hz, settings.flanger_depth_ms * samples_per_ms, audio_sample_rate_Hz)) * settings.flanger_feedback;
+        temp += delay_line1.tap(m_settings.flanger_delay_ms * samples_per_ms + lfo1.get_sample(m_settings.flanger_rate_Hz, m_settings.flanger_depth_ms * samples_per_ms, audio_sample_rate_Hz)) * m_settings.flanger_feedback;
         break;
     }
 

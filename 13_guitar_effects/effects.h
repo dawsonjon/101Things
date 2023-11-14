@@ -9,7 +9,7 @@ enum e_distortion_effect {DISTORTION_OFF, CUBIC, QUADRATIC, FULL_WAVE, HALF_WAVE
 
 struct s_effect
 {
-  float pre_gain = 1.0f;
+  int32_t pre_gain = 1.0f;
   float eq_gains[5] = {1.0, 1.0, 1.0, 1.0, 1.0};
 
   e_distortion_effect distortion_effect = DISTORTION_OFF;
@@ -64,7 +64,7 @@ class delay_line
 
 class effects
 {
-  float dc = 0;
+  int32_t dc = 0;
   lfo lfo1;
   lfo lfo2;
   lfo lfo3;
@@ -72,9 +72,11 @@ class effects
   delay_line delay_line2;
   eq eq1;
   float sweep = 0;
+  s_effect m_settings;
   public:
   static void initialise();
-  void process_sample(int16_t & sample, s_effect & effect_settings);
+  void update_settings(s_effect & effect_settings);
+  void process_sample(int16_t & sample);
 };
 
 

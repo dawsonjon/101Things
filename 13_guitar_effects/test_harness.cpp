@@ -1,4 +1,5 @@
 #include "effects.h"
+#include "fixed.h"
 #include <cstdio>
 #include <cstdint>
 
@@ -11,15 +12,15 @@ int main()
   e.initialise();
   s_effect settings;
 
-  settings.pre_gain = 4.0;
+  settings.pre_gain = float2fixed(1.0);
   settings.eq_gains[0] = 1.0;
-  settings.eq_gains[1] = 2.0;
-  settings.eq_gains[2] = 4.0;
-  settings.eq_gains[3] = 2.0;
+  settings.eq_gains[1] = 1.0;
+  settings.eq_gains[2] = 1.0;
+  settings.eq_gains[3] = 1.0;
   settings.eq_gains[4] = 1.0;
-  settings.distortion_effect = DISTORTION_OFF;
-  settings.distortion_offset = 0.0;
-  settings.distortion_gain = 4.0;
+  settings.distortion_effect = FULL_WAVE;
+  settings.distortion_offset = 0.2;
+  settings.distortion_gain = 8.0;
   settings.delay_effect = DELAY_OFF;
   settings.delay_delay_ms = 200.0;
   settings.delay_feedback = 0.8;
@@ -46,6 +47,7 @@ int main()
   settings.tremolo_rate_Hz = 10.0;
   settings.vibrato_depth_ms = 5.0;
   settings.vibrato_rate_Hz = 1.0;
+  e.update_settings(settings);
 
   while(!feof(inf))
   {
@@ -53,8 +55,7 @@ int main()
     sample |= fgetc(inf) << 8;
     sample -= 32768;
 
-    printf("%i \n", sample);
-    e.process_sample(sample, settings);
+    e.process_sample(sample);
 
     fputc((sample & 0xff), outf);
     fputc((sample >> 8), outf);

@@ -3,6 +3,7 @@ add_executable(guitar_effects
   effects.cpp
   eq.cpp
   fft.cpp
+  fixed.cpp
 )
 pico_enable_stdio_usb(guitar_effects 1)
 pico_enable_stdio_uart(guitar_effects 0)

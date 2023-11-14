@@ -9,12 +9,12 @@ enum e_distortion_effect {DISTORTION_OFF, CUBIC, QUADRATIC, FULL_WAVE, HALF_WAVE
 
 struct s_effect
 {
-  int32_t pre_gain = 1.0f;
+  int32_t pre_gain = float2fixed(1.0f);
   float eq_gains[5] = {1.0, 1.0, 1.0, 1.0, 1.0};
 
   e_distortion_effect distortion_effect = DISTORTION_OFF;
-  float distortion_offset = 0.0f;
-  float distortion_gain = 1.0f;
+  int32_t distortion_offset = float2fixed(0.0f);
+  int32_t distortion_gain = float2fixed(1.0f);
 
   e_delay_effect delay_effect = DELAY_OFF;
   float delay_delay_ms = 400.0f;

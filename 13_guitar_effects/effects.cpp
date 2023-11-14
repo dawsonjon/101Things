@@ -37,115 +37,109 @@ void effects :: update_settings(s_effect & settings)
 void effects :: process_sample(int16_t & sample)
 {
     //pre gain
-    dc += (sample - dc)/2.0f;
-    int32_t extended_sample = sample - dc;
-    extended_sample = product(extended_sample, m_settings.pre_gain);
+    dc += (sample - dc)/2u;
+    sample -= dc;
+    int32_t extended_sample = sample;
+    //extended_sample = product(extended_sample, m_settings.pre_gain);
 
     //graphic equalizer
-    eq1.process_sample(extended_sample);
-
-    float temp = extended_sample/32767.0f;
+    //eq1.process_sample(extended_sample);
 
     //Distortion
-    float magnitude, sign;
+    /*
+    int32_t magnitude;
+    bool positive;
+    if(m_settings.distortion_effect != DISTORTION_OFF)
+    {
+        extended_sample = product(extended_sample, m_settings.distortion_gain);
+        extended_sample += m_settings.distortion_offset;
+        bool positive = extended_sample >= 0;
+        magnitude = positive?extended_sample:-extended_sample;
+    }
+
     switch(m_settings.distortion_effect)
     {
 
       case CUBIC:
-        temp *= m_settings.distortion_gain;
-        temp += m_settings.distortion_offset;
-        if(temp > 1.0f)
+        if(extended_sample > float2fixed(1.0f))
         {
-          temp = 2.0f/3.0f;
+          extended_sample = float2fixed(2.0f/3.0f);
         }
-        else if(temp < -1.0f)   
+        else if(extended_sample < float2fixed(-1.0f))   
         {
-          temp = -2.0f/3.0f;
+          extended_sample = float2fixed(-2.0f/3.0f);
         }
         else
         {
-          temp = temp - ((temp * temp * temp) / 3.0f);
+          //x - x^3/3
+          extended_sample = extended_sample - product(product(product(extended_sample, extended_sample), extended_sample), float2fixed(1.0f/3.0f));
         }
-        temp *= 1.5;
+        extended_sample = product(extended_sample, float2fixed(1.5f));
         break;
 
       case QUADRATIC:
-        temp *= m_settings.distortion_gain;
-        temp += m_settings.distortion_offset;
-        if(temp > 2.0f/3.0f)
+        if(extended_sample > float2fixed(2.0f/3.0f))
         {
-          temp = 1.0f;
+          extended_sample = float2fixed(1.0f);
         }
-        else if(temp < -2.0f/3.0f)   
+        else if(extended_sample < float2fixed(-2.0f/3.0f))   
         {
-          temp = -1.0f;
+          extended_sample = float2fixed(-1.0f);
         }
-        else if(temp > 1.0f/3.0f)
+        else if(extended_sample > float2fixed(1.0f/3.0f))
         {
           //-3x^2 + 4x - 1/3
-          temp = (-3.0f * temp * temp) + (4.0f * temp) - (1.0f/3.0f);
+          extended_sample = product(float2fixed(-3.0f), product(extended_sample, extended_sample)) + product(float2fixed(4.0f), extended_sample) - float2fixed(1.0f/3.0f);
         }
-        else if(temp < -1.0f/3.0f)   
+        else if(extended_sample < -float2fixed(1.0f/3.0f))   
         {
           //3x^2 - 4x + 1/3
-          temp = (3.0f * temp * temp) + (4.0f * temp) + (1.0f/3.0f);
+          extended_sample = product(float2fixed(3.0f), product(extended_sample, extended_sample)) + product(float2fixed(4.0f), extended_sample) + float2fixed(1.0f/3.0f);
         }
         else
         {
-          temp = 2.0f * temp;
+          extended_sample = product(float2fixed(2.0f), extended_sample);
         }
         break;
 
       case FULL_WAVE:
-        temp *= m_settings.distortion_gain;
-        temp += m_settings.distortion_offset;
-        if(temp < 0)
-        {
-          temp = -temp;
-        }
+        extended_sample = magnitude;
         break;
 
       case HALF_WAVE:
-        temp *= m_settings.distortion_gain;
-        temp += m_settings.distortion_offset;
-        if(temp < 0)
-        {
-          temp = 0;
-        }
+        extended_sample = positive?magnitude:float2fixed(0.0f);
         break;
 
       case FOLDBACK:
-        temp *= m_settings.distortion_gain;
-        temp += m_settings.distortion_offset;
-        magnitude = fabsf(temp);
-        sign = copysignf(1.0f, temp);
-        magnitude = -(4.0f * magnitude * magnitude) + (4.0f * magnitude);
-        temp = sign * magnitude;
+        //-4x^2 + 4x
+        magnitude = product(float2fixed(-4.0f), product(magnitude, magnitude)) + product(float2fixed(4.0f), magnitude);
+        extended_sample = positive?magnitude:-magnitude;
         break;
 
       case FUZZ1:
-        temp *= m_settings.distortion_gain;
-        temp += m_settings.distortion_offset;
-        if(temp > 0.66f)
+        if(extended_sample > float2fixed(0.66f))
         {
-          temp = 1.0f;
+          extended_sample = float2fixed(1.0f);
         }
-        if(temp < -0.66f)
+        if(extended_sample < float2fixed(-0.66f))
         {
-          temp = -1.0f;
+          extended_sample = float2fixed(-1.0f);
         }
         break;
 
       case FUZZ2:
-        temp *= m_settings.distortion_gain;
-        temp += m_settings.distortion_offset;
-        if(temp > 0.66f)
+        if(extended_sample > float2fixed(0.66f))
         {
-          temp = 1.0f;
+          extended_sample = float2fixed(1.0f);
         }
         break;
 
     }
+    */
+
+    float temp = extended_sample/32767.0f;
+
+    printf("%f\n", temp);
 
     //delay
     switch(m_settings.delay_effect)

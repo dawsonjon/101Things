@@ -93,8 +93,8 @@ class enum_entry : public menu_item
   bool m_redraw = true;
   int32_t m_value;
 
-  enum_entry(const char *names, const int32_t max) 
-  : m_names(names), m_max(max), m_value(0){}
+  enum_entry(const char *names, int32_t value, const int32_t max) 
+  : m_names(names), m_max(max), m_value(value){}
   virtual bool poll();
   virtual void draw();
   virtual bool is_menu()

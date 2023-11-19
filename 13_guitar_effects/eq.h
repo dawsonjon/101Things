@@ -1,9 +1,10 @@
 #ifndef EQ_H
 #define EQ_H
 #include <stdint.h>
-#include "fft.h"
-#include "fixed.h"
 #include <cmath>
+
+int32_t eq_scale(int32_t a, int32_t b);
+int32_t eq_const(float a);
 
 class eq
 {
@@ -20,17 +21,16 @@ class eq
   public:
   eq()
   {
-    fft_initialise();
     for (int i = 0; i < 64; i++) {
       float multiplier = 0.5 * (1 - cosf(2*M_PI*i/63));
-      window[i] = float2fixed(multiplier);
+      window[i] = eq_const(multiplier/16); //reduce 16 bits to 12 to give more headroom in FFT
     }
     for (int i = 0; i < 32; i++) {
       output_buffer[i] = 0;
       overlap[i] = 0;
     }
   }
-  void set_eq(float band[]);
+  void set_eq(int32_t band[]);
   void process_sample(int32_t & sample);
 
 };

@@ -1,11 +1,82 @@
-#ifndef FIXED_H_
-#define FIXED_H_
+#ifndef FIXED_POINT_HPP
+#define FIXED_POINT_HPP
+
 #include <cstdint>
 
-int32_t product(int32_t a, int32_t b);
-int32_t float2fixed(float a);
-float fixed2float(int32_t a);
-int32_t clamp(int32_t a);
-int32_t sum(int32_t a, int32_t b);
+template <typename T, int fractional_bits>
+class fixed_point {
+public:
+    fixed_point(T value = 0) : value(value) {}
 
-#endif
+    bool operator>(const fixed_point& other) const {
+        return value > other.value;
+    }
+
+    bool operator>=(const fixed_point& other) const {
+        return value >= other.value;
+    }
+
+    bool operator<(const fixed_point& other) const {
+        return value < other.value;
+    }
+
+    bool operator<=(const fixed_point& other) const {
+        return value <= other.value;
+    }
+
+    fixed_point operator+(const fixed_point& other) const {
+        return fixed_point(value + other.value);
+    }
+
+    fixed_point operator-(const fixed_point& other) const {
+        return fixed_point(value - other.value);
+    }
+
+    fixed_point operator-() const {
+        return fixed_point(-value);
+    }
+
+    fixed_point operator*(const fixed_point& other) const {
+        return fixed_point((static_cast<int64_t>(value) * other.value) >> fractional_bits);
+    }
+
+    fixed_point operator/(const fixed_point& other) const {
+        return fixed_point((static_cast<int64_t>(value) << fractional_bits) / other.value);
+    }
+
+    fixed_point operator>>(int shift) const {
+        return fixed_point(value >> shift);
+    }
+
+    T get() const {
+        return value;
+    }
+
+    void set(T int_value) {
+        value = int_value;
+    }
+
+    T to_int() const {
+        return value >> fractional_bits;
+    }
+
+    float to_float() const {
+        return static_cast<float>(value) / (1 << fractional_bits);
+    }
+
+    static fixed_point from_int(T int_value) {
+        return fixed_point(int_value << fractional_bits);
+    }
+
+    static fixed_point from_float(float float_value) {
+        return fixed_point(static_cast<T>(float_value * (1 << fractional_bits)));
+    }
+
+private:
+    T value;
+};
+
+
+#endif // FIXED_POINT_HPP
+
+

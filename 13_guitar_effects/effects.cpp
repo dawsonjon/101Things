@@ -5,7 +5,7 @@
 
 const uint16_t audio_sample_rate_Hz = 20000;
 const uint16_t samples_per_ms = audio_sample_rate_Hz/1000;
-int16_t sin_table[1024];
+FixedPoint sin_table[1024];
 
 uint16_t frequency_Hz_to_steps(float frequency_Hz)
 {
@@ -13,21 +13,21 @@ uint16_t frequency_Hz_to_steps(float frequency_Hz)
 }
 
 //Low Frequency Oscillator Class
-int32_t lfo :: get_sample(uint16_t frequency_steps, int32_t amplitude)
+FixedPoint lfo :: get_sample(uint16_t frequency_steps, FixedPoint amplitude)
 {
-    const int32_t sample = product(sin_table[p>>6], amplitude); //10 MSBs (16-10 = 4)
+    FixedPoint sample = sin_table[p>>6] * amplitude; //10 MSBs (16-10 = 4)
     p += frequency_steps;
     return sample;
 }
 
 //Delay Line Class
-void delay_line :: input_sample(int32_t sample)
+void delay_line :: input_sample(FixedPoint sample)
 {
     buffer[input_pointer] = sample;
     input_pointer = (input_pointer + 1) & 0xfff;
 }
 
-int32_t delay_line :: tap(uint16_t delay)
+FixedPoint delay_line :: tap(uint16_t delay)
 {
     return buffer[(input_pointer - delay + 1) & 0xfff];
 }
@@ -41,23 +41,27 @@ void effects :: update_settings(s_effect & settings)
 //Effects Class
 void effects :: process_sample(int16_t & s)
 {
-    int32_t sample = s;
+    FixedPoint sample = s;
 
-    //pre gain
-    dc += (sample - dc)/2u;
-    sample -= dc;
-    sample = product(sample, m_settings.pre_gain);
+    //DC removal
+    dc = dc + (sample - dc) >> 1;
+    sample = sample - dc;
 
-    //graphic equalizer
-    eq1.process_sample(sample);
+    //Preamplifier
+    sample = sample * m_settings.pre_gain;
+
+    //Graphic Equalizer
+    int32_t raw_sample = sample.get();
+    eq1.process_sample(raw_sample);
+    sample.set(raw_sample);
 
     //Distortion
-    int32_t magnitude;
+    FixedPoint magnitude;
     bool positive;
     if(m_settings.distortion_effect != DISTORTION_OFF)
     {
-        sample = product(sample, m_settings.distortion_gain);
-        sample += m_settings.distortion_offset;
+        sample = sample * m_settings.distortion_gain;
+        sample = sample + m_settings.distortion_offset;
         positive = sample >= 0;
         magnitude = positive?sample:-sample;
     }
@@ -66,44 +70,45 @@ void effects :: process_sample(int16_t & s)
     {
 
       case CUBIC:
-        if(sample > float2fixed(1.0f))
+        if(sample > FixedPoint::from_float(1.0f))
         {
-          sample = float2fixed(2.0f/3.0f);
+          sample = FixedPoint::from_float(2.0f/3.0f);
         }
-        else if(sample < float2fixed(-1.0f))   
+        else if(sample < FixedPoint::from_float(-1.0f))   
         {
-          sample = float2fixed(-2.0f/3.0f);
+          sample = FixedPoint::from_float(-2.0f/3.0f);
         }
         else
         {
           //x - x^3/3
-          sample = sample -product(product(product(sample, sample), sample), float2fixed(1.0f/3.0f));
+          sample = sample -(sample*sample*sample), FixedPoint::from_float(1.0f/3.0f);
         }
-        sample = product(sample, float2fixed(1.5f));
+
+        sample = sample * FixedPoint::from_float(1.5f);
         break;
 
       case QUADRATIC:
-        if(sample > float2fixed(2.0f/3.0f))
+        if(sample > FixedPoint::from_float(2.0f/3.0f))
         {
-          sample = float2fixed(1.0f);
+          sample = FixedPoint::from_float(1.0f);
         }
-        else if(sample < float2fixed(-2.0f/3.0f))   
+        else if(sample < FixedPoint::from_float(-2.0f/3.0f))   
         {
-          sample = float2fixed(-1.0f);
+          sample = FixedPoint::from_float(-1.0f);
         }
-        else if(sample > float2fixed(1.0f/3.0f))
+        else if(sample > FixedPoint::from_float(1.0f/3.0f))
         {
           //-3x^2 + 4x - 1/3
-          sample = product(float2fixed(-3.0f), product(sample, sample)) + product(float2fixed(4.0f), sample) - float2fixed(1.0f/3.0f);
+          sample = (FixedPoint::from_float(-3.0f) * sample * sample) + (FixedPoint::from_float(4.0f) * sample) - FixedPoint::from_float(1.0f/3.0f);
         }
-        else if(sample < -float2fixed(1.0f/3.0f))   
+        else if(sample < -FixedPoint::from_float(1.0f/3.0f))   
         {
           //3x^2 - 4x + 1/3
-          sample = product(float2fixed(3.0f), product(sample, sample)) + product(float2fixed(4.0f), sample) + float2fixed(1.0f/3.0f);
+          sample = (FixedPoint::from_float(3.0f) * sample * sample) + (FixedPoint::from_float(4.0f) * sample) + FixedPoint::from_float(1.0f/3.0f);
         }
         else
         {
-          sample = product(float2fixed(2.0f), sample);
+          sample = sample * FixedPoint::from_float(2.0f);
         }
         break;
 
@@ -112,98 +117,137 @@ void effects :: process_sample(int16_t & s)
         break;
 
       case HALF_WAVE:
-        sample = positive?magnitude:float2fixed(0.0f);
+        sample = positive?magnitude:FixedPoint::from_float(0.0f);
         break;
 
       case FOLDBACK:
         //-4x^2 + 4x
-        magnitude = product(float2fixed(-4.0f), product(magnitude, magnitude)) + product(float2fixed(4.0f), magnitude);
+        magnitude = (FixedPoint::from_float(-4.0f) * magnitude * magnitude) + (FixedPoint::from_float(4.0f) * magnitude);
         sample = positive?magnitude:-magnitude;
         break;
 
       case FUZZ1:
-        if(sample > float2fixed(0.66f))
+        if(sample > FixedPoint::from_float(0.66f))
         {
-          sample = float2fixed(1.0f);
+          sample = FixedPoint::from_float(0.66f);
         }
-        if(sample < float2fixed(-0.66f))
+        if(sample < FixedPoint::from_float(-0.66f))
         {
-          sample = float2fixed(-1.0f);
+          sample = FixedPoint::from_float(-0.66f);
         }
         break;
 
       case FUZZ2:
-        if(sample > float2fixed(0.66f))
+        if(sample > FixedPoint::from_float(0.66f))
         {
-          sample = float2fixed(1.0f);
+          sample = FixedPoint::from_float(0.66f);
         }
         break;
 
     }
 
     //delay
+    const uint8_t num_delays = 4;
+    FixedPoint delays[num_delays] = {0};
+    FixedPoint mixed[num_delays] = {0};
+    FixedPoint sum = 0;
+
     switch(m_settings.delay_effect)
     {
       case DELAY:
-        delay_line2.input_sample(sample);
-        sample += product(delay_line2.tap(m_settings.delay_delay_ms * samples_per_ms), m_settings.delay_feedback);
+        delay_line1.input_sample(sample);
+        sample = sample + delay_line1.tap(m_settings.delay_delay_ms * samples_per_ms) * m_settings.delay_mix;
         break;
 
       case ECHO:
-        sample += product(delay_line2.tap(m_settings.echo_delay_ms * samples_per_ms), m_settings.echo_feedback);
-        delay_line2.input_sample(sample);
+        delays[0] = delay_line1.tap(m_settings.delay_delay_ms * samples_per_ms);
+        mixed[0] = sample + delays[0] * m_settings.delay_feedback;
+        delay_line1.input_sample(mixed[0]);
+        sample = sample + (delays[0] * m_settings.delay_mix);
+        break;
+
+      case REVERB:
+
+        delays[0] = delay_line1.tap(150 * samples_per_ms);
+        delays[1] = delay_line2.tap(160 * samples_per_ms);
+        delays[2] = delay_line3.tap(170 * samples_per_ms);
+        delays[3] = delay_line4.tap(180 * samples_per_ms);
+
+        for (int i = 0; i < num_delays; ++i) {
+          mixed[i] = delays[i];
+          sum = sum + mixed[i];
+        }
+        sum = sum * FixedPoint::from_float(-0.5); //-2.0/num_delays
+        for (int i = 0; i < num_delays; ++i) {
+          mixed[i] = mixed[i] + sum;
+        }
+        for (int i = 0; i < num_delays; ++i) {
+          mixed[i] = sample + mixed[i] * m_settings.delay_feedback;
+        }
+
+        delay_line1.input_sample(mixed[0]);
+        delay_line2.input_sample(mixed[1]);
+        delay_line3.input_sample(mixed[2]);
+        delay_line4.input_sample(mixed[3]);
+
+        sample = sample + (delays[0] * m_settings.delay_mix);
+
         break;
     }
 
 
     //Modulation Effects
-    int32_t modulation;
+    FixedPoint modulation;
     switch(m_settings.modulator_effect)
     {
-      case PITCH_SHIFT:
-        delay_line1.input_sample(sample);
-        sample = delay_line1.tap(sweep);
-        sweep -= m_settings.pitch;
-        break;
-
       case VIBRATO:
-        delay_line1.input_sample(sample);
-        modulation = lfo1.get_sample(m_settings.vibrato_rate_steps, product(m_settings.vibrato_depth_ms, samples_per_ms));
-        modulation += product(m_settings.vibrato_depth_ms, samples_per_ms*2);
-        sample = delay_line1.tap(modulation);
+        modulator_delay_line.input_sample(sample);
+        modulation = lfo1.get_sample(m_settings.vibrato_rate_steps, m_settings.vibrato_depth_ms * FixedPoint::from_float(samples_per_ms));
+        modulation = modulation + (m_settings.vibrato_depth_ms * FixedPoint::from_float(samples_per_ms*2));
+        sample = modulator_delay_line.tap(modulation.to_int());
         break;
 
       case TREMOLO:
-        modulation = lfo1.get_sample(m_settings.tremolo_rate_steps, float2fixed(0.5)) + float2fixed(0.5);
-        sample = product(sample, modulation); 
+        modulation = lfo1.get_sample(m_settings.tremolo_rate_steps, FixedPoint::from_float(0.5)) + FixedPoint::from_float(1.0);
+        modulation = (modulation * m_settings.tremolo_depth) + FixedPoint::from_float(1.0) - m_settings.tremolo_depth;
+        sample = sample * modulation; 
         break;
 
       case CHORUS:
-        delay_line1.input_sample(sample);
-        modulation = lfo1.get_sample(m_settings.chorus1_rate_steps, product(m_settings.chorus1_depth_ms, samples_per_ms));
-        sample += product(delay_line1.tap(m_settings.chorus1_delay_ms * samples_per_ms + modulation), m_settings.chorus1_feedback);
-        modulation = lfo1.get_sample(m_settings.chorus2_rate_steps, product(m_settings.chorus2_depth_ms, samples_per_ms));
-        sample += product(delay_line1.tap(m_settings.chorus2_delay_ms * samples_per_ms + modulation), m_settings.chorus2_feedback);
-        modulation = lfo1.get_sample(m_settings.chorus3_rate_steps, product(m_settings.chorus3_depth_ms, samples_per_ms));
-        sample += product(delay_line1.tap(m_settings.chorus3_delay_ms * samples_per_ms + modulation), m_settings.chorus3_feedback);
+        modulator_delay_line.input_sample(sample);
+        modulation = lfo1.get_sample(m_settings.chorus1_rate_steps, m_settings.chorus1_depth_ms * FixedPoint::from_float(samples_per_ms));
+        sample = sample + (modulator_delay_line.tap(m_settings.chorus1_delay_ms * samples_per_ms + modulation.to_int()) * m_settings.chorus1_feedback);
+        modulation = lfo1.get_sample(m_settings.chorus2_rate_steps, m_settings.chorus2_depth_ms * FixedPoint::from_float(samples_per_ms));
+        sample = sample + (modulator_delay_line.tap(m_settings.chorus2_delay_ms * samples_per_ms + modulation.to_int()) * m_settings.chorus2_feedback);
+        modulation = lfo1.get_sample(m_settings.chorus3_rate_steps, m_settings.chorus3_depth_ms * FixedPoint::from_float(samples_per_ms));
+        sample = sample + (modulator_delay_line.tap(m_settings.chorus3_delay_ms * samples_per_ms + modulation.to_int()) * m_settings.chorus3_feedback);
         break;
 
       case FLANGER:
-        delay_line1.input_sample(sample);
-        modulation = lfo1.get_sample(m_settings.flanger_rate_steps, product(m_settings.flanger_depth_ms, samples_per_ms));
-        sample += product(delay_line1.tap(m_settings.flanger_delay_ms * samples_per_ms + modulation), m_settings.flanger_feedback);
+        modulator_delay_line.input_sample(sample);
+        modulation = lfo1.get_sample(m_settings.flanger_rate_steps, m_settings.flanger_depth_ms * FixedPoint::from_float(samples_per_ms));
+        sample = sample + (modulator_delay_line.tap(m_settings.flanger_delay_ms * samples_per_ms + modulation.to_int()) * m_settings.flanger_feedback);
         break;
+
     }
 
+
     //hard clipping
-    s = clamp(sample);
+    raw_sample = sample.get();
+    if(sample > 32767){
+      s = 32767;
+    } else if (sample < -32767){
+      s = -32767;
+    } else {
+      s = raw_sample;
+    }
 }
 
 void effects :: initialise()
 {
   for(uint16_t idx=0; idx<1024; idx++)
   {
-    sin_table[idx] = float2fixed(sin(2.0*M_PI*idx/1024.0));
+    sin_table[idx] = FixedPoint::from_float(sin(2.0*M_PI*idx/1024.0));
   }
 }
 

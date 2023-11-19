@@ -4,7 +4,6 @@
 #include "PWMAudio.h"
 #include "psu_mode.h"
 #include "effects.h"
-#include "fixed.h"
 #include "eq.h"
 #include "ui.h"
 #include "pico/stdlib.h"
@@ -33,16 +32,16 @@ int main() {
     eq_const(dB2lin(-12))
   };
 
-  const int32_t gains[] = {
-    float2fixed(dB2lin(0)),
-    float2fixed(dB2lin(3)),
-    float2fixed(dB2lin(6)),
-    float2fixed(dB2lin(9)),
-    float2fixed(dB2lin(12)),
-    float2fixed(dB2lin(15)),
-    float2fixed(dB2lin(18)),
-    float2fixed(dB2lin(21)),
-    float2fixed(dB2lin(24))
+  const FixedPoint gains[] = {
+    FixedPoint::from_float(dB2lin(0)),
+    FixedPoint::from_float(dB2lin(3)),
+    FixedPoint::from_float(dB2lin(6)),
+    FixedPoint::from_float(dB2lin(9)),
+    FixedPoint::from_float(dB2lin(12)),
+    FixedPoint::from_float(dB2lin(15)),
+    FixedPoint::from_float(dB2lin(18)),
+    FixedPoint::from_float(dB2lin(21)),
+    FixedPoint::from_float(dB2lin(24))
   };
 
   //reduces noise in ADC measurements
@@ -70,11 +69,12 @@ int main() {
   menu distortion_menu("Distortion", "Effect#Gain#Offset", distortion_menu_items, 2);
 
   //Delay Menus
-  enum_entry delay_effect("Off#Delay#Echo", 0, 2);
+  enum_entry delay_effect("Off#Delay#Echo#Reverb", 0, 3);
   float_entry delay_ms(100.0f, 100.0f, 400.0f, 1.0f);
   float_entry delay_feedback(0.8f, 0.0f, 1.0f, 0.1f);
-  menu_item *delay_menu_items[] = {&delay_effect, &delay_ms, &delay_feedback};
-  menu delay_menu("Delay", "Effect#Delay (ms)#Feedback", delay_menu_items, 2);
+  float_entry delay_mix(0.1f, 0.0f, 1.0f, 0.1f);
+  menu_item *delay_menu_items[] = {&delay_effect, &delay_ms, &delay_feedback, &delay_mix};
+  menu delay_menu("Delay", "Effect#Delay (ms)#Feedback#Mix", delay_menu_items, 3);
   
   //Modulator Menus
   enum_entry modulator_effect("Off#Chorus#Flanger#Tremolo#Vibrato#Pitch Shift", 0, 5);
@@ -104,8 +104,9 @@ int main() {
 
   menu chorus_menu("Chorus", "Depth 1 (ms)#Rate 1 (ms)#Delay 1 (ms)#Feedback 1#Depth 2 (ms)#Rate 2 (ms)#Delay 2 (ms)#Feedback 2#Depth 3 (ms)#Rate 3 (ms)#Delay 3 (ms)#Feedback 3", chorus_menu_items, 11);
   float_entry tremolo_rate_Hz(20.0f, 0.1f, 100.0f, 0.1f);
-  menu_item *tremolo_menu_items[] = {&tremolo_rate_Hz};
-  menu tremolo_menu("Tremolo", "Rate (Hz)", tremolo_menu_items, 0);
+  float_entry tremolo_depth(0.5f, 0.0f, 1.0f, 0.1f);
+  menu_item *tremolo_menu_items[] = {&tremolo_rate_Hz, &tremolo_depth};
+  menu tremolo_menu("Tremolo", "Rate (Hz)#Depth", tremolo_menu_items, 1);
 
   float_entry vibrato_depth_ms(4.0f, 1.0f, 5.0f, 0.1f);
   float_entry vibrato_rate_Hz(2.0f, 0.1f, 5.0f, 0.1f);
@@ -183,38 +184,37 @@ int main() {
       settings.eq_gains[3] = eq_gains[eq_band4.m_value];
       settings.eq_gains[4] = eq_gains[eq_band5.m_value];
       settings.distortion_effect = static_cast<e_distortion_effect>(distortion_effect.m_value);
-      settings.distortion_offset = float2fixed(distortion_offset.m_value);
+      settings.distortion_offset = FixedPoint::from_float(distortion_offset.m_value);
       settings.distortion_gain = gains[distortion_gain.m_value];
       settings.delay_effect = static_cast<e_delay_effect>(delay_effect.m_value);
       settings.delay_delay_ms = delay_ms.m_value;
-      settings.delay_feedback = float2fixed(delay_feedback.m_value);
-      settings.echo_delay_ms = delay_ms.m_value;
-      settings.echo_feedback = float2fixed(delay_feedback.m_value);
+      settings.delay_feedback = FixedPoint::from_float(delay_feedback.m_value);
+      settings.delay_mix = FixedPoint::from_float(delay_mix.m_value);
       settings.modulator_effect = static_cast<e_modulator_effect>(modulator_effect.m_value);
-      settings.pitch = 1.0f;
 
-      settings.flanger_depth_ms = float2fixed(flanger_depth_ms.m_value);
+      settings.flanger_depth_ms = FixedPoint::from_float(flanger_depth_ms.m_value);
       settings.flanger_rate_steps = frequency_Hz_to_steps(flanger_rate_Hz.m_value);
       settings.flanger_delay_ms = flanger_delay_ms.m_value;
-      settings.flanger_feedback = float2fixed(flanger_feedback.m_value);
+      settings.flanger_feedback = FixedPoint::from_float(flanger_feedback.m_value);
 
-      settings.chorus1_depth_ms = float2fixed(chorus1_depth_ms.m_value);
+      settings.chorus1_depth_ms = FixedPoint::from_float(chorus1_depth_ms.m_value);
       settings.chorus1_rate_steps = frequency_Hz_to_steps(chorus1_rate_Hz.m_value);
       settings.chorus1_delay_ms = chorus1_delay_ms.m_value;
-      settings.chorus1_feedback = float2fixed(chorus1_feedback.m_value);
+      settings.chorus1_feedback = FixedPoint::from_float(chorus1_feedback.m_value);
 
-      settings.chorus2_depth_ms = float2fixed(chorus2_depth_ms.m_value);
+      settings.chorus2_depth_ms = FixedPoint::from_float(chorus2_depth_ms.m_value);
       settings.chorus2_rate_steps = frequency_Hz_to_steps(chorus2_rate_Hz.m_value);
       settings.chorus2_delay_ms = chorus2_delay_ms.m_value;
-      settings.chorus2_feedback = float2fixed(chorus2_feedback.m_value);
+      settings.chorus2_feedback = FixedPoint::from_float(chorus2_feedback.m_value);
 
-      settings.chorus3_depth_ms = float2fixed(chorus3_depth_ms.m_value);
+      settings.chorus3_depth_ms = FixedPoint::from_float(chorus3_depth_ms.m_value);
       settings.chorus3_rate_steps = frequency_Hz_to_steps(chorus3_rate_Hz.m_value);
       settings.chorus3_delay_ms = chorus3_delay_ms.m_value;
-      settings.chorus3_feedback = float2fixed(chorus3_feedback.m_value);
+      settings.chorus3_feedback = FixedPoint::from_float(chorus3_feedback.m_value);
 
       settings.tremolo_rate_steps = frequency_Hz_to_steps(tremolo_rate_Hz.m_value);
-      settings.vibrato_depth_ms = float2fixed(vibrato_depth_ms.m_value);
+      settings.tremolo_depth = FixedPoint::from_float(tremolo_depth.m_value);
+      settings.vibrato_depth_ms = FixedPoint::from_float(vibrato_depth_ms.m_value);
       settings.vibrato_rate_steps = frequency_Hz_to_steps(vibrato_rate_Hz.m_value);
       e.update_settings(settings);
     }

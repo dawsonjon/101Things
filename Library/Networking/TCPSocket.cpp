@@ -4,54 +4,55 @@
 
 #include "TCPSocket.h"
 
-bool TCPSocket::open(const char * remote_ip_address, uint16_t port) {
-    if (state != CONNECTION_CLOSED) return false;
+bool TCPSocket::open(const char *remote_ip_address, uint16_t port) {
+  if (state != CONNECTION_CLOSED)
+    return false;
 
-    ip4_addr_t remote_addr;
-    ip4addr_aton(remote_ip_address, &remote_addr);
-    pcb = tcp_new_ip_type(IP_GET_TYPE(remote_addr));
-    if (pcb==NULL) return false;
+  ip4_addr_t remote_addr;
+  ip4addr_aton(remote_ip_address, &remote_addr);
+  pcb = tcp_new_ip_type(IP_GET_TYPE(remote_addr));
+  if (pcb == NULL)
+    return false;
 
-    read_pointer = 0;
-    write_pointer = 0;
-    bytes_stored = 0;
+  read_pointer = 0;
+  write_pointer = 0;
+  bytes_stored = 0;
 
-    tcp_arg(pcb, this);
-    tcp_sent(pcb, server_sent_callback);
-    tcp_recv(pcb, server_recv_callback);
-    tcp_poll(pcb, server_poll_callback, POLL_TIME_S * 2);
-    tcp_err(pcb, server_err_callback);
+  tcp_arg(pcb, this);
+  tcp_sent(pcb, server_sent_callback);
+  tcp_recv(pcb, server_recv_callback);
+  tcp_poll(pcb, server_poll_callback, POLL_TIME_S * 2);
+  tcp_err(pcb, server_err_callback);
 
-    // cyw43_arch_lwip_begin/end should be used around calls into lwIP to ensure correct locking.
-    // You can omit them if you are in a callback from lwIP. Note that when using pico_cyw_arch_poll
-    // these calls are a no-op and can be omitted, but it is a good practice to use them in
-    // case you switch the cyw43_arch type later.
-    cyw43_arch_lwip_begin();
-    err_t err = tcp_connect(pcb, &remote_addr, port, connected_callback);
-    cyw43_arch_lwip_end();
-    if(err != ERR_OK)
-    {
-      close();
-      return false;
-    }
+  // cyw43_arch_lwip_begin/end should be used around calls into lwIP to ensure
+  // correct locking. You can omit them if you are in a callback from lwIP. Note
+  // that when using pico_cyw_arch_poll these calls are a no-op and can be
+  // omitted, but it is a good practice to use them in case you switch the
+  // cyw43_arch type later.
+  cyw43_arch_lwip_begin();
+  err_t err = tcp_connect(pcb, &remote_addr, port, connected_callback);
+  cyw43_arch_lwip_end();
+  if (err != ERR_OK) {
+    close();
+    return false;
+  }
 
-    state = CONNECTION_CONNECTING;
-    while (state == CONNECTION_CONNECTING) {
-  #if PICO_CYW43_ARCH_POLL
-      // if you are using pico_cyw43_arch_poll, then you must poll periodically
-      // from your main loop (not from a timer) to check for WiFi driver or lwIP
-      // work that needs to be done.
-      cyw43_arch_poll();
-  #endif
-      sleep_ms(1);
-    }
-    if(state == CONNECTION_OPEN) return true;
-    else
-    {
-      close();
-      return false;
-    }
-
+  state = CONNECTION_CONNECTING;
+  while (state == CONNECTION_CONNECTING) {
+#if PICO_CYW43_ARCH_POLL
+    // if you are using pico_cyw43_arch_poll, then you must poll periodically
+    // from your main loop (not from a timer) to check for WiFi driver or lwIP
+    // work that needs to be done.
+    cyw43_arch_poll();
+#endif
+    sleep_ms(1);
+  }
+  if (state == CONNECTION_OPEN)
+    return true;
+  else {
+    close();
+    return false;
+  }
 }
 
 bool TCPSocket::listen(uint16_t port) {
@@ -100,9 +101,9 @@ bool TCPSocket::listen(uint16_t port) {
 #endif
     sleep_ms(1);
   }
-  if(state == CONNECTION_OPEN) return true;
-  else
-  {
+  if (state == CONNECTION_OPEN)
+    return true;
+  else {
     close();
     printf("E\n");
     return false;
@@ -110,12 +111,12 @@ bool TCPSocket::listen(uint16_t port) {
 }
 
 err_t TCPSocket::on_connected(struct tcp_pcb *tpcb, err_t err) {
-    if (err != ERR_OK) {
-        state = CONNECTION_CLOSED;
-        return close();
-    }
-    state = CONNECTION_OPEN;
-    return ERR_OK;
+  if (err != ERR_OK) {
+    state = CONNECTION_CLOSED;
+    return close();
+  }
+  state = CONNECTION_OPEN;
+  return ERR_OK;
 }
 
 uint16_t TCPSocket::receive(uint8_t *dest, uint16_t max_num_bytes) {

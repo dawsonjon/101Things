@@ -8,7 +8,7 @@
 int main() {
   stdio_init_all();
 
-  //reduces noise in ADC
+  // reduces noise in ADC
   disable_power_save();
 
   ADCAudio audio_input(16, 10000);

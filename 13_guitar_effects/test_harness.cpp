@@ -1,23 +1,22 @@
 #include "effects.h"
 #include "fixed.h"
-#include <cstdio>
 #include <cstdint>
+#include <cstdio>
 
-int main()
-{
+int main() {
 
   FILE *inf = fopen("testfile", "r");
   FILE *outf = fopen("outfile", "w");
-  effects e; 
+  effects e;
   e.initialise();
   s_effect settings;
 
   settings.pre_gain = FixedPoint::from_float(4.0);
-  settings.eq_gains[0] = eq_const(1.0)/16; 
-  settings.eq_gains[1] = eq_const(1.0)/16;
-  settings.eq_gains[2] = eq_const(1.0)/16;
-  settings.eq_gains[3] = eq_const(1.0)/16;
-  settings.eq_gains[4] = eq_const(1.0)/16;
+  settings.eq_gains[0] = eq_const(1.0) / 16;
+  settings.eq_gains[1] = eq_const(1.0) / 16;
+  settings.eq_gains[2] = eq_const(1.0) / 16;
+  settings.eq_gains[3] = eq_const(1.0) / 16;
+  settings.eq_gains[4] = eq_const(1.0) / 16;
   settings.distortion_effect = DISTORTION_OFF;
   settings.distortion_offset = FixedPoint::from_float(0.0);
   settings.distortion_gain = FixedPoint::from_float(8.0);
@@ -25,7 +24,7 @@ int main()
   settings.delay_delay_ms = 200.0;
   settings.delay_feedback = FixedPoint::from_float(0.8);
   settings.delay_mix = FixedPoint::from_float(0.1);
-  settings.modulator_effect = MODULATOR_OFF;
+  settings.modulator_effect = PHASER;
   settings.flanger_depth_ms = FixedPoint::from_float(1.0);
   settings.flanger_rate_steps = frequency_Hz_to_steps(1.0);
   settings.flanger_delay_ms = 200u;
@@ -45,10 +44,11 @@ int main()
   settings.tremolo_rate_steps = frequency_Hz_to_steps(10.0);
   settings.vibrato_depth_ms = FixedPoint::from_float(1.0);
   settings.vibrato_rate_steps = frequency_Hz_to_steps(2.0);
+  settings.phaser_rate_steps = frequency_Hz_to_steps(10.0f);
+  settings.phaser_depth = FixedPoint::from_float(0.8f);
   e.update_settings(settings);
 
-  while(!feof(inf))
-  {
+  while (!feof(inf)) {
     int16_t sample = fgetc(inf);
     sample |= fgetc(inf) << 8;
     sample -= 32768;
@@ -57,7 +57,7 @@ int main()
 
     fputc((sample & 0xff), outf);
     fputc((sample >> 8), outf);
-  }  
+  }
   fclose(inf);
   fclose(outf);
 

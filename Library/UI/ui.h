@@ -52,7 +52,7 @@ class number_entry : public menu_item
   bool m_redraw = true;
   int32_t m_value;
 
-  number_entry(const char *title, const int32_t value, const int32_t min, const int32_t max, const int32_t step) 
+  number_entry(const int32_t value, const int32_t min, const int32_t max, const int32_t step) 
   : m_min(min), m_max(max), m_step(step), m_value(value){}
   virtual bool poll();
   virtual void draw();

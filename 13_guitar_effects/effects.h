@@ -8,7 +8,7 @@ typedef fixed_point<int32_t, 15> FixedPoint;
 
 uint16_t frequency_Hz_to_steps(float frequency_Hz);
 
-enum e_modulator_effect {MODULATOR_OFF, CHORUS, FLANGER, TREMOLO, VIBRATO}; 
+enum e_modulator_effect {MODULATOR_OFF, CHORUS, FLANGER, TREMOLO, VIBRATO, PHASER}; 
 enum e_delay_effect {DELAY_OFF, DELAY, ECHO, REVERB}; 
 enum e_distortion_effect {DISTORTION_OFF, CUBIC, QUADRATIC, FULL_WAVE, HALF_WAVE, FOLDBACK, FUZZ1, FUZZ2};
 
@@ -26,7 +26,7 @@ struct s_effect
   FixedPoint delay_feedback = FixedPoint::from_float(0.8);
   FixedPoint delay_mix = FixedPoint::from_float(0.1);
 
-  e_modulator_effect modulator_effect = MODULATOR_OFF;
+  e_modulator_effect modulator_effect = PHASER;
   FixedPoint flanger_depth_ms = FixedPoint::from_float(0.5f);  // e.g 1-2 ms
   uint16_t flanger_rate_steps = frequency_Hz_to_steps(1.0f);   //rate in Hz e.g. 0.1 - 4
   uint16_t flanger_delay_ms = 1u;  //delay in ms e.g. 1 - 5
@@ -47,6 +47,8 @@ struct s_effect
   FixedPoint tremolo_depth = FixedPoint::from_float(0.8f);  //e.g. 0.0 to 1.0
   uint16_t vibrato_rate_steps = frequency_Hz_to_steps(2.0f);   //rate in Hz e.g. 0.1 - 5
   FixedPoint vibrato_depth_ms = FixedPoint::from_float(4u);  // e.g 1-2 ms
+  uint16_t phaser_rate_steps = frequency_Hz_to_steps(1.0f);  //rate in Hz e.g. 0.1 - 100
+  FixedPoint phaser_depth = FixedPoint::from_float(0.8f);  //e.g. 0.0 to 1.0
 };
 
 class lfo
@@ -65,10 +67,28 @@ class delay_line
   FixedPoint tap(uint16_t delay);
 };
 
+class all_pass
+{
+  FixedPoint z1 = 0;
+
+  public:
+  FixedPoint process_sample(FixedPoint sample, FixedPoint k)
+  {
+    FixedPoint z0 = sample + (z1 * k);
+    sample = z1 - (z0 * k);
+    z1 = z0; //single element delay
+    return sample;
+  }
+
+};
+
 
 class effects
 {
   FixedPoint dc = 0;
+  all_pass all_pass1;
+  all_pass all_pass2;
+  all_pass all_pass3;
   lfo lfo1;
   lfo lfo2;
   lfo lfo3;

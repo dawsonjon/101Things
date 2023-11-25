@@ -13,12 +13,11 @@ int main() {
 
   while (true) {
 
-    if(cyw43_tcpip_link_status(&cyw43_state, CYW43_ITF_STA) != CYW43_LINK_UP)
-    {
+    if (cyw43_tcpip_link_status(&cyw43_state, CYW43_ITF_STA) != CYW43_LINK_UP) {
       printf("no wifi connection, trying to connect\n");
       get_wifi();
     }
-    
+
     printf("Starting server at %s on port %u\n",
            ip4addr_ntoa(netif_ip4_addr(netif_list)), 4242);
 
@@ -37,8 +36,8 @@ int main() {
           break;
         uint16_t got = socket.receive(bytes, 1024);
         for (uint16_t i = 0; i < got; i++) {
-          samples[block][i] =
-              bytes[i] << 4; // form 12 bit sample from 8 bits bit sample
+          samples[block][i] = bytes[i]
+                              << 4; // form 12 bit sample from 8 bits bit sample
         }
         audio_output.output_samples(samples[block], got);
       }

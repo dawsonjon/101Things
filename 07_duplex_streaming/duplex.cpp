@@ -1,12 +1,12 @@
 #include <stdio.h>
 
-#include "PWMAudio.h"
 #include "ADCAudio.h"
+#include "PWMAudio.h"
 #include "TCPSocket.h"
 #include "get_wifi.h"
 #include "pico/stdlib.h"
-#include <math.h>
 #include "psu_mode.h"
+#include <math.h>
 
 void transfer_data(PWMAudio &audio_output, ADCAudio &audio_input,
                    TCPSocket &socket) {
@@ -18,7 +18,8 @@ void transfer_data(PWMAudio &audio_output, ADCAudio &audio_input,
 
     // wifi -> speaker
     //*******************************************************************
-    if (!socket.is_connected()) return;
+    if (!socket.is_connected())
+      return;
     uint16_t samples_received = socket.receive(bytes, 1024);
 
     for (uint16_t i = 0; i < samples_received; ++i) {
@@ -39,29 +40,32 @@ void transfer_data(PWMAudio &audio_output, ADCAudio &audio_input,
       bytes[i] = microphone_samples[i] >> 4;
     }
 
-    if (!socket.is_connected()) return;
-    //at this point it is possible that fewer than 1024
+    if (!socket.is_connected())
+      return;
+    // at this point it is possible that fewer than 1024
     uint16_t samples_sent = socket.send(bytes, 1024);
-
   }
 }
 
 int main() {
   stdio_init_all();
-  #if defined ACCESS_POINT_SERVER
-    #define IS_SERVER true
-    if(!get_wifi_ap("AudioServer", "password")) return 1;
-  #elif defined ACCESS_POINT_CLIENT
-    #define IS_SERVER false
-  #elif defined SERVER
-    #define IS_SERVER true
-    if(!get_wifi()) return 1;
-  #elif defined CLIENT
-    #define IS_SERVER false
-    if(!get_wifi()) return 1;
-  #else
-  #error
-  #endif
+#if defined ACCESS_POINT_SERVER
+#define IS_SERVER true
+  if (!get_wifi_ap("AudioServer", "password"))
+    return 1;
+#elif defined ACCESS_POINT_CLIENT
+#define IS_SERVER false
+#elif defined SERVER
+#define IS_SERVER true
+  if (!get_wifi())
+    return 1;
+#elif defined CLIENT
+#define IS_SERVER false
+  if (!get_wifi())
+    return 1;
+#else
+#error
+#endif
 
   disable_power_save();
 
@@ -70,26 +74,25 @@ int main() {
   ADCAudio audio_input(16, 10000);
 
   while (true) {
-    #if IS_SERVER
-      printf("Starting server at %s on port %u\n",
-             ip4addr_ntoa(netif_ip4_addr(netif_list)), 4242);
-      if (!socket.listen(4242)) {
-        printf("couldn't start server\n");
-        continue;
-      }
-    #else
-      printf("Connecting to server at %s on port %u\n",
-             "192.168.1.101", 4242);
-      if (!socket.open("192.168.1.101", 4242)) {
-        printf("couldn't connect to server\n");
-        continue;
-      }
-    #endif
+#if IS_SERVER
+    printf("Starting server at %s on port %u\n",
+           ip4addr_ntoa(netif_ip4_addr(netif_list)), 4242);
+    if (!socket.listen(4242)) {
+      printf("couldn't start server\n");
+      continue;
+    }
+#else
+    printf("Connecting to server at %s on port %u\n", "192.168.1.101", 4242);
+    if (!socket.open("192.168.1.101", 4242)) {
+      printf("couldn't connect to server\n");
+      continue;
+    }
+#endif
     printf("connected\n");
     transfer_data(audio_output, audio_input, socket);
     printf("disconnected\n");
 
-    sleep_ms(1000); 
+    sleep_ms(1000);
   }
 
   cyw43_arch_deinit();

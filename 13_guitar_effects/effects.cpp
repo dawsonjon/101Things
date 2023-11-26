@@ -46,7 +46,7 @@ void effects ::process_sample(int16_t &s) {
   
   // Graphic Equalizer
   int32_t raw_sample = sample.get();
-  //eq1.process_sample(raw_sample);
+  eq1.process_sample(raw_sample);
   sample.set(raw_sample);
 
   // Distortion

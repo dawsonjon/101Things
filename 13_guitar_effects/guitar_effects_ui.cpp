@@ -135,7 +135,7 @@ void guitar_effects_ui::init()
   }
 }
 
-void guitar_effects_ui::do_ui(effects e, s_effect settings)
+void guitar_effects_ui::do_ui(effects & e, s_effect & settings)
 {
 
   //interact with user

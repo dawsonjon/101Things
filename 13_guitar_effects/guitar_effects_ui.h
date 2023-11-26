@@ -109,7 +109,7 @@ class guitar_effects_ui
 
   public:
   void init();
-  void do_ui(effects e, s_effect settings);
+  void do_ui(effects & e, s_effect & settings);
 };
 
 #endif

@@ -58,7 +58,7 @@ menu_item *eq_menu_items[] = {&eq_band1, &eq_band2, &eq_band3, &eq_band4, &eq_ba
 menu eq_menu("EQ", "Band 1#Band 2#Band 3#Band 4#Band 5", eq_menu_items, 4);
 
 //Distorion Menus
-enum_entry distortion_effect("Off#Cubic#Quadratic#Full Wave#Half Wave#Foldback#Fuzz1#Fuzz2", 0, 7);
+enum_entry distortion_effect("Off#Cubic#Quadratic#Full Wave#Half Wave#Foldback#Fuzz", 0, 6);
 enum_entry distortion_gain("0dB#3dB#6dB#9dB#12dB#15dB#18dB#21dB#24dB", 4, 8);
 float_entry distortion_offset(0.0f, -1.0f, 1.0f, 0.01f);
 menu_item *distortion_menu_items[] = {&distortion_effect, &distortion_gain, &distortion_offset};

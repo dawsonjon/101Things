@@ -10,6 +10,8 @@ Welcome to 101 Things's documentation!
    :maxdepth: 2
    :caption: Contents:
 
+   guitar_effects
+
 
 
 Indices and tables

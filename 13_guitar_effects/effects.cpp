@@ -86,7 +86,7 @@ void effects ::process_sample(int16_t &s) {
                (FixedPoint::from_float(4.0f) * sample) -
                FixedPoint::from_float(1.0f / 3.0f);
     } else if (sample < -FixedPoint::from_float(1.0f / 3.0f)) {
-      // 3x^2 - 4x + 1/3
+      // 3x^2 + 4x + 1/3
       sample = (FixedPoint::from_float(3.0f) * sample * sample) +
                (FixedPoint::from_float(4.0f) * sample) +
                FixedPoint::from_float(1.0f / 3.0f);
@@ -110,20 +110,18 @@ void effects ::process_sample(int16_t &s) {
     sample = positive ? magnitude : -magnitude;
     break;
 
-  case FUZZ1:
-    if (sample > FixedPoint::from_float(0.66f)) {
-      sample = FixedPoint::from_float(0.66f);
+  case FUZZ:
+    if(magnitude < FixedPoint::from_float(0.5f))
+    {
+      magnitude = FixedPoint::from_float(2.0f) * magnitude;
     }
-    if (sample < FixedPoint::from_float(-0.66f)) {
-      sample = FixedPoint::from_float(-0.66f);
+    else
+    {
+      magnitude = FixedPoint::from_float(1.0f);
     }
+    sample = positive ? magnitude : -magnitude;
     break;
 
-  case FUZZ2:
-    if (sample > FixedPoint::from_float(0.66f)) {
-      sample = FixedPoint::from_float(0.66f);
-    }
-    break;
   }
 
   // delay

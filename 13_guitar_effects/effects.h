@@ -10,7 +10,7 @@ uint16_t frequency_Hz_to_steps(float frequency_Hz);
 
 enum e_modulator_effect {MODULATOR_OFF, CHORUS, FLANGER, TREMOLO, VIBRATO, PHASER}; 
 enum e_delay_effect {DELAY_OFF, DELAY, ECHO, REVERB}; 
-enum e_distortion_effect {DISTORTION_OFF, CUBIC, QUADRATIC, FULL_WAVE, HALF_WAVE, FOLDBACK, FUZZ1, FUZZ2};
+enum e_distortion_effect {DISTORTION_OFF, CUBIC, QUADRATIC, FULL_WAVE, HALF_WAVE, FOLDBACK, FUZZ};
 
 struct s_effect
 {

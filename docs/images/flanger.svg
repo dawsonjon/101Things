@@ -75,7 +75,7 @@
 </g>
 <path style="fill-rule:nonzero;fill:rgb(48.4375%,87.5%,67.96875%);fill-opacity:1;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:10;" d="M 200 100 L 220 110 L 200 120 L 200 100 "/>
 <path style="fill-rule:nonzero;fill:rgb(48.4375%,87.5%,67.96875%);fill-opacity:1;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:10;" d="M 170 160 C 170 165.523438 165.523438 170 160 170 C 154.476562 170 150 165.523438 150 160 C 150 154.476562 154.476562 150 160 150 C 165.523438 150 170 154.476562 170 160 "/>
-<path style="fill:none;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:10;" d="M 155 160 L 165 160 "/>
+<path style="fill:none;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:10;" d="M 160 160 C 160 163.332031 155 163.332031 155 160 M 160 160 C 160 156.667969 165 156.667969 165 160 "/>
 <g style="fill:rgb(0%,0%,0%);fill-opacity:1;">
   <use xlink:href="#glyph0-9" x="200" y="95"/>
   <use xlink:href="#glyph0-10" x="209.741211" y="95"/>

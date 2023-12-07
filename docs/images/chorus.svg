@@ -113,7 +113,7 @@
 <path style="fill:none;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:10;" d="M 247.5 107.5 L 250 110 M 247.5 112.5 L 250 110 "/>
 <path style="fill:none;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:10;" d="M 255 110 L 265 110 M 260 105 L 260 115 "/>
 <path style="fill-rule:nonzero;fill:rgb(48.4375%,87.5%,67.96875%);fill-opacity:1;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:10;" d="M 170 160 C 170 165.523438 165.523438 170 160 170 C 154.476562 170 150 165.523438 150 160 C 150 154.476562 154.476562 150 160 150 C 165.523438 150 170 154.476562 170 160 "/>
-<path style="fill:none;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:10;" d="M 155 160 L 165 160 "/>
+<path style="fill:none;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:10;" d="M 160 160 C 160 163.332031 155 163.332031 155 160 M 160 160 C 160 156.667969 165 156.667969 165 160 "/>
 <path style=" stroke:none;fill-rule:nonzero;fill:rgb(0%,0%,0%);fill-opacity:1;" d="M 110 210 L 112 210 C 112 212.667969 108 212.667969 108 210 C 108 207.332031 112 207.332031 112 210 "/>
 <path style="fill-rule:nonzero;fill:rgb(48.4375%,87.5%,67.96875%);fill-opacity:1;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:10;" d="M 150 200 L 170 200 L 170 220 L 150 220 L 150 200 "/>
 <g style="fill:rgb(0%,0%,0%);fill-opacity:1;">
@@ -125,14 +125,14 @@
 <path style="fill:none;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:10;" d="M 247.5 207.5 L 250 210 M 247.5 212.5 L 250 210 "/>
 <path style="fill:none;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:10;" d="M 255 210 L 265 210 M 260 205 L 260 215 "/>
 <path style="fill-rule:nonzero;fill:rgb(48.4375%,87.5%,67.96875%);fill-opacity:1;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:10;" d="M 170 260 C 170 265.523438 165.523438 270 160 270 C 154.476562 270 150 265.523438 150 260 C 150 254.476562 154.476562 250 160 250 C 165.523438 250 170 254.476562 170 260 "/>
-<path style="fill:none;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:10;" d="M 155 260 L 165 260 "/>
+<path style="fill:none;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:10;" d="M 160 260 C 160 263.332031 155 263.332031 155 260 M 160 260 C 160 256.667969 165 256.667969 165 260 "/>
 <path style="fill-rule:nonzero;fill:rgb(48.4375%,87.5%,67.96875%);fill-opacity:1;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:10;" d="M 150 300 L 170 300 L 170 320 L 150 320 L 150 300 "/>
 <g style="fill:rgb(0%,0%,0%);fill-opacity:1;">
   <use xlink:href="#glyph0-7" x="156.9375" y="313.644531"/>
 </g>
 <path style="fill-rule:nonzero;fill:rgb(48.4375%,87.5%,67.96875%);fill-opacity:1;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:10;" d="M 200 300 L 220 310 L 200 320 L 200 300 "/>
 <path style="fill-rule:nonzero;fill:rgb(48.4375%,87.5%,67.96875%);fill-opacity:1;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:10;" d="M 170 360 C 170 365.523438 165.523438 370 160 370 C 154.476562 370 150 365.523438 150 360 C 150 354.476562 154.476562 350 160 350 C 165.523438 350 170 354.476562 170 360 "/>
-<path style="fill:none;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:10;" d="M 155 360 L 165 360 "/>
+<path style="fill:none;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:10;" d="M 160 360 C 160 363.332031 155 363.332031 155 360 M 160 360 C 160 356.667969 165 356.667969 165 360 "/>
 <g style="fill:rgb(0%,0%,0%);fill-opacity:1;">
   <use xlink:href="#glyph0-8" x="200" y="95"/>
   <use xlink:href="#glyph0-9" x="209.741211" y="95"/>

@@ -48,7 +48,7 @@
 <path style="fill:none;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:10;" d="M 120 110 L 150 110 "/>
 <path style="fill:none;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:10;" d="M 110 70 L 110 100 "/>
 <path style="fill-rule:nonzero;fill:rgb(48.4375%,87.5%,67.96875%);fill-opacity:1;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:10;" d="M 120 60 C 120 65.523438 115.523438 70 110 70 C 104.476562 70 100 65.523438 100 60 C 100 54.476562 104.476562 50 110 50 C 115.523438 50 120 54.476562 120 60 "/>
-<path style="fill:none;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:10;" d="M 105 60 L 115 60 "/>
+<path style="fill:none;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:10;" d="M 110 60 C 110 63.332031 105 63.332031 105 60 M 110 60 C 110 56.667969 115 56.667969 115 60 "/>
 <path style="fill-rule:nonzero;fill:rgb(48.4375%,87.5%,67.96875%);fill-opacity:1;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:10;" d="M 50 110 L 50 112.5 L 67.5 112.5 L 70 110 L 67.5 107.5 L 50 107.5 L 50 110 "/>
 <path style="fill-rule:nonzero;fill:rgb(48.4375%,87.5%,67.96875%);fill-opacity:1;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:10;" d="M 100 100 L 120 100 L 120 120 L 100 120 L 100 100 "/>
 <g style="fill:rgb(0%,0%,0%);fill-opacity:1;">

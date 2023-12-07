@@ -190,8 +190,10 @@ class Adder(CircularBlock):
 class Oscillator(CircularBlock):
   def render(self, context):
     CircularBlock.render(self, context)
-    context.move_to(scale * (self.x+0.5),  scale * (self.y+1))
-    context.line_to(scale * (self.x+1.5),  scale * (self.y+1))
+    context.move_to(scale * (self.x+1.0),  scale * (self.y+1))
+    context.arc(scale * (self.x+0.75),  scale * (self.y+1), scale * 0.25, 0, np.pi)
+    context.move_to(scale * (self.x+1.0),  scale * (self.y+1))
+    context.arc(scale * (self.x+1.25),  scale * (self.y+1), scale * 0.25, np.pi, 0)
     context.set_source_rgba(0.0, 0.0, 0.0, 1.0)
     context.stroke()
 

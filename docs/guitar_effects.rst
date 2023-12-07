@@ -432,7 +432,7 @@ often associated with spacey or psychedelic tones.
 
 
 Useful Links
-============
+------------
 
 + `DSP Related <https://www.dsprelated.com/freebooks/pasp/>`__
 + `Signal Smith Blog <https://signalsmith-audio.co.uk/writing/>`__

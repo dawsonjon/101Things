@@ -12,6 +12,7 @@ Welcome to 101 Things's documentation!
 
    radio_receiver
    guitar_effects
+   timer
 
 
 

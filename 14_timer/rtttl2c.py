@@ -12,9 +12,7 @@ def calculate_frequencies():
       frequencies["%s%u"%(note, octave)] = round(f)
       f *= ratio
   return frequencies
-
 frequencies = calculate_frequencies()
-print(frequencies)
 
 def sanitise_name(name):
   new_name = []
@@ -41,8 +39,10 @@ def parse_rtttl(rtttl, output_file):
     note = note.strip()
     if not note:
       break
-    
+
     duration = ""
+    dotted = False
+
     while note and note[0].isdigit():
       duration += note[0]
       note = note[1:]
@@ -54,8 +54,6 @@ def parse_rtttl(rtttl, output_file):
     if note and note[0]==".":
       dotted = True
       note = note[1:]
-    else:
-      dotted = False
     
     pitch = note[0]
     note = note[1:]
@@ -66,8 +64,6 @@ def parse_rtttl(rtttl, output_file):
     if note and note[0]==".":
       dotted = True
       note = note[1:]
-    else:
-      dotted = False
 
     if note and note[0].isdigit():
       octave = int(note[0])
@@ -78,8 +74,6 @@ def parse_rtttl(rtttl, output_file):
     if note and note[0]==".":
       dotted = True
       note = note[1:]
-    else:
-      dotted = False
 
     #convert duration to samples
     if dotted:

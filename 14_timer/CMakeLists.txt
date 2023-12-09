@@ -1,5 +1,6 @@
 add_executable(timer
   timer.cpp
+  music.cpp
 )
 pico_enable_stdio_usb(timer 1)
 pico_enable_stdio_uart(timer 0)

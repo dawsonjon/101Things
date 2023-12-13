@@ -22,6 +22,7 @@ add_subdirectory(11_display)
 add_subdirectory(12_capture_audio)
 add_subdirectory(13_guitar_effects)
 add_subdirectory(14_timer)
+add_subdirectory(17_frequency_generator)
 add_subdirectory(Library)
 
 

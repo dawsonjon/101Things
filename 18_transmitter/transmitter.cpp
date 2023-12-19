@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <cmath>
 #include "pico/stdlib.h"
+#include "hardware/adc.h"
 #include "hardware/pio.h"
 #include "hardware/pwm.h"
 #include "hardware/dma.h"
@@ -71,6 +72,12 @@ void transmitter_start(tx_mode_t mode, double frequency_Hz) {
     pwm_config_set_output_polarity(&config, false, true);
     pwm_init(magnitude_pwm_slice, &config, true);
 
+    //configure ADC
+    const uint mic_pin = 28;
+    adc_init();
+    adc_gpio_init(mic_pin);
+    adc_select_input(2);
+
     // The PIO contains a very simple program that reads a 32-bit word
     // from the FIFO and sends 1 bit per clock to an IO pin
     uint8_t rf_pin = 8;
@@ -118,6 +125,8 @@ void transmitter_start(tx_mode_t mode, double frequency_Hz) {
     const double sample_frequency_Hz = 125e6/(waveform_length_bits * 32);
     const double fm_deviation_Hz = 2.5e3; //e.g. 2.5kHz or 5kHz
     const uint8_t fm_deviation_f8 = round(256.0 * fm_deviation_Hz/sample_frequency_Hz);
+    int32_t adc_audio;
+    int32_t dc;
     int8_t audio;
     uint8_t magnitude;
     int8_t phase;
@@ -162,8 +171,15 @@ void transmitter_start(tx_mode_t mode, double frequency_Hz) {
         ping_pong ^= 1;
         gpio_put(pin, 1);
 
-        audio = test_signal[t];
-        t = (t+1) & 0xf;
+        //audio = test_signal[t];
+        ////t = (t+1) & 0xf;
+        adc_audio = adc_read();
+
+        // DC removal
+        dc = dc + ((adc_audio - dc) >> 1);
+        audio = (adc_audio - dc) >> 4; //convert from 12 to 8 bits
+
+        //demodulate
         audio_modulator.process_sample(mode, audio, magnitude, phase, fm_deviation_f8);
         pwm_set_gpio_level(magnitude_pin, magnitude);
         pwm_set_gpio_level(magnitude_pin+1, magnitude);

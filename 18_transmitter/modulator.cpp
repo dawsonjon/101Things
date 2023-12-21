@@ -2,6 +2,12 @@
 #include <cmath>
 
 #include "modulator.h"
+#include "cordic.h"
+
+modulator :: modulator()
+{
+  cordic_init();
+}
 
 void modulator :: process_sample(tx_mode_t mode, int8_t audio, uint8_t &magnitude, int8_t &phase, uint32_t fm_deviation_f8)
 {
@@ -67,8 +73,9 @@ void modulator :: process_sample(tx_mode_t mode, int8_t audio, uint8_t &magnitud
 
       const int16_t sample_i[4] = {-qq, -ii, qq, ii};
       const int16_t sample_q[4] = {ii, -qq, -ii, qq};
-      uint16_t magnitude_16  = rectangular_2_magnitude(sample_i[ssb_phase], sample_q[ssb_phase]);
-      int16_t phase_16 = rectangular_2_phase(sample_i[ssb_phase], sample_q[ssb_phase]);
+      uint16_t magnitude_16;
+      int16_t phase_16;
+      cordic_rectangular_to_polar(sample_i[ssb_phase], sample_q[ssb_phase], magnitude_16, phase_16);
 
       magnitude_16 = (magnitude_16 + (rand() & 0xff)) >> 7;
       if(magnitude_16 < 0) magnitude_16 = 0;
@@ -82,44 +89,4 @@ void modulator :: process_sample(tx_mode_t mode, int8_t audio, uint8_t &magnitud
 
   }
 
-}
-
-//from: http://dspguru.com/dsp/tricks/magnitude-estimator/
-uint16_t modulator :: rectangular_2_magnitude(int16_t i, int16_t q)
-{
-  //return roundf(sqrtf((int32_t)i*i + (int32_t)q*q)); 
-
-  //Measure magnitude
-  const int16_t absi = i>0?i:-i;
-  const int16_t absq = q>0?q:-q;
-  return absi > absq ? absi + absq / 4 : absq + absi / 4;
-}
-
-//from: https://dspguru.com/dsp/tricks/fixed-point-atan2-with-self-normalization/
-//converted to fixed point
-int16_t modulator :: rectangular_2_phase(int16_t i, int16_t q)
-{
-   //return roundf(atan2(i, q) * 32768 / M_PI);
-
-   //handle condition where phase is unknown
-   if(i==0 && q==0) return 0;
-
-   const int16_t absi=i>0?i:-i;
-   int16_t angle=0;
-   if (q>=0)
-   {
-      //scale r so that it lies in range -8192 to 8192
-      const int16_t r = ((int32_t)(q - absi) << 13) / (q + absi);
-      angle = 8192 - r;
-   }
-   else
-   {
-      //scale r so that it lies in range -8192 to 8192
-      const int16_t r = ((int32_t)(q + absi) << 13) / (absi - q);
-      angle = (3 * 8192) - r;
-   }
-
-   //angle lies in range -32768 to 32767
-   if (i < 0) return(-angle);     // negate if in quad III or IV
-   else return(angle);
 }

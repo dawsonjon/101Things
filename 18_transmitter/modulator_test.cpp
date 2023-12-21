@@ -8,14 +8,14 @@ int main()
  
   double sample_rate = 125e6/(256*32);
   
-  for(uint16_t i = 0; i<1024; i++)
+  for(uint16_t i = 0; i<8192; i++)
   {
       //sin wave
       //int8_t audio = 127 * sin(2.0*M_PI*i*1e3/sample_rate);
 
       //two tone
-      int8_t audio = 63 * sin(2.0*M_PI*i*0.8e3/sample_rate);
-             audio += 63 * sin(2.0*M_PI*i*2.2e3/sample_rate);
+      int8_t audio = 63 * sin(2.0*M_PI*i*0.7e3/sample_rate);
+             audio += 63 * sin(2.0*M_PI*i*1.9e3/sample_rate);
 
       //impulse
       //int8_t audio = i==0?127:0;

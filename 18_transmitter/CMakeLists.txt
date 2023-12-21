@@ -3,6 +3,7 @@ add_executable(transmitter
   transmitter.cpp
   modulator.cpp
   half_band_filter2.cpp
+  cordic.cpp
 )
 
 pico_generate_pio_header(transmitter ${CMAKE_CURRENT_LIST_DIR}/stream_bits.pio)

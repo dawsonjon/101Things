@@ -38,7 +38,7 @@ void effects ::process_sample(int16_t &s) {
   FixedPoint sample = s;
 
   // DC removal
-  dc = dc + (sample - dc) >> 1;
+  dc = dc + ((sample - dc) >> 1);
   sample = sample - dc;
 
   // Preamplifier

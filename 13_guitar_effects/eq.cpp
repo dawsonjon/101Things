@@ -1,3 +1,16 @@
+//  _  ___  _   _____ _     _                 
+// / |/ _ \/ | |_   _| |__ (_)_ __   __ _ ___ 
+// | | | | | |   | | | '_ \| | '_ \ / _` / __|
+// | | |_| | |   | | | | | | | | | | (_| \__ \
+// |_|\___/|_|   |_| |_| |_|_|_| |_|\__, |___/
+//                                  |___/    
+//
+// Copyright (c) Jonathan P Dawson 2023
+// filename: eq.cpp
+// description:
+// License: MIT
+//
+
 #include "fft_64.h"
 #include "eq.h"
 #include <cmath>

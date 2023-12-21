@@ -2,6 +2,7 @@
 add_executable(transmitter
   transmitter.cpp
   modulator.cpp
+  half_band_filter.cpp
   half_band_filter2.cpp
   cordic.cpp
 )

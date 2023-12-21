@@ -1,3 +1,16 @@
+//  _  ___  _   _____ _     _                 
+// / |/ _ \/ | |_   _| |__ (_)_ __   __ _ ___ 
+// | | | | | |   | | | '_ \| | '_ \ / _` / __|
+// | | |_| | |   | | | | | | | | | | (_| \__ \
+// |_|\___/|_|   |_| |_| |_|_|_| |_|\__, |___/
+//                                  |___/    
+//
+// Copyright (c) Jonathan P Dawson 2023
+// filename: fft_64.h
+// description:
+// License: MIT
+//
+
 #include <cstdint>
 void fft_64(int32_t x_real[], int32_t x_imag[])
 {

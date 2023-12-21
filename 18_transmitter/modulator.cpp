@@ -1,3 +1,16 @@
+//  _  ___  _   _____ _     _                 
+// / |/ _ \/ | |_   _| |__ (_)_ __   __ _ ___ 
+// | | | | | |   | | | '_ \| | '_ \ / _` / __|
+// | | |_| | |   | | | | | | | | | | (_| \__ \
+// |_|\___/|_|   |_| |_| |_|_|_| |_|\__, |___/
+//                                  |___/    
+//
+// Copyright (c) Jonathan P Dawson 2023
+// filename: modulator.cpp
+// description:
+// License: MIT
+//
+
 #include <stdio.h>
 #include <cmath>
 
@@ -9,18 +22,21 @@ modulator :: modulator()
   cordic_init();
 }
 
-void modulator :: process_sample(tx_mode_t mode, int8_t audio, uint8_t &magnitude, int8_t &phase, uint32_t fm_deviation_f8)
+void modulator :: process_sample(tx_mode_t mode, int16_t audio, int16_t &i, int16_t &q, uint16_t &magnitude, int16_t &phase, uint32_t fm_deviation_f15)
 {
+
+  audio = (int32_t) audio * 65500 >> 16;
+  audio_filter.filter(audio);
 
   if(mode == AM)
   {
-    magnitude = audio + 128;
+    magnitude = audio + 32768;
     phase = 0;
   }
   else if(mode == FM)
   {
-    magnitude = 255;
-    phase = last_phase + ((audio * fm_deviation_f8)>>8);
+    magnitude = 65535;
+    phase = last_phase + ((audio * fm_deviation_f15)>>15);
     last_phase = phase;
   }
   else if(mode == LSB || mode == USB)
@@ -53,11 +69,10 @@ void modulator :: process_sample(tx_mode_t mode, int8_t audio, uint8_t &magnitud
         ssb_phase = (ssb_phase - 1) & 3u;
       }
 
-      if(audio == -128) audio = -127;
-      const int8_t audio_i[4] = {audio, 0, -audio, 0};
-      const int8_t audio_q[4] = {0, -audio, 0, audio};
-      int16_t ii = audio_i[ssb_phase] << 8;
-      int16_t qq = audio_q[ssb_phase] << 8;
+      const int16_t audio_i[4] = {audio, 0, -audio, 0};
+      const int16_t audio_q[4] = {0, -audio, 0, audio};
+      int16_t ii = audio_i[ssb_phase];
+      int16_t qq = audio_q[ssb_phase];
       ssb_filter.filter(ii,  qq);
 
       //shift frequency by -FS/4
@@ -73,19 +88,12 @@ void modulator :: process_sample(tx_mode_t mode, int8_t audio, uint8_t &magnitud
 
       const int16_t sample_i[4] = {-qq, -ii, qq, ii};
       const int16_t sample_q[4] = {ii, -qq, -ii, qq};
-      uint16_t magnitude_16;
-      int16_t phase_16;
-      cordic_rectangular_to_polar(sample_i[ssb_phase], sample_q[ssb_phase], magnitude_16, phase_16);
+      i = sample_i[ssb_phase];
+      q = sample_q[ssb_phase];
+      i = (int32_t)i * 65500 >> 15;
+      q = (int32_t)q * 65500 >> 15;
 
-      magnitude_16 = (magnitude_16 + (rand() & 0xff)) >> 7;
-      if(magnitude_16 < 0) magnitude_16 = 0;
-      if(magnitude_16 > 255) magnitude_16 = 255;
-      magnitude = magnitude_16;
-
-      phase_16 = (phase_16 + (rand() & 0xff)) >> 8;
-      if(phase_16 < -127) phase_16 = -127;
-      if(phase_16 > 127) phase_16 = 127;
-      phase = phase_16;
+      cordic_rectangular_to_polar(i, q, magnitude, phase);
 
   }
 

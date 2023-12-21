@@ -6,27 +6,19 @@
 //                                  |___/    
 //
 // Copyright (c) Jonathan P Dawson 2023
-// filename: half_band_filter2.h
+// filename: modulator.cpp
 // description:
 // License: MIT
 //
 
-#ifndef HALF_BAND_2_H
-#define HALF_BAND_2_H
+#include <stdio.h>
+#include <cmath>
 
-#include <stdint.h>
+#include "modulator.h"
 
-class half_band_filter2
+void modulator :: process_sample(int16_t audio, uint16_t &magnitude, int16_t &phase, uint32_t fm_deviation_f15)
 {
-    private:
-    static const uint8_t buf_size = 64u;
-    int16_t bufi[buf_size] = {0};
-    int16_t bufq[buf_size] = {0};
-    uint8_t pointer = 0;
-    public:
-    half_band_filter2();
-    void filter(int16_t &i, int16_t &q);
-
-};
-
-#endif
+    magnitude = 65535;
+    phase = last_phase + ((audio * fm_deviation_f15)>>15);
+    last_phase = phase;
+}

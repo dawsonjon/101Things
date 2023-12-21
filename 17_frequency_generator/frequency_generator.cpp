@@ -1,3 +1,16 @@
+//  _  ___  _   _____ _     _                 
+// / |/ _ \/ | |_   _| |__ (_)_ __   __ _ ___ 
+// | | | | | |   | | | '_ \| | '_ \ / _` / __|
+// | | |_| | |   | | | | | | | | | | (_| \__ \
+// |_|\___/|_|   |_| |_| |_|_|_| |_|\__, |___/
+//                                  |___/    
+//
+// Copyright (c) Jonathan P Dawson 2023
+// filename: frequency_generator.cpp
+// description:
+// License: MIT
+//
+
 #include <stdio.h>
 #include <cmath>
 #include "pico/stdlib.h"

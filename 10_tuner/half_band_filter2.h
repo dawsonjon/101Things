@@ -1,3 +1,16 @@
+//  _  ___  _   _____ _     _                 
+// / |/ _ \/ | |_   _| |__ (_)_ __   __ _ ___ 
+// | | | | | |   | | | '_ \| | '_ \ / _` / __|
+// | | |_| | |   | | | | | | | | | | (_| \__ \
+// |_|\___/|_|   |_| |_| |_|_|_| |_|\__, |___/
+//                                  |___/    
+//
+// Copyright (c) Jonathan P Dawson 2023
+// filename: half_band_filter2.h
+// description:
+// License: MIT
+//
+
 #ifndef HALF_BAND_2_H
 #define HALF_BAND_2_H
 

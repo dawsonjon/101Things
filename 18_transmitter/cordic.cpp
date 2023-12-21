@@ -1,3 +1,16 @@
+//  _  ___  _   _____ _     _                 
+// / |/ _ \/ | |_   _| |__ (_)_ __   __ _ ___ 
+// | | | | | |   | | | '_ \| | '_ \ / _` / __|
+// | | |_| | |   | | | | | | | | | | (_| \__ \
+// |_|\___/|_|   |_| |_| |_|_|_| |_|\__, |___/
+//                                  |___/    
+//
+// Copyright (c) Jonathan P Dawson 2023
+// filename: cordic.cpp
+// description:
+// License: MIT
+//
+
 #include <cstdint>
 #include <cstdio>
 #include <stdlib.h>
@@ -28,7 +41,7 @@ void cordic_init()
     gain *= magnitude;
   }
 
-  recip_gain = 32768/gain;
+  recip_gain = 32767/gain;
 
 }
 

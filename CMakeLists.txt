@@ -24,6 +24,7 @@ add_subdirectory(13_guitar_effects)
 add_subdirectory(14_timer)
 add_subdirectory(17_frequency_generator)
 add_subdirectory(18_transmitter)
+add_subdirectory(19_fm_transmitter)
 add_subdirectory(Library)
 
 

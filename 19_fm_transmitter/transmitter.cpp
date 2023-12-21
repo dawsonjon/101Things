@@ -16,7 +16,6 @@
 #include "pico/stdlib.h"
 #include "hardware/adc.h"
 #include "hardware/pio.h"
-#include "hardware/pwm.h"
 #include "hardware/dma.h"
 #include "hardware/sync.h"
 
@@ -74,45 +73,6 @@ class adc
   }
 };
 
-class pwm
-{
-  private:
-  uint8_t m_magnitude_pin;
-
-  public:
-  pwm(const uint8_t magnitude_pin)
-  {
-      m_magnitude_pin = magnitude_pin;
-      gpio_set_function(magnitude_pin, GPIO_FUNC_PWM);
-      gpio_set_drive_strength(magnitude_pin, GPIO_DRIVE_STRENGTH_12MA);
-      gpio_set_function(magnitude_pin+1, GPIO_FUNC_PWM);
-      gpio_set_drive_strength(magnitude_pin+1, GPIO_DRIVE_STRENGTH_12MA);
-      const uint16_t pwm_max = 255; // 8 bit pwm
-      const int magnitude_pwm_slice = pwm_gpio_to_slice_num(magnitude_pin); //GPIO1
-      pwm_config config = pwm_get_default_config();
-      pwm_config_set_clkdiv(&config, 1.f); // 125MHz
-      pwm_config_set_wrap(&config, pwm_max);
-      pwm_config_set_output_polarity(&config, false, false);
-      pwm_init(magnitude_pwm_slice, &config, true);
-  }
-
-  void output_sample(uint16_t magnitude)
-  {
-      const bool balanced_mode = true;
-      if(balanced_mode)
-      {
-        pwm_set_gpio_level(m_magnitude_pin,   128 + (magnitude>>9));
-        pwm_set_gpio_level(m_magnitude_pin+1, 128 - (magnitude>>9));
-      }
-      else
-      {
-        pwm_set_gpio_level(m_magnitude_pin, magnitude>>8);
-      }
-  }
-
-};
-
-
 class nco
 {
   private:
@@ -120,12 +80,11 @@ class nco
   uint32_t nco_dma, chain_dma, sm;
   dma_channel_config nco_dma_cfg;
   dma_channel_config chain_dma_cfg;
-  const uint32_t* buffer_addresses[2][33];
   uint32_t index_f24 = 0u;
   uint8_t ping_pong = 0u;
   uint32_t interrupts;
   bool dma_started = false;
-  static const uint8_t waveforms_per_sample = 32u;
+  static const uint8_t waveforms_per_sample = 1u;
   static const uint8_t bits_per_word = 32u;
   static const uint16_t waveform_length_bits = 256u;
   static const uint16_t waveform_length_words = waveform_length_bits / bits_per_word;
@@ -134,6 +93,7 @@ class nco
   int32_t wrap_f24;
   int32_t phase_step_clocks_f24;
   uint32_t buffer[bits_per_word * waveform_length_words * 2] __attribute__((aligned(4)));
+  const uint32_t* buffer_addresses[2][waveforms_per_sample+1];
 
   void initialise_waveform_buffer(uint32_t buffer[], uint32_t waveform_length_words, double normalised_frequency)
   {
@@ -172,7 +132,6 @@ class nco
       // The fraction part is accumulated so that the any rounding error we introduce can be corrected for later.
       // 8 integer bits allow up to 256 whole clocks of advancement, the 24 remaining bits are fraction bits.
       index_increment_f24 = round(fmod(waveform_length_bits, period_clocks) * pow(2.0, fraction_bits));
-      const int32_t num_full_periods = floor(waveform_length_bits/period_clocks);
       wrap_f24 = period_clocks * pow(2.0, fraction_bits);
 
       //we may want to adjust the phase on-the fly.
@@ -228,6 +187,7 @@ class nco
   {
 
       // plan next 32 transfers while the last 32 are sending
+      gpio_put(1, 1);
       for (uint8_t transfer = 0u; transfer < waveforms_per_sample; ++transfer) {
           uint32_t phase_modulation_f24 = (phase_step_clocks_f24 * phase);
           //uint32_t phase_dither_f24 = rand() >> 8; //up to 1 clock
@@ -243,13 +203,14 @@ class nco
             index_f24 -= wrap_f24;
           }
       }
+      gpio_put(1, 0);
 
       //check for PIO stalls
-      if(pio->fdebug)
-      {
-        printf("pio stall, potential lost samples debug: %x\n", pio->fdebug);
-        pio->fdebug = 0xffffffff;//clear all
-      }
+      //if(pio->fdebug)
+      //{
+      //  printf("pio stall, potential lost samples debug: %x\n", pio->fdebug);
+      //  pio->fdebug = 0xffffffff;//clear all
+     // }
 
       //if a dma is running, wait until it completes
       interrupts = save_and_disable_interrupts();
@@ -286,17 +247,14 @@ class nco
   }
 };
 
-void transmitter_start(tx_mode_t mode, double frequency_Hz) {
-    const bool enable_test_tone = true;
+void transmitter_start(double frequency_Hz) {
+    const bool enable_test_tone = false;
     const uint8_t mic_pin = 28;
     const uint8_t magnitude_pin = 6;
     const uint8_t rf_pin = 8;
 
     //Use ADC to capture MIC input
     adc mic_adc(mic_pin, 2);
-
-    //Use PWM to output magnitude
-    pwm magnitude_pwm(magnitude_pin);
 
     //Use PIO to output phase/frequency controlled oscillator
     nco rf_nco(rf_pin, frequency_Hz);
@@ -308,7 +266,7 @@ void transmitter_start(tx_mode_t mode, double frequency_Hz) {
 
     //create modulator
     modulator audio_modulator;
-    const double fm_deviation_Hz = 2.5e3; //e.g. 2.5kHz or 5kHz
+    const double fm_deviation_Hz = 75e3;
     const uint32_t fm_deviation_f15 = round(32768.0 * fm_deviation_Hz/rf_nco.get_sample_frequency_Hz());
     int16_t audio;
     uint16_t magnitude;
@@ -336,13 +294,7 @@ void transmitter_start(tx_mode_t mode, double frequency_Hz) {
         }
 
         //demodulate
-        gpio_put(debug_pin, 1);
-        audio_modulator.process_sample(mode, audio, i, q, magnitude, phase, fm_deviation_f15);
-        //printf("%i %u %i\n", audio, magnitude, phase);
-        gpio_put(debug_pin, 0);
-
-        //output magnitude
-        magnitude_pwm.output_sample(magnitude);
+        audio_modulator.process_sample(audio, magnitude, phase, fm_deviation_f15);
 
         //output phase
         rf_nco.output_sample(phase); 
@@ -355,5 +307,5 @@ int main() {
     stdio_set_translate_crlf(&stdio_usb, false);
 
     printf("starting\n");
-    transmitter_start(LSB, 3.5e6);
+    transmitter_start(88e6/3);
 }

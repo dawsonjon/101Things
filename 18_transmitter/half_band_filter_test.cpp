@@ -6,27 +6,28 @@
 //                                  |___/    
 //
 // Copyright (c) Jonathan P Dawson 2023
-// filename: half_band_filter2.h
+// filename: half_band_filter_test.cpp
 // description:
 // License: MIT
 //
 
-#ifndef HALF_BAND_2_H
-#define HALF_BAND_2_H
+#include <cstdio>
+#include <stdlib.h>
+#include <math.h>
 
-#include <stdint.h>
+#include "half_band_filter.h"
 
-class half_band_filter2
-{
-    private:
-    static const uint8_t buf_size = 64u;
-    int16_t bufi[buf_size] = {0};
-    int16_t bufq[buf_size] = {0};
-    uint8_t pointer = 0;
-    public:
-    half_band_filter2();
-    void filter(int16_t &i, int16_t &q);
+int main() {
 
-};
+    half_band_filter filter;
 
-#endif
+    for(uint16_t idx=0; idx<1024; idx++)
+    {
+      int16_t audio = idx==0?32767:0; 
+      filter.filter(audio);
+      printf("%i\n", audio);
+    }
+
+    return 0;
+}
+

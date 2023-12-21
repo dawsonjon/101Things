@@ -134,7 +134,7 @@ bool get_wifi() {
     const uint32_t address = (uint32_t) & (flash_sector[0]);
     const uint32_t flash_address = address - XIP_BASE;
     //!!! PICO is **very** fussy about flash erasing, there must be no code
-    //!running in flash.  !!!
+    //! running in flash.  !!!
     //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     const uint32_t ints =
         save_and_disable_interrupts(); // disable all interrupts

@@ -6,19 +6,26 @@
 //                                  |___/
 //
 // Copyright (c) Jonathan P Dawson 2023
-// filename: modulator.cpp
-// description:
+// filename: pwm.cpp
+// description: PWM Magnitude for Ham Transmitter
 // License: MIT
 //
 
+#ifndef PWM_H__
+#define PWM_H__
+
+#include "hardware/pwm.h"
+#include "pico/stdlib.h"
 #include <cmath>
 #include <stdio.h>
 
-#include "modulator.h"
+class pwm {
+private:
+  uint8_t m_magnitude_pin;
 
-void modulator ::process_sample(int16_t audio, uint16_t &magnitude,
-                                int16_t &phase, uint32_t fm_deviation_f15) {
-  magnitude = 65535;
-  phase = last_phase + ((audio * fm_deviation_f15) >> 15);
-  last_phase = phase;
-}
+public:
+  pwm(const uint8_t magnitude_pin);
+  void output_sample(uint16_t magnitude);
+};
+
+#endif

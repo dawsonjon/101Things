@@ -2,6 +2,10 @@
 add_executable(transmitter
   transmitter.cpp
   modulator.cpp
+  adc.cpp
+  nco.cpp
+  pwm.cpp
+  signal_generator.cpp
   half_band_filter.cpp
   half_band_filter2.cpp
   cordic.cpp

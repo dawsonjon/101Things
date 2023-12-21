@@ -1,9 +1,9 @@
-//  _  ___  _   _____ _     _                 
-// / |/ _ \/ | |_   _| |__ (_)_ __   __ _ ___ 
+//  _  ___  _   _____ _     _
+// / |/ _ \/ | |_   _| |__ (_)_ __   __ _ ___
 // | | | | | |   | | | '_ \| | '_ \ / _` / __|
 // | | |_| | |   | | | | | | | | | | (_| \__ \
 // |_|\___/|_|   |_| |_| |_|_|_| |_|\__, |___/
-//                                  |___/    
+//                                  |___/
 //
 // Copyright (c) Jonathan P Dawson 2023
 // filename: effects.cpp
@@ -56,7 +56,7 @@ void effects ::process_sample(int16_t &s) {
 
   // Preamplifier
   sample = sample * m_settings.pre_gain;
-  
+
   // Graphic Equalizer
   int32_t raw_sample = sample.get();
   eq1.process_sample(raw_sample);
@@ -124,17 +124,13 @@ void effects ::process_sample(int16_t &s) {
     break;
 
   case FUZZ:
-    if(magnitude < FixedPoint::from_float(0.5f))
-    {
+    if (magnitude < FixedPoint::from_float(0.5f)) {
       magnitude = FixedPoint::from_float(2.0f) * magnitude;
-    }
-    else
-    {
+    } else {
       magnitude = FixedPoint::from_float(1.0f);
     }
     sample = positive ? magnitude : -magnitude;
     break;
-
   }
 
   // delay

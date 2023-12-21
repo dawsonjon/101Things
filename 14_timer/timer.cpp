@@ -1,9 +1,9 @@
-//  _  ___  _   _____ _     _                 
-// / |/ _ \/ | |_   _| |__ (_)_ __   __ _ ___ 
+//  _  ___  _   _____ _     _
+// / |/ _ \/ | |_   _| |__ (_)_ __   __ _ ___
 // | | | | | |   | | | '_ \| | '_ \ / _` / __|
 // | | |_| | |   | | | | | | | | | | (_| \__ \
 // |_|\___/|_|   |_| |_| |_|_|_| |_|\__, |___/
-//                                  |___/    
+//                                  |___/
 //
 // Copyright (c) Jonathan P Dawson 2023
 // filename: timer.cpp
@@ -19,7 +19,6 @@
 
 #include "music.hpp"
 #include "tunes.hpp"
-
 
 int main() {
   stdio_init_all();
@@ -124,9 +123,9 @@ int main() {
               minutes = stored_minutes;
               seconds = 0;
               needs_reset = false;
-              uint64_t start_time = time_us_64(); // update timer 1 second from now
-              while((time_us_64() - start_time) < timeout)
-              {
+              uint64_t start_time =
+                  time_us_64(); // update timer 1 second from now
+              while ((time_us_64() - start_time) < timeout) {
                 player.play_tune(audio_output, tunes[tune], num_notes[tune]);
                 ++tune;
               }

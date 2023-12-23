@@ -58,7 +58,7 @@ nco::nco(const uint8_t rf_pin, double frequency_Hz) {
   // we may want to adjust the phase on-the fly.
   // A 16-bit phase adjustment will have steps of period/32768 i.e.
   // -period/32768 +period/32767
-  phase_step_clocks_f24 = (period_clocks / 32768.0) * pow(2.0, fraction_bits);
+  phase_step_clocks_f24 = (0.5 * period_clocks / 32768.0) * pow(2.0, fraction_bits);
 
   // store 32 waveforms
   // 32 copies of the waveform are stored, each advanced by 1 clock more than
@@ -102,22 +102,43 @@ nco::nco(const uint8_t rf_pin, double frequency_Hz) {
       &chain_dma_cfg, false); // always writes to data DMA read address
   dma_channel_start(nco_dma);
 
-  buffer_addresses[0][waveforms_per_sample] =
-      NULL; // null transfer at the end of each 32 address block
-  buffer_addresses[1][waveforms_per_sample] = NULL;
 }
 
-double nco::get_sample_frequency_Hz() {
+//returns the nearest number of waveforms per sample for a given sample frequency
+uint8_t nco::get_waveforms_per_sample(double sample_frequency_Hz) {
+  return 125e6 / (waveform_length_bits * sample_frequency_Hz);
+}
+
+//returns the exact sample frequency for a given number of waveforms per sample
+double nco::get_sample_frequency_Hz(uint8_t waveforms_per_sample) {
   return 125e6 / (waveform_length_bits * waveforms_per_sample);
 }
 
-void nco::output_sample(int16_t phase) {
+// Run NCO for one audio sample.
+//
+// phase is a signed 16-bit number representing -pi/2 <= x < pi/2
+// waveforms per sample is the number of 256-clock waveforms to output
+// this determines the audio sample frequency e.g. 32 gives ~15kHz 100 
+// gives 4.8kHz
+
+void nco::output_sample(int16_t phase, uint8_t waveforms_per_sample) {
+
+  assert(waveforms_per_sample < max_waveforms_per_sample);
+
+  // null transfer at the end of each 32 address block
+  buffer_addresses[ping_pong][waveforms_per_sample] = NULL; 
 
   // plan next 32 transfers while the last 32 are sending
   for (uint8_t transfer = 0u; transfer < waveforms_per_sample; ++transfer) {
     uint32_t phase_modulation_f24 = (phase_step_clocks_f24 * phase);
-    // uint32_t phase_dither_f24 = rand() >> 8; //up to 1 clock
-    uint16_t index = (index_f24 + phase_modulation_f24) >> fraction_bits;
+    int32_t modulated_index_f24 = index_f24 + phase_modulation_f24;
+    if (modulated_index_f24 > wrap_f24) {
+      modulated_index_f24 -= wrap_f24;
+    }
+    if (modulated_index_f24 < 0) {
+      modulated_index_f24 += wrap_f24;
+    }
+    uint16_t index = (modulated_index_f24) >> fraction_bits;
     // The lower 5 bits represent up to 31 bits of advance
     // The upper 3 bits represent the number of whole words of advance
     // we need to swap these because the words of each waveform are contiguous

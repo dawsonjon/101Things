@@ -29,14 +29,22 @@ def plot_results(lines):
 
   plt.plot(complex_data.real)
   plt.plot(complex_data.imag)
-  #plt.plot(recovered_complex_data.real)
-  #plt.plot(recovered_complex_data.imag)
   plt.show()
 
   spectrum = 20*np.log10(np.abs(np.fft.fftshift(np.fft.fft(np.hanning(len(complex_data)) * complex_data))))
   recovered_spectrum = 20*np.log10(np.abs(np.fft.fftshift(np.fft.fft(np.hanning(len(recovered_complex_data)) * recovered_complex_data))))
-  plt.plot(spectrum)
-  plt.plot(recovered_spectrum)
+
+
+  plt.figure()
+  plt.grid(True)
+  plt.title("SSB Modulator Frequency Response")
+  plt.xlabel("Frequency (Hz)")
+  plt.ylabel("Magnitude (dB)")
+  plt.xlim([-6000, 6000])
+  frequency_scale = np.linspace(-6000, 6000, len(spectrum))
+  plt.plot(frequency_scale, spectrum, label="Modulator IQ output")
+  plt.plot(frequency_scale, recovered_spectrum, label="Modulator Phase/Magnitude output")
+  plt.legend()
   plt.show()
 
 while lines:

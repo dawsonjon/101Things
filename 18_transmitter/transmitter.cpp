@@ -23,7 +23,7 @@
 
 void transmitter_start(tx_mode_t mode, double frequency_Hz) {
   const bool enable_test_tone = false;
-  const bool enable_serial_data = false;
+  const bool enable_serial_data = true;
   const uint8_t mic_pin = 28;
   const uint8_t magnitude_pin = 6;
   const uint8_t rf_pin = 8;
@@ -54,7 +54,7 @@ void transmitter_start(tx_mode_t mode, double frequency_Hz) {
   //scale FM deviation
   const double fm_deviation_Hz = 2.5e3; //2.5kHz
   const uint32_t fm_deviation_f15 =
-      round(32768.0 * fm_deviation_Hz / rf_nco.get_sample_frequency_Hz(waveforms_per_sample));
+      round(2 * 32768.0 * fm_deviation_Hz / rf_nco.get_sample_frequency_Hz(waveforms_per_sample));
 
   int16_t audio;
   uint16_t magnitude;
@@ -66,6 +66,9 @@ void transmitter_start(tx_mode_t mode, double frequency_Hz) {
   uint8_t debug_pin = 1;
   gpio_init(debug_pin);
   gpio_set_dir(debug_pin, GPIO_OUT);
+  uint8_t debug_pin_2 = 2;
+  gpio_init(debug_pin_2);
+  gpio_set_dir(debug_pin_2, GPIO_OUT);
 
   while (1) // Loop iterates at 125e6/(256*32) = 15259 Hz
   {
@@ -100,5 +103,5 @@ int main() {
   stdio_set_translate_crlf(&stdio_usb, false);
 
   printf("starting\n");
-  transmitter_start(LSB, 3.650e6);
+  transmitter_start(AM, 3.650e6);
 }

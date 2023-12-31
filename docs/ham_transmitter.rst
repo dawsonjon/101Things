@@ -27,7 +27,6 @@ to get on the air with equipment you built yourself.
 
 
 Prototype Design
-
 ----------------
 
 .. image:: images/ham_transmitter_prototype_circuit.svg

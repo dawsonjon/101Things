@@ -11,6 +11,7 @@ Welcome to 101 Things's documentation!
    :caption: Contents:
 
    radio_receiver
+   ham_transmitter
    guitar_effects
    timer
 

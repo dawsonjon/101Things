@@ -22,7 +22,7 @@ Projects so far
 Pi Pico Rx - A crystal radio for the digital age?
 """""""""""""""""""""""""""""""""""""""""""""""""
 
-.. image:: images/thumbnail5.png
+.. image:: docs/images/thumbnail5.png
   :target: https://github.com/dawsonjon/PicoRX/assets/717535/4846c78d-21c3-42e8-bcdf-278cc2bdadcb
 
 DIY Multi-Effect Guitar Unit
@@ -34,7 +34,7 @@ DIY Multi-Effect Guitar Unit
 Raspberry Pi Pico Ham Radio Transmitter
 """""""""""""""""""""""""""""""""""""""
 
-.. image::  images/HamTransmitterThumbnail.png
+.. image::  docs/images/HamTransmitterThumbnail.png
   :target: https://youtu.be/PbhmQfPkNL0
 
 

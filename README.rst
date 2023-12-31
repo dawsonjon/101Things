@@ -4,6 +4,40 @@
 101 Things
 ==========
 
+Welcome to *101 Things*, a collection of projects that celebrate creativity and
+hands-on ingenuity.  If you share a passion for making things, you've come to
+the right place. Each project uses simple designs, and basic tools, to push the
+creative boundaries of a home tinkerer.  Join me on this exploration of
+crafting, coding, and constructing, as we unlock the magic of making, one
+project at a time.
+
+Documentation
+-------------
+
+`ReadTheDocs <https://101-things.readthedocs.io/en/latest/>`_.
+
+Projects so far
+---------------
+
+Pi Pico Rx - A crystal radio for the digital age?
+"""""""""""""""""""""""""""""""""""""""""""""""""
+
+.. image:: images/thumbnail5.png
+  :target: https://github.com/dawsonjon/PicoRX/assets/717535/4846c78d-21c3-42e8-bcdf-278cc2bdadcb
+
+DIY Multi-Effect Guitar Unit
+""""""""""""""""""""""""""""
+
+.. image:: docs/images/headphone_amp.jpg
+  :align: center
+
+Raspberry Pi Pico Ham Radio Transmitter
+"""""""""""""""""""""""""""""""""""""""
+
+.. image::  images/HamTransmitterThumbnail.png
+  :target: https://youtu.be/PbhmQfPkNL0
+
+
 Getting the Code
 ----------------
 
@@ -36,7 +70,3 @@ Build Projects
   cmake -DPICO_BOARD=pico_w -DPICO_SDK_PATH=~/pico/pico-sdk ..
   make
 
-Documentation
--------------
-
-`ReadTheDocs <https://101-things.readthedocs.io/en/latest/>`_.

@@ -2,6 +2,7 @@
 add_executable(fm_transmitter
   transmitter.cpp
   modulator.cpp
+  nco.cpp
 )
 
 pico_generate_pio_header(fm_transmitter ${CMAKE_CURRENT_LIST_DIR}/stream_bits.pio)

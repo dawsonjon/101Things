@@ -16,9 +16,7 @@
 
 #include "modulator.h"
 
-void modulator ::process_sample(int16_t audio, uint16_t &magnitude,
-                                int16_t &phase, uint32_t fm_deviation_f15) {
-  magnitude = 65535;
+void modulator ::process_sample(int16_t audio, int16_t &phase, uint32_t fm_deviation_f15) {
   phase = last_phase + ((audio * fm_deviation_f15) >> 15);
   last_phase = phase;
 }

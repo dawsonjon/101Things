@@ -23,10 +23,9 @@ class modulator
 
   private:
   int16_t last_phase = 0;
-  uint8_t ssb_phase = 0;
 
   public:
-  void process_sample(int16_t audio, uint16_t &magnitude, int16_t &phase, uint32_t fm_deviation_f15);
+  void process_sample(int16_t audio, int16_t &phase, uint32_t fm_deviation_f15);
 };
 
 #endif

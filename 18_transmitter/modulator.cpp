@@ -23,11 +23,11 @@ void modulator ::process_sample(tx_mode_t mode, int16_t audio, int16_t &i,
                                 int16_t &q, uint16_t &magnitude, int16_t &phase,
                                 uint32_t fm_deviation_f15) {
 
-  audio = (int32_t)audio * 65500 >> 16;
+  audio = (int32_t)audio * 65200 >> 16;
   audio_filter.filter(audio);
 
   if (mode == AM) {
-    magnitude = audio + 32768;
+    magnitude = audio + 32767;
     phase = 0;
   } else if (mode == FM) {
     magnitude = 65535;

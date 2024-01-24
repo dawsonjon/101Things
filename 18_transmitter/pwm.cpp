@@ -22,7 +22,7 @@ pwm::pwm(const uint8_t magnitude_pin) {
   const uint16_t pwm_max = 255; // 8 bit pwm
   const int magnitude_pwm_slice = pwm_gpio_to_slice_num(magnitude_pin); // GPIO1
   pwm_config config = pwm_get_default_config();
-  pwm_config_set_clkdiv(&config, 1.f); // 125MHz
+  pwm_config_set_clkdiv(&config, 2.f); // 125MHz
   pwm_config_set_wrap(&config, pwm_max);
   pwm_config_set_output_polarity(&config, false, false);
   pwm_init(magnitude_pwm_slice, &config, true);
@@ -31,8 +31,15 @@ pwm::pwm(const uint8_t magnitude_pin) {
 void pwm::output_sample(uint16_t magnitude) {
   const bool balanced_mode = true;
   if (balanced_mode) {
+    #ifdef BALANCED
     pwm_set_gpio_level(m_magnitude_pin, 128 + (magnitude >> 9));
     pwm_set_gpio_level(m_magnitude_pin + 1, 128 - (magnitude >> 9));
+    #else
+    //remove 8 lsbs
+    magnitude >>= 8;
+    pwm_set_gpio_level(m_magnitude_pin, magnitude);
+    pwm_set_gpio_level(m_magnitude_pin + 1, 255 - magnitude);
+    #endif
   } else {
     pwm_set_gpio_level(m_magnitude_pin, magnitude >> 8);
   }

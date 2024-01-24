@@ -20,6 +20,7 @@
 #include "nco.h"
 #include "pwm.h"
 #include "signal_generator.h"
+#include "psu_mode.h"
 
 void transmitter_start(tx_mode_t mode, double frequency_Hz) {
   const bool enable_test_tone = false;
@@ -74,6 +75,9 @@ void transmitter_start(tx_mode_t mode, double frequency_Hz) {
   {
     // get a sample to transmit
     if (enable_test_tone) {
+      //single tone
+      //audio = test_tone1.get_sample(f1);
+      //two tone
       audio = test_tone1.get_sample(f1) / 2;
       audio += test_tone2.get_sample(f2) / 2;
     } else if(enable_serial_data) {
@@ -90,7 +94,6 @@ void transmitter_start(tx_mode_t mode, double frequency_Hz) {
     gpio_put(debug_pin, 0);
 
     // output magnitude
-    //magnitude = magnitude > 6400?magnitude-6400:0;
     magnitude_pwm.output_sample(magnitude);
 
     // output phase
@@ -101,7 +104,8 @@ void transmitter_start(tx_mode_t mode, double frequency_Hz) {
 int main() {
   stdio_init_all();
   stdio_set_translate_crlf(&stdio_usb, false);
+  disable_power_save();
 
   printf("starting\n");
-  transmitter_start(AM, 3.650e6);
+  transmitter_start(USB, 14.175e6);
 }

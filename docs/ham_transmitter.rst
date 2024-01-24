@@ -258,7 +258,7 @@ weight, and overall cost.
 .. image:: images/transmitter-Amplifier.png
 
 
-class-E RF Amplifier
+Class-E RF Amplifier
 """"""""""""""""""""
 
 Class-E amplifiers belong to the category of switching amplifiers. A switching
@@ -423,11 +423,11 @@ output is high-pass filtered. The prototype used a combination of through-hole
 and surface mount components, whatever I had lying around. In the class-E
 amplifier, it is important to use NP0/C0G type capacitors rated for 100V or
 more. The L3 winding forms part of the second harmonic notch filter, the
-frequency of the notch can be measured using a nanoVNA, and fine adjustments
-can be made to the notch frequency by adjusting the spacing of the inductor
-windings. With the calculated number of turns the frequency was too low, to
-achieve the correct frequency at twice the fundamental it was necessary to
-remove a whole turn.
+frequency of the notch can be measured using a `nanoVNA <https://nanovna.com/>`__, 
+and fine adjustments can be made to the notch frequency by adjusting the
+spacing of the inductor windings. With the calculated number of turns the
+frequency was too low, to achieve the correct frequency at twice the
+fundamental it was necessary to remove a whole turn.
 
 The amplifier was then connected and further adjustments were made. It was also
 necessary to remove a turn from L1 to achieve the desired power output level.
@@ -439,7 +439,7 @@ Although the transistor did get a little warm, it didn't overheat and the case
 temperature leveled off at around 44 degrees C. 
 
 
-class-D Audio Amplifier
+Class-D Audio Amplifier
 """""""""""""""""""""""
 
 Now that the class-E amplifier is providing amplification of the RF signal,
@@ -489,7 +489,7 @@ Spurious Emissions
 """"""""""""""""""
 
 The output of the amplifier was connected (via an attenuator) to a 
-`tinySA <https://www.tinysa.org>__` to analyze the frequency spectrum of the signal.
+`tinySA <https://www.tinysa.org>`__ to analyze the frequency spectrum of the signal.
 The resonant filters in the Class-E amplifier have effectively filtered out the
 second and third harmonics, reducing them to acceptable levels. However, some
 spurious emissions, a couple of MHz from the fundamental frequency, are

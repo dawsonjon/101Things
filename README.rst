@@ -63,6 +63,11 @@ Follow the `Getting started with the Raspberry Pi Pico <https://datasheets.raspb
 Build Projects
 --------------
 
+Some projects may target either the pico or pico_w variant, although those that use the wireless functionality can only be built on the pi-pico.
+
+To build for pico_w:
+""""""""""""""""""""
+
 .. code::
 
   mkdir build
@@ -70,3 +75,12 @@ Build Projects
   cmake -DPICO_BOARD=pico_w -DPICO_SDK_PATH=~/pico/pico-sdk ..
   make
 
+To build for pico:
+""""""""""""""""""
+
+.. code::
+
+  mkdir build
+  cd build
+  cmake -DPICO_BOARD=pico -DPICO_SDK_PATH=~/pico/pico-sdk ..
+  make

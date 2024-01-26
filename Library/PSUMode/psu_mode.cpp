@@ -1,6 +1,10 @@
 #include "psu_mode.h"
 #include "pico/stdlib.h"
 
+#if PICO_W
+#include "pico/cyw43_arch.h"
+#endif
+
 void disable_power_save() {
 // configure SMPS into power save mode
 #if PICO_W

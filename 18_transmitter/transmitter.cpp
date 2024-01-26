@@ -57,7 +57,7 @@ void transmitter_start(tx_mode_t mode, double frequency_Hz) {
   const uint32_t fm_deviation_f15 =
       round(2 * 32768.0 * fm_deviation_Hz / rf_nco.get_sample_frequency_Hz(waveforms_per_sample));
 
-  int16_t audio;
+  int32_t audio;
   uint16_t magnitude;
   int16_t phase;
   int16_t i; // not used in this design
@@ -81,7 +81,13 @@ void transmitter_start(tx_mode_t mode, double frequency_Hz) {
       audio = test_tone1.get_sample(f1) / 2;
       audio += test_tone2.get_sample(f2) / 2;
     } else if(enable_serial_data) {
-      audio = fgetc(stdin);
+      audio = getchar_timeout_us(100);
+      if(audio == PICO_ERROR_TIMEOUT)
+      {
+        //set power level to 0
+        magnitude_pwm.output_sample(0);
+        return;
+      }
       audio <<= 8;
     } else {
       audio = mic_adc.get_sample() * 96;

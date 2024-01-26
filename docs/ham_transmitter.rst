@@ -16,14 +16,13 @@ Ham bands from 160m to 10m. The transmitter is based on a Raspberry Pi Pico,
 which uses a powerful PIO feature to output an RF oscillator with precisely
 controlled phase and frequency, reducing the part count and keeping the cost
 down. The transmitter also employs a PWM output to generate an RF envelope for
-amplitude modulation. Whether you're new to the world of Ham Radio or just
-looking for a fun project for your Pi Pico, this transmitter is the perfect way
-to get on the air with equipment you built yourself.
+amplitude modulation.  `C++ Code for Pi Pico <https://github.com/dawsonjon/101Things/tree/master/18_transmitter>`_
 
+**Note:** 
 
-
-`C++ Code for Pi Pico <https://github.com/dawsonjon/101Things/tree/master/18_transmitter>`_
-
+*Feel free to experiment, but please keep in mind that it is still an
+experimental prototype and not a fully tested design. There are areas that
+still need work and there are likely to be changes as the design evolves.*
 
 
 Prototype Design
@@ -415,11 +414,29 @@ A prototype of the class-E amplifier was built using copper-clad board. For
 this experiment, the 20M band was chosen using a centre frequency of 14.175MHz.
 The analogue switch that we previously used to mix the envelope with the RF
 output is no longer needed. The polar modulated amplifier is in effect a
-high-power unbalanced mixer. A slight modification to the software was needed
-to accommodate this since the analogue switch was using a pair of PWM outputs
-to implement a balanced mixer. It turns out that the analogue switch still
-works fairly well with an unbalanced output from a single PWM provided the
-output is high-pass filtered. The prototype used a combination of through-hole
+high-power unbalanced mixer. 
+
+**Note:**
+
+*The software now has a compile time option to output balanced or unbalanced
+PWM outputs. The original design used a balanced mixer, but the polar-modulated
+amplifier requires an unbalanced output.*
+
+.. code:: cpp
+
+    //nco.cpp
+    #ifdef BALANCED //Use with FDT5351 balanced mixer
+    pwm_set_gpio_level(m_magnitude_pin, 128 + (magnitude >> 9));
+    pwm_set_gpio_level(m_magnitude_pin + 1, 128 - (magnitude >> 9));
+    #else //Use with polar modulated amplifier
+    //remove 8 lsbs
+    magnitude >>= 8;
+    pwm_set_gpio_level(m_magnitude_pin, magnitude);
+    pwm_set_gpio_level(m_magnitude_pin + 1, 255 - magnitude);
+    #endif
+
+
+The prototype used a combination of through-hole
 and surface mount components, whatever I had lying around. In the class-E
 amplifier, it is important to use NP0/C0G type capacitors rated for 100V or
 more. The L3 winding forms part of the second harmonic notch filter, the

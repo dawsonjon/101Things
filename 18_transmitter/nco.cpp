@@ -60,7 +60,8 @@ nco::nco(const uint8_t rf_pin, double frequency_Hz) {
   // we may want to adjust the phase on-the fly.
   // A 16-bit phase adjustment will have steps of period/32768 i.e.
   // -period/32768 +period/32767
-  phase_step_clocks_f24 = (0.5 * period_clocks / 32768.0) * pow(2.0, fraction_bits);
+  phase_step_clocks_f24 =
+      (0.5 * period_clocks / 32768.0) * pow(2.0, fraction_bits);
 
   // store 32 waveforms
   // 32 copies of the waveform are stored, each advanced by 1 clock more than
@@ -103,7 +104,6 @@ nco::nco(const uint8_t rf_pin, double frequency_Hz) {
   channel_config_set_write_increment(
       &chain_dma_cfg, false); // always writes to data DMA read address
   dma_channel_start(nco_dma);
-
 }
 
 nco::~nco() {
@@ -113,17 +113,18 @@ nco::~nco() {
   dma_channel_unclaim(nco_dma);
   dma_channel_unclaim(chain_dma);
 
-  //disable GPIO, pullup/pulldown resistors should be installed
-  //to switch off transistors when pin is high impedance
+  // disable GPIO, pullup/pulldown resistors should be installed
+  // to switch off transistors when pin is high impedance
   gpio_deinit(m_rf_pin);
 }
 
-//returns the nearest number of waveforms per sample for a given sample frequency
+// returns the nearest number of waveforms per sample for a given sample
+// frequency
 uint8_t nco::get_waveforms_per_sample(double sample_frequency_Hz) {
   return 125e6 / (waveform_length_bits * sample_frequency_Hz);
 }
 
-//returns the exact sample frequency for a given number of waveforms per sample
+// returns the exact sample frequency for a given number of waveforms per sample
 double nco::get_sample_frequency_Hz(uint8_t waveforms_per_sample) {
   return 125e6 / (waveform_length_bits * waveforms_per_sample);
 }
@@ -132,7 +133,7 @@ double nco::get_sample_frequency_Hz(uint8_t waveforms_per_sample) {
 //
 // phase is a signed 16-bit number representing -pi/2 <= x < pi/2
 // waveforms per sample is the number of 256-clock waveforms to output
-// this determines the audio sample frequency e.g. 32 gives ~15kHz 100 
+// this determines the audio sample frequency e.g. 32 gives ~15kHz 100
 // gives 4.8kHz
 
 void nco::output_sample(int16_t phase, uint8_t waveforms_per_sample) {
@@ -141,7 +142,7 @@ void nco::output_sample(int16_t phase, uint8_t waveforms_per_sample) {
 
   gpio_put(2, 1);
   // null transfer at the end of each 32 address block
-  buffer_addresses[ping_pong][waveforms_per_sample] = NULL; 
+  buffer_addresses[ping_pong][waveforms_per_sample] = NULL;
 
   // plan next 32 transfers while the last 32 are sending
   for (uint8_t transfer = 0u; transfer < waveforms_per_sample; ++transfer) {
@@ -193,9 +194,9 @@ void nco::output_sample(int16_t phase, uint8_t waveforms_per_sample) {
       chain_dma, &chain_dma_cfg,
       &dma_hw->ch[nco_dma].al3_read_addr_trig, // overwrite nco_dma read address
                                                // and trigger new transfer
-      &buffer_addresses[ping_pong][0], // increments each time
-      1,                               // Halt after 1 transfer
-      true                             // start now
+      &buffer_addresses[ping_pong][0],         // increments each time
+      1,                                       // Halt after 1 transfer
+      true                                     // start now
   );
 
   restore_interrupts(interrupts);

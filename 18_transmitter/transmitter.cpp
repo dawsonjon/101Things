@@ -18,11 +18,12 @@
 #include "adc.h"
 #include "modulator.h"
 #include "nco.h"
+#include "psu_mode.h"
 #include "pwm.h"
 #include "signal_generator.h"
-#include "psu_mode.h"
 
-void transmitter_start(tx_mode_t mode, double frequency_Hz, const bool enable_serial_data = false) {
+void transmitter_start(tx_mode_t mode, double frequency_Hz,
+                       const bool enable_serial_data = false) {
   const uint8_t mic_pin = 28;
   const uint8_t magnitude_pin = 6;
   const uint8_t rf_pin = 8;
@@ -35,18 +36,21 @@ void transmitter_start(tx_mode_t mode, double frequency_Hz, const bool enable_se
 
   // Use PIO to output phase/frequency controlled oscillator
   nco rf_nco(rf_pin, frequency_Hz);
-  const double sample_frequency_Hz = 
-    (mode==AM)?12e3:(mode==FM)?15e3:(mode==LSB)?10e3:10e3;
+  const double sample_frequency_Hz = (mode == AM)    ? 12e3
+                                     : (mode == FM)  ? 15e3
+                                     : (mode == LSB) ? 10e3
+                                                     : 10e3;
   const uint8_t waveforms_per_sample =
-     rf_nco.get_waveforms_per_sample(sample_frequency_Hz);
+      rf_nco.get_waveforms_per_sample(sample_frequency_Hz);
 
   // create modulator
   modulator audio_modulator;
 
-  //scale FM deviation
-  const double fm_deviation_Hz = 2.5e3; //2.5kHz
+  // scale FM deviation
+  const double fm_deviation_Hz = 2.5e3; // 2.5kHz
   const uint32_t fm_deviation_f15 =
-      round(2 * 32768.0 * fm_deviation_Hz / rf_nco.get_sample_frequency_Hz(waveforms_per_sample));
+      round(2 * 32768.0 * fm_deviation_Hz /
+            rf_nco.get_sample_frequency_Hz(waveforms_per_sample));
 
   int32_t audio;
   uint16_t magnitude;
@@ -62,23 +66,22 @@ void transmitter_start(tx_mode_t mode, double frequency_Hz, const bool enable_se
   gpio_init(debug_pin_2);
   gpio_set_dir(debug_pin_2, GPIO_OUT);
 
-  while (1)
-  {
+  while (1) {
     // get a sample to transmit
-    if(enable_serial_data) {
+    if (enable_serial_data) {
 
-      //timeout ends transmission
+      // timeout ends transmission
       audio = getchar_timeout_us(1000);
-      if(audio == PICO_ERROR_TIMEOUT) return;
+      if (audio == PICO_ERROR_TIMEOUT)
+        return;
 
-      //read audio from serial port
+      // read audio from serial port
       audio <<= 8;
 
     } else {
 
-      //read audio from mic
-      audio = mic_adc.get_sample() * 96; //multiply by a gain value
-
+      // read audio from mic
+      audio = mic_adc.get_sample() * 96; // multiply by a gain value
     }
 
     // demodulate
@@ -95,79 +98,67 @@ void transmitter_start(tx_mode_t mode, double frequency_Hz, const bool enable_se
   }
 }
 
-//example application
+// example application
 int main() {
   stdio_init_all();
   stdio_set_translate_crlf(&stdio_usb, false);
   disable_power_save();
 
-  //chose default values
+  // chose default values
   double frequency = 14.175e6;
   tx_mode_t mode = USB;
 
   printf("Pi Pico Transmitter>\r\n");
-  while(1)
-  {
+  while (1) {
     int command = getchar_timeout_us(0);
-    if(command != PICO_ERROR_TIMEOUT)
-    {
-      switch(command)
-      {
-        //set frequency
-        case 'f':
-          scanf("%lf", &frequency);
-          printf("frequency: %lf Hz\r\n", frequency);
-          break;
+    if (command != PICO_ERROR_TIMEOUT) {
+      switch (command) {
+      // set frequency
+      case 'f':
+        scanf("%lf", &frequency);
+        printf("frequency: %lf Hz\r\n", frequency);
+        break;
 
-        //set mode
-        case 'm':
-          while(1)
-          {
-            char command = fgetc(stdin);
-            if(command == 'a')
-            {
-              printf("MODE=AM\r\n");
-              mode = AM;
-              break;
-            }
-            else if(command == 'f')
-            {
-              printf("MODE=FM\r\n");
-              mode = FM;
-              break;
-            }
-            else if(command == 'l')
-            {
-              printf("MODE=LSB\r\n");
-              mode = LSB;
-              break;
-            }
-            else if(command == 'u')
-            {
-              printf("MODE=USB\r\n");
-              mode = USB;
-              break;
-            }
+      // set mode
+      case 'm':
+        while (1) {
+          char command = fgetc(stdin);
+          if (command == 'a') {
+            printf("MODE=AM\r\n");
+            mode = AM;
+            break;
+          } else if (command == 'f') {
+            printf("MODE=FM\r\n");
+            mode = FM;
+            break;
+          } else if (command == 'l') {
+            printf("MODE=LSB\r\n");
+            mode = LSB;
+            break;
+          } else if (command == 'u') {
+            printf("MODE=USB\r\n");
+            mode = USB;
+            break;
           }
-          break;
+        }
+        break;
 
-        //transmit serial data
-        case 's':
-          printf("Starting transmitter\r\n");
-          transmitter_start(mode, frequency, true);
-          printf("Transmitter timed out\r\n");
-          break;
+      // transmit serial data
+      case 's':
+        printf("Starting transmitter\r\n");
+        transmitter_start(mode, frequency, true);
+        printf("Transmitter timed out\r\n");
+        break;
 
-        //help
-        case '?':
-          printf("\r\nSerial Interface Help\r\n");
-          printf("=====================\r\n\r\n");
-          printf("fxxxxxx, set frequency Hz\r\n");
-          printf("mx, set mode, a=AM, f=FM, l=LSB, u=USB\r\n");
-          printf("s, transmit serial data - (timeout terminates)\r\n");
-          printf("?, Help (this message)\r\n");
-          break;
-
+      // help
+      case '?':
+        printf("\r\nSerial Interface Help\r\n");
+        printf("=====================\r\n\r\n");
+        printf("fxxxxxx, set frequency Hz\r\n");
+        printf("mx, set mode, a=AM, f=FM, l=LSB, u=USB\r\n");
+        printf("s, transmit serial data - (timeout terminates)\r\n");
+        printf("?, Help (this message)\r\n");
+        break;
       }
       printf("Pi Pico Transmitter>\r\n");
     }

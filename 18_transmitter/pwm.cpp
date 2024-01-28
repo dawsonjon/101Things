@@ -29,24 +29,24 @@ pwm::pwm(const uint8_t magnitude_pin) {
 }
 
 pwm::~pwm() {
-  //disable GPIO, pullup/pulldown resistors should be installed
-  //to switch off transistors when pin is high impedance
+  // disable GPIO, pullup/pulldown resistors should be installed
+  // to switch off transistors when pin is high impedance
   gpio_deinit(m_magnitude_pin);
-  gpio_deinit(m_magnitude_pin+1);
+  gpio_deinit(m_magnitude_pin + 1);
 }
 
 void pwm::output_sample(uint16_t magnitude) {
   const bool balanced_mode = true;
   if (balanced_mode) {
-    #ifdef BALANCED
+#ifdef BALANCED
     pwm_set_gpio_level(m_magnitude_pin, 128 + (magnitude >> 9));
     pwm_set_gpio_level(m_magnitude_pin + 1, 128 - (magnitude >> 9));
-    #else
-    //remove 8 lsbs
+#else
+    // remove 8 lsbs
     magnitude >>= 8;
     pwm_set_gpio_level(m_magnitude_pin, magnitude);
     pwm_set_gpio_level(m_magnitude_pin + 1, 255 - magnitude);
-    #endif
+#endif
   } else {
     pwm_set_gpio_level(m_magnitude_pin, magnitude >> 8);
   }

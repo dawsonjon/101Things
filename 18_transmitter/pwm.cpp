@@ -28,6 +28,13 @@ pwm::pwm(const uint8_t magnitude_pin) {
   pwm_init(magnitude_pwm_slice, &config, true);
 }
 
+pwm::~pwm() {
+  //disable GPIO, pullup/pulldown resistors should be installed
+  //to switch off transistors when pin is high impedance
+  gpio_deinit(m_magnitude_pin);
+  gpio_deinit(m_magnitude_pin+1);
+}
+
 void pwm::output_sample(uint16_t magnitude) {
   const bool balanced_mode = true;
   if (balanced_mode) {

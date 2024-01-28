@@ -22,9 +22,7 @@
 #include "signal_generator.h"
 #include "psu_mode.h"
 
-void transmitter_start(tx_mode_t mode, double frequency_Hz) {
-  const bool enable_test_tone = false;
-  const bool enable_serial_data = true;
+void transmitter_start(tx_mode_t mode, double frequency_Hz, const bool enable_serial_data = false) {
   const uint8_t mic_pin = 28;
   const uint8_t magnitude_pin = 6;
   const uint8_t rf_pin = 8;
@@ -41,13 +39,6 @@ void transmitter_start(tx_mode_t mode, double frequency_Hz) {
     (mode==AM)?12e3:(mode==FM)?15e3:(mode==LSB)?10e3:10e3;
   const uint8_t waveforms_per_sample =
      rf_nco.get_waveforms_per_sample(sample_frequency_Hz);
-
-  // test signal
-  signal_generator test_tone1, test_tone2;
-  uint32_t f1 =
-      test_tone1.frequency_steps(0.7e3 / rf_nco.get_sample_frequency_Hz(waveforms_per_sample));
-  uint32_t f2 =
-      test_tone2.frequency_steps(1.9e3 / rf_nco.get_sample_frequency_Hz(waveforms_per_sample));
 
   // create modulator
   modulator audio_modulator;
@@ -71,26 +62,23 @@ void transmitter_start(tx_mode_t mode, double frequency_Hz) {
   gpio_init(debug_pin_2);
   gpio_set_dir(debug_pin_2, GPIO_OUT);
 
-  while (1) // Loop iterates at 125e6/(256*32) = 15259 Hz
+  while (1)
   {
     // get a sample to transmit
-    if (enable_test_tone) {
-      //single tone
-      //audio = test_tone1.get_sample(f1);
-      //two tone
-      audio = test_tone1.get_sample(f1) / 2;
-      audio += test_tone2.get_sample(f2) / 2;
-    } else if(enable_serial_data) {
-      audio = getchar_timeout_us(100);
-      if(audio == PICO_ERROR_TIMEOUT)
-      {
-        //set power level to 0
-        magnitude_pwm.output_sample(0);
-        return;
-      }
+    if(enable_serial_data) {
+
+      //timeout ends transmission
+      audio = getchar_timeout_us(1000);
+      if(audio == PICO_ERROR_TIMEOUT) return;
+
+      //read audio from serial port
       audio <<= 8;
+
     } else {
-      audio = mic_adc.get_sample() * 96;
+
+      //read audio from mic
+      audio = mic_adc.get_sample() * 96; //multiply by a gain value
+
     }
 
     // demodulate
@@ -107,11 +95,83 @@ void transmitter_start(tx_mode_t mode, double frequency_Hz) {
   }
 }
 
+//example application
 int main() {
   stdio_init_all();
   stdio_set_translate_crlf(&stdio_usb, false);
   disable_power_save();
 
-  printf("starting\n");
-  transmitter_start(USB, 14.175e6);
+  //chose default values
+  double frequency = 14.175e6;
+  tx_mode_t mode = USB;
+
+  printf("Pi Pico Transmitter>\r\n");
+  while(1)
+  {
+    int command = getchar_timeout_us(0);
+    if(command != PICO_ERROR_TIMEOUT)
+    {
+      switch(command)
+      {
+        //set frequency
+        case 'f':
+          scanf("%lf", &frequency);
+          printf("frequency: %lf Hz\r\n", frequency);
+          break;
+
+        //set mode
+        case 'm':
+          while(1)
+          {
+            char command = fgetc(stdin);
+            if(command == 'a')
+            {
+              printf("MODE=AM\r\n");
+              mode = AM;
+              break;
+            }
+            else if(command == 'f')
+            {
+              printf("MODE=FM\r\n");
+              mode = FM;
+              break;
+            }
+            else if(command == 'l')
+            {
+              printf("MODE=LSB\r\n");
+              mode = LSB;
+              break;
+            }
+            else if(command == 'u')
+            {
+              printf("MODE=USB\r\n");
+              mode = USB;
+              break;
+            }
+          }
+          break;
+
+        //transmit serial data
+        case 's':
+          printf("Starting transmitter\r\n");
+          transmitter_start(mode, frequency, true);
+          printf("Transmitter timed out\r\n");
+          break;
+
+        //help
+        case '?':
+          printf("\r\nSerial Interface Help\r\n");
+          printf("=====================\r\n\r\n");
+          printf("fxxxxxx, set frequency Hz\r\n");
+          printf("mx, set mode, a=AM, f=FM, l=LSB, u=USB\r\n");
+          printf("s, transmit serial data - (timeout terminates)\r\n");
+          printf("?, Help (this message)\r\n");
+          break;
+
+      }
+      printf("Pi Pico Transmitter>\r\n");
+    }
+
+    sleep_us(1000);
+  }
 }

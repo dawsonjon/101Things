@@ -24,6 +24,7 @@
 
 class nco {
 private:
+  uint8_t m_rf_pin;
   PIO pio = pio0;
   uint32_t nco_dma, chain_dma, sm;
   dma_channel_config nco_dma_cfg;
@@ -51,6 +52,7 @@ private:
 
 public:
   nco(const uint8_t rf_pin, double frequency_Hz);
+  ~nco();
   double get_sample_frequency_Hz(uint8_t waveforms_per_sample);
   uint8_t get_waveforms_per_sample(double sample_frequency_Hz);
   void output_sample(int16_t phase, uint8_t waveforms_per_sample);

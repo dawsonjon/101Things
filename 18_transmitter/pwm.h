@@ -25,6 +25,7 @@ private:
 
 public:
   pwm(const uint8_t magnitude_pin);
+  ~pwm();
   void output_sample(uint16_t magnitude);
 };
 

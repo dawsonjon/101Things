@@ -37,6 +37,8 @@ void nco::initialise_waveform_buffer(uint32_t buffer[],
 }
 
 nco::nco(const uint8_t rf_pin, double frequency_Hz) {
+  m_rf_pin = rf_pin;
+
   // calculate some constants
   const double normalised_frequency = frequency_Hz / 125e6;
   const double period_clocks = 125e6 / frequency_Hz;
@@ -102,6 +104,18 @@ nco::nco(const uint8_t rf_pin, double frequency_Hz) {
       &chain_dma_cfg, false); // always writes to data DMA read address
   dma_channel_start(nco_dma);
 
+}
+
+nco::~nco() {
+  pio_sm_unclaim(pio, sm);
+  dma_channel_cleanup(nco_dma);
+  dma_channel_cleanup(chain_dma);
+  dma_channel_unclaim(nco_dma);
+  dma_channel_unclaim(chain_dma);
+
+  //disable GPIO, pullup/pulldown resistors should be installed
+  //to switch off transistors when pin is high impedance
+  gpio_deinit(m_rf_pin);
 }
 
 //returns the nearest number of waveforms per sample for a given sample frequency

@@ -308,6 +308,11 @@ set of equations can be employed for the amplifier's design. The commonly used
 `spreadsheet <http://www.wa0itp.com/classeampdesignrevb.xls>`__ serves this
 purpose and aids in designing class-E amplifiers.
 
+Although the BS170 and IRF510 have traditionaly been popular choices for
+home-brew HF amplifiers, the FDT86256 has been used successfully in other designs.
+The advantages of this device are the very low Coss of only 8pF. The max Vds 
+voltage of 150V and Id of 3A provide plenty of design margin for a 5W amplifier.
+
 To simplify the design process, I developed a Python script based on the
 equations found in this spreadsheet. The script calculates values for each
 amateur radio band. It uses standard component values, as opposed to exact
@@ -391,7 +396,7 @@ results.
 
 Another challenge associated with class-E amplifiers is the task of driving the
 gate. The output from the Pi Pico does not possess adequate drive strength or
-voltage swing for this purpose. Additionally, the MOSFET gate incorporates a
+voltage swing for this purpose. Additionally, the MOSFET gate has a
 parasitic capacitance, necessitating a low-impedance driver with high drive
 strength.
 
@@ -464,7 +469,13 @@ retaining the frequency and phase information it is necessary to modulate the
 amplitude. The amplifier modulating the amplitude also needs to provide high
 efficiency, so it makes sense to use a switching amplifier here too. The design
 implements a very simple class-D audio amplifier. The basis of the design is a
-MOSFET half bridge using a p-channel and n-channel MOSFET. Although it is
+MOSFET half bridge using a p-channel and n-channel MOSFET. Although there are
+probably plenty of devices that could be used n this amplifier I have chosen
+the IRF510 and IRF9510. There are devices with much better RDS-on
+specifications, but these devices are fairly ubiquitous, and can easily handle
+the switching frequency.
+
+Although it is
 possible to use n-channel MOSFETS for the high side of the bridge, this would
 complicate the gate driving arrangement. This simpler arrangement allows both
 halves of the bridge to be driven with a single gate driver. Initially, I had

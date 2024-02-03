@@ -1,5 +1,6 @@
 #ifndef _inc_font
 #define _inc_font
+#include <stdint.h>
 
 /*
  * Format

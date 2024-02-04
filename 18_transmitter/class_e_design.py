@@ -1,3 +1,16 @@
+#  _  ___  _   _____ _     _                 
+# / |/ _ \/ | |_   _| |__ (_)_ __   __ _ ___ 
+# | | | | | |   | | | '_ \| | '_ \ / _` / __|
+# | | |_| | |   | | | | | | | | | | (_| \__ \
+# |_|\___/|_|   |_| |_| |_|_|_| |_|\__, |___/
+#                                  |___/    
+#
+# Copyright (c) Jonathan P Dawson 2024
+# filename: class_e_design.py
+# description:
+# License: MIT
+#
+
 """Design Class-E Amplifier using standard Capacitor Values and torroid wound inductors"""
 
 from math import sqrt, log10, floor, pi

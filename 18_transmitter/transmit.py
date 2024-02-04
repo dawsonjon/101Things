@@ -1,4 +1,17 @@
-"""Capture Audio from Pi PICO using serial interface"""
+#  _  ___  _   _____ _     _                 
+# / |/ _ \/ | |_   _| |__ (_)_ __   __ _ ___ 
+# | | | | | |   | | | '_ \| | '_ \ / _` / __|
+# | | |_| | |   | | | | | | | | | | (_| \__ \
+# |_|\___/|_|   |_| |_| |_|_|_| |_|\__, |___/
+#                                  |___/    
+#
+# Copyright (c) Jonathan P Dawson 2024
+# filename: transmit.py
+# description:
+# License: MIT
+#
+
+"""Stream Audio to Pi Pico Transmitter"""
 
 import os
 import sys
@@ -6,6 +19,12 @@ import subprocess
 import numpy as np
 import serial
 import serial.tools.list_ports
+
+if len(sys.argv) < 2:
+  print("Stream Audio to pi pico transmitter")
+  print("")
+  print("Usage: python transmit.py [filename]")
+  sys.exit(-1)
 
 #get a list of available serial ports
 print("Available Ports")

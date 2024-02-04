@@ -14,6 +14,7 @@
 #include "pico/stdlib.h"
 #include <cmath>
 #include <stdio.h>
+#include <ctype.h>
 
 #include "adc.h"
 #include "modulator.h"
@@ -101,28 +102,37 @@ void transmitter_start(tx_mode_t mode, double frequency_Hz,
 // example application
 int main() {
   stdio_init_all();
-  stdio_set_translate_crlf(&stdio_usb, false);
   disable_power_save();
 
   // chose default values
-  double frequency = 14.175e6;
+  uint32_t frequency = 14.175e6;
   tx_mode_t mode = USB;
 
   printf("Pi Pico Transmitter>\r\n");
   while (1) {
     int command = getchar_timeout_us(0);
+    char frequency_string[100];
     if (command != PICO_ERROR_TIMEOUT) {
+      printf("command: %c\r\n", command);
       switch (command) {
       // set frequency
       case 'f':
-        scanf("%lf", &frequency);
-        printf("frequency: %lf Hz\r\n", frequency);
+        frequency = 0;
+        while(1)
+        {
+          char c = getchar();
+          if(!isdigit(c)) break;
+          frequency *= 10;
+          frequency += (c - '0');
+        }
+        printf("terminate: %c\r\n");
+        printf("frequency: %u Hz\r\n", frequency);
         break;
 
       // set mode
       case 'm':
         while (1) {
-          char command = fgetc(stdin);
+          char command = getchar();
           if (command == 'a') {
             printf("MODE=AM\r\n");
             mode = AM;
@@ -146,7 +156,9 @@ int main() {
       // transmit serial data
       case 's':
         printf("Starting transmitter\r\n");
+        stdio_set_translate_crlf(&stdio_usb, false);
         transmitter_start(mode, frequency, true);
+        stdio_set_translate_crlf(&stdio_usb, true);
         printf("Transmitter timed out\r\n");
         break;
 

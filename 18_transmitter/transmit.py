@@ -57,13 +57,22 @@ mode = {"AM":"a", "FM":"f", "LSB":"l", "USB":"u"}[mode]
 
 filename = sys.argv[1]
 with serial.Serial(port, 12000000, rtscts=1) as ser:
-  command_string = "f%u m%s s"%(frequency, mode)
-  ser.write(bytes(command_string, "utf8"))
-  while 1:
-    with open(filename, 'rb') as input_file:
-      samples = input_file.read(1024)
-      while 1:
-        ser.write(samples)
-        samples = input_file.read(1024)
-        if len(samples) < 1024:
-          break
+
+    #clear any data in buffer
+    while ser.in_waiting:
+      ser.read(ser.in_waiting)
+
+    #repeatedly play back input file
+    while 1:
+      with open(filename, 'rb') as input_file:
+
+          ser.write(bytes("f%u m%s s"%(frequency, mode), "utf8"))
+          while ser.in_waiting:
+            ser.read(ser.in_waiting)
+
+          samples = input_file.read(1024)
+          while 1:
+            ser.write(samples)
+            samples = input_file.read(1024)
+            if len(samples) < 1024:
+              break

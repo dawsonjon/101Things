@@ -7,7 +7,7 @@ modules. The radio modules have an 8-pin interface, providing:
 + An Antenna Connection 
 + An I2C connection to the host microcontroller 
 + Stereo Audio Output capable of driving 32 ohm headphes directly 
-+ Power Supply 2.7 to 3.3v
++ Power Supply 2.7v to 3.3v
 
 The example application is written in micropython, a high level,
 beginner-friendly programming language. These could easily be customised for

@@ -8,6 +8,10 @@
 # Copyright (c) Jonathan P Dawson 2024
 # filename: image2fbuf.py
 # description:
+#
+# Converts an image file into a binary file that can be read directly into a
+# micropython frameBuf object.
+#
 # License: MIT
 #
 

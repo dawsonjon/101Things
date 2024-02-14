@@ -12,6 +12,7 @@ Welcome to 101 Things's documentation!
 
    radio_receiver
    ham_transmitter
+   power_swr_meter
    guitar_effects
    timer
 

@@ -1,6 +1,10 @@
 Power and SWR Meter
 ===================
 
+
+.. image::  images/power_meter_thumbnail.png
+  :target: https://youtu.be/_b22atCT8KU
+
 Up until now, I have been measuring the output power of QRP transmitters using
 an oscilloscope to measure the RMS voltage across a dummy load. Assuming that
 the signal is a sinusoid and that the dummy load is 50 ohms, it is possible to

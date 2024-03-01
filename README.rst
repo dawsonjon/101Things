@@ -37,6 +37,12 @@ Raspberry Pi Pico Ham Radio Transmitter
 .. image::  docs/images/HamTransmitterThumbnail.png
   :target: https://youtu.be/PbhmQfPkNL0
 
+Raspberry Pi Power and SWR Meter
+"""""""""""""""""""""""""""""""""""""""
+
+.. image::  docs/images/power_meter_thumbnail.png
+  :target: https://youtu.be/_b22atCT8KU
+
 
 Getting the Code
 ----------------

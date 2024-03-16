@@ -35,9 +35,11 @@ def draw_image(display, filename):
     display.blit(fbuf, 0, 0, 0)
     display.show()
 
+average_batt_voltage = 0
 def draw_battery(display):
 
     """ Draw a battery level icon on screen. Uses pi-pico dedicated VSYS ADC channel """
+    global average_batt_voltage
 
     x = 0
     y = 0
@@ -48,22 +50,32 @@ def draw_battery(display):
     display.line(x+14, y+6, x+14, y+8, 1)
     display.line(x+15, y+2, x+15, y+6, 1)
     
-    analogIn = ADC(26)
-    batt_voltage = analogIn.read_u16() * 3.3 / 65536
+    analogIn = ADC(3)
+    batt_voltage = analogIn.read_u16() * 3.0 * 3.3 / 65536
+    average_batt_voltage = (0.6 * average_batt_voltage) + (0.4 * batt_voltage)
 
-    # based on 2 cell NiMH, values could be adjusted for different chemistry
+    # based on 2 AA cell, values could be adjusted for different chemistry
     batt_voltage_max = 3.0
-    batt_voltage_min = 0.9
+    batt_voltage_min = 2.0
     
-    if batt_voltage > batt_voltage_max:
-        batt_level = 4
-    elif batt_voltage < batt_voltage_min:
+    # based on 3 AA cell, values could be adjusted for different chemistry
+    #batt_voltage_max = 4.5
+    #batt_voltage_min = 3.0
+    
+    # based on 1 3.7/4.2v Lithium Polymer cell, values could be adjusted for different chemistry
+    #batt_voltage_max = 4.2
+    #batt_voltage_min = 3.4
+    
+    if average_batt_voltage > batt_voltage_max:
+        batt_level = 10
+    elif average_batt_voltage < batt_voltage_min:
         batt_level = 0
     else:
-        batt_level = (batt_voltage - batt_voltage_min) / (batt_voltage_max - batt_voltage_min)
+        batt_level = (average_batt_voltage - batt_voltage_min) / (batt_voltage_max - batt_voltage_min)
         batt_level = round(batt_level * 10.0)
+        
     for i in range(2, 7):
-        display.line(x+2, y+i, x+12-batt_level, y+i, 1)
+        display.line(x+2, y+i, x+2+batt_level, y+i, 1)
 
 def draw_signal_strength(display, radio):
 
@@ -145,6 +157,9 @@ def save_settings(settings):
 #disable power save mode to reduce regulator noise
 psu_mode = Pin(23, Pin.OUT)
 psu_mode.value(1)
+
+#set ADC pin to input to read battery
+adcpin = machine.Pin(29, machine.Pin.IN)
 
 #configure buttons
 left  = Pin(22, Pin.IN, Pin.PULL_UP)

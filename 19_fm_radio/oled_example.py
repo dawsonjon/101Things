@@ -54,15 +54,16 @@ def draw_battery(display):
     batt_voltage = analogIn.read_u16() * 3.0 * 3.3 / 65536
     average_batt_voltage = (0.6 * average_batt_voltage) + (0.4 * batt_voltage)
 
-    # based on 2 AA cell, values could be adjusted for different chemistry
+    # values could be adjusted for different chemistry
+    # based on 2 AA cell
     batt_voltage_max = 3.0
     batt_voltage_min = 2.0
     
-    # based on 3 AA cell, values could be adjusted for different chemistry
+    # based on 3 AA cell 
     #batt_voltage_max = 4.5
     #batt_voltage_min = 3.0
     
-    # based on 1 3.7/4.2v Lithium Polymer cell, values could be adjusted for different chemistry
+    # based on 1 3.7/4.2v Lithium Polymer cell
     #batt_voltage_max = 4.2
     #batt_voltage_min = 3.4
     

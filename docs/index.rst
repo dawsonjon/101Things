@@ -10,11 +10,12 @@ Welcome to 101 Things's documentation!
    :maxdepth: 1
    :caption: Contents:
 
-   radio_receiver
-   ham_transmitter
+   fm_radio
    power_swr_meter
-   guitar_effects
+   ham_transmitter
    timer
+   guitar_effects
+   radio_receiver
 
 
 

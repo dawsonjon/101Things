@@ -407,7 +407,7 @@
     "pinned_symbol_libs": []
   },
   "meta": {
-    "filename": "things.kicad_pro",
+    "filename": "fm_radio.kicad_pro",
     "version": 1
   },
   "net_settings": {
@@ -473,7 +473,7 @@
     },
     "net_format_name": "",
     "page_layout_descr_file": "",
-    "plot_directory": "",
+    "plot_directory": "/home/jon/101Things/19_fm_radio/schematic/",
     "spice_current_sheet_as_root": false,
     "spice_external_command": "spice \"%I\"",
     "spice_model_current_sheet_as_root": true,

@@ -3,7 +3,7 @@ FM Radio using RDA5807M and MicroPython
 
 
 .. image:: images/fm_radio_thumbnail.png
-  :target: https://youtu.be/???????????????
+  :target: https://youtu.be/bj8MgL6k2tU
 
 Quick Links
 -----------

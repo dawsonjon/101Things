@@ -46,7 +46,7 @@ Raspberry Pi Power and SWR Meter
 Raspberry Pi Pico FM Radio
 """""""""""""""""""""""""""
 
-.. image:: images/fm_radio_thumbnail.png
+.. image:: docs/images/fm_radio_thumbnail.png
   :target: https://youtu.be/bj8MgL6k2tU
 
 Getting the Code

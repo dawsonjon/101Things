@@ -1,0 +1,2 @@
+python pyboard.py --device /dev/ttyACM0 -f cp rda5807.py :
+python pyboard.py --device /dev/ttyACM0 -f cp serial_example.py :main.py

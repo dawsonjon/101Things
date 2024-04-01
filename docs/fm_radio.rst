@@ -8,6 +8,8 @@ FM Radio using RDA5807M and MicroPython
 Quick Links
 -----------
 
+If you want to give it a go, you can find the code here:
+`FM Radio Code <https://github.com/dawsonjon/101Things/tree/master/19_fm_radio/>`_
 
 RDA5807M
 --------

@@ -7,13 +7,15 @@ Welcome to 101 Things's documentation!
 ======================================
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
    :caption: Contents:
 
-   radio_receiver
+   fm_radio
+   power_swr_meter
    ham_transmitter
-   guitar_effects
    timer
+   guitar_effects
+   radio_receiver
 
 
 

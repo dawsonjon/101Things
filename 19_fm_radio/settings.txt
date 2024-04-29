@@ -1,0 +1,3 @@
+frequency_MHz:88.0
+volume:2
+mute:False

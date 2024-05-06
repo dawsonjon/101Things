@@ -52,7 +52,7 @@ Raspberry Pi Pico FM Radio
 8-inch Dobsonian Telescope
 """"""""""""""""""""""""""
 
-.. image::  images/telescope_thumbnail.png
+.. image::  docs/images/telescope_thumbnail.png
   :target: https://youtu.be/KxbAh8ndkbY
 
 

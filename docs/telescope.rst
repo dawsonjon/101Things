@@ -197,7 +197,7 @@ Before committing to the final positioning of the primary mirror, I wanted to
 check that I could bring distant objects into focus. Having performed a rough
 alignment I mounted a 25mm eyepiece and attempted to focus on some distant (and
 not-so-distant) objects. I live about 4 miles from the `Malvern Hills
-<https://en.wikipedia.org/wiki/Malvern_Hills>` and can see these from where I
+<https://en.wikipedia.org/wiki/Malvern_Hills>`_ and can see these from where I
 live. I hadn't yet built the mount, so used dining room chairs to point the
 telescope towards the horizon. I found that the calculated position of the
 primary mirror worked almost exactly as predicted. With the focuser extended by
@@ -208,13 +208,92 @@ with the naked eye, which was quite promising.
 The focuser I bought has quite a lot of travel and with the focuser close to
 fully extended I was able to focus on objects a hundred meters or so away.
 
+Dobsonian Mount
+---------------
+
+This second video shows the rest of the telescope build along with some early
+testing.
+
+.. image::  images/telescope_thumbnail2.jpg
+  :target: https://youtu.be/aUAmSaV4Oio
+
+The Dobsonian mount follows a traditional design.  One advantage of the 2020
+profile is that the altitude bearings can be bolted directly to the OTA
+eliminating the need for a tube cradle. The altitude bearing can easily be moved
+along the tube to achieve a perfect balance. For simplicity, I used whole
+circles for the altitude bearings, which also add rigidity to the tube.
+
+I used vinyl tape to cover the edges of the bearings which run on square teflon
+pads screwed to the rocker box. I couldn't find the recommended brand so just
+went for something with a bit of surface texture. The bearings run on Teflon
+pads screwed to the rocker box. I found that placing the bearings at the same
+height was critical, but once this had been adjusted they moved with a smooth
+and pleasing motion.
+
+.. image:: images/telescope_dobsonian_mount.png
+
+The base of the rocker base and the base plate are also made from plywood
+disks. Including the altitude bearings that's 4 disks in total. These could
+be cut accurately using a router, but I used a simple disk-cutting jig on the
+band saw. This allows the disks to be made very quickly and accurately.
+
+The sides of the rocker box need accurately cut curves and have a pattern of
+cutouts to reduce weight. Although the CNC router isn't very quick it does give
+very accurate results and a nice finish.
+
+In this design, I attached the Teflon pads to the base of the rocker box and
+covered the base plate with vinyl laminate. I chose to work this way round
+because the top of the baseboard was completely smooth while the bottom of the
+rocker box has quite a few recessed screws. This does mean that I need a full
+disk for the base plate and can't make a three-legged version. I used a
+roller-skate bearing in the bottom of the rocker box which rotates around an M8
+bolt in the base plate. I think a simple bush would have been adequate here,
+but I had a bearing on hand.
+
+The telescope feet are made from three hockey pucks. I was quite pleased with
+the finished mount and I was surprised by the smoothness of the motion and the
+stability. I did find that there was some deflection in the unsupported corners
+of the rocker box and added some additional bracing to add stiffness in this
+area. I finished all the plywood parts using about half a dozen coats of lacquer
+to provide some protection from moisture. 
+
+Testing
+-------
+
+.. image:: images/telescope_moon.png
+  :width: 75%
+  :align: center
+
+Inevitably, since completing the telescope there haven't been many clear
+nights. The days are quite long at the moment, which makes it quite difficult
+to observe planets. I have been able to get some good views of the moon.
+
+Initially, I found it quite tricky to aim the telescope and track objects in the
+sky. With a bit of practice and careful use of the finder, I was able to aim
+the scope quite accurately. The motion of the Dobsonian mount seems quite good
+too, and once I worked out the right direction was able to nudge the telescope
+as objects moved out of view.
+
+I have been very pleased with the level of detail I have been able to see, it is
+possible to make out many features and navigate the surface. I can't wait to try
+observing some planets.
+
+
 What next?
 ----------
 
-Well, now the optical tube assembly is built and we can focus on distant
-objects. We have taken a collection of parts and we have a working telescope -
-although not yet a very practical one. In the next part of this project, I will
-be building a traditional Dobsonian mount. Then I can accurately colimate the
-telescope and get some first glimpses of the night sky...
+Although I haven't had much opportunity to put the telescope through its paces,
+I am pleased with the results so far and I am excited to try some more
+observing. There is a fair amount of light pollution in the area where I live,
+and have think it would be great to take it to some better observing sights.
 
+I think one of the biggest improvements I would now like to make is to improve
+the portability of the scope. I have seen several travel-scope designs that
+use truss tubes (or similar) that can be knocked down into a small portable
+unit. I would be interested in exploring these types of designs and as an
+ultimate goal would like to design a scope that can be 3d printed using an
+entry-level FDM printer.
 
+Another area I would like to explore is electronic control of the scope. I
+would like to think about designing an electronic finder to build a
+"push-to", or even a motorised "go-to" mount.

@@ -265,8 +265,6 @@ int main() {
   stdio_init_all();
   stdio_set_translate_crlf(&stdio_usb, false);
 
-  sleep_ms(10000);
-
   printf("initializing display...");
   st7735 display1(spi1, 12, 10, 11, 7, 6, 5);
   st7735 display2(spi1, 12, 10, 11, 7, 6, 4);

@@ -54,6 +54,7 @@ void mpu6050::get_pitch_roll(float &pitch, float &roll)
     float y = y_raw/16384.0f;
     float z = z_raw/16384.0f;
 
-    pitch = 180.0f * atan2f(x, sqrt(y*y + z*z))/M_PI;
-    roll = 180.0f * atan2f(y, sqrt(x*x + z*z))/M_PI;
+    //this depends on the orientation of the sensor
+    roll = 180.0f * atan2f(x, sqrt(y*y + z*z))/M_PI;
+    pitch = -180.0f * atan2f(z, sqrt(x*x + y*y))/M_PI;
 }

@@ -85,6 +85,15 @@ void transmit(tx_mode_t mode, double frequency_Hz,
       audio = mic_adc.get_sample() * 96; // multiply by a gain value
     }
 
+    if(audio > 32767)
+    {
+      audio = 32767;
+    }
+    else if(audio < -32767)
+    {
+      audio = -32767;
+    }
+    
     // demodulate
     gpio_put(debug_pin, 1);
     audio_modulator.process_sample(mode, audio, i, q, magnitude, phase,

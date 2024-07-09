@@ -80,5 +80,5 @@ void cordic_rectangular_to_polar(int16_t i, int16_t q, uint16_t &magnitude,
     }
   }
 
-  magnitude = (i_32 * recip_gain) >> 14;
+  magnitude = (i_32 * recip_gain) >> 15;
 }

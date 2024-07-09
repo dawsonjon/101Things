@@ -56,4 +56,28 @@ int main() {
     uut.process_sample(LSB, audio, i, q, magnitude, phase, 0);
     printf("%i %i %i %i %i\n", audio, i, q, magnitude, phase);
   }
+
+  for (uint16_t idx = 0; idx < 8192; idx++) {
+    // one tone
+    int16_t audio = 32768 * sin(2.0 * M_PI * idx * 0.7e3 / sample_rate);
+
+    uint16_t magnitude;
+    int16_t phase;
+    int16_t i;
+    int16_t q;
+    uut.process_sample(AM, audio, i, q, magnitude, phase, 0);
+    printf("%i %i %i %i %i\n", audio, i, q, magnitude, phase);
+  }
+
+  for (uint16_t idx = 0; idx < 8192; idx++) {
+    // one tone
+    int16_t audio = 32768 * sin(2.0 * M_PI * idx * 0.7e3 / sample_rate);
+
+    uint16_t magnitude;
+    int16_t phase;
+    int16_t i;
+    int16_t q;
+    uut.process_sample(FM, audio, i, q, magnitude, phase, 0);
+    printf("%i %i %i %i %i\n", audio, i, q, magnitude, phase);
+  }
 }

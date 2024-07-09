@@ -33,15 +33,18 @@ def plot_results(lines):
     i_list.append(int(i.strip()))
     q_list.append(int(q.strip()))
 
-  plt.plot(magnitude_list)
-  plt.plot(phase_list)
+  plt.title("Magnitude/Phase output")
+  plt.plot(magnitude_list, label = "Magnitude")
+  plt.plot(phase_list, label = "Phase")
+  plt.legend()
   plt.show()
 
   complex_data = np.array(i_list) + 1.0j * np.array(q_list)
   recovered_complex_data = 0.5 * np.array(magnitude_list) * np.exp(-1.0j * np.pi * np.array(phase_list) / 32768)
 
-  plt.plot(complex_data.real)
-  plt.plot(complex_data.imag)
+  plt.title("I/Q output")
+  plt.plot(complex_data.real, label="real")
+  plt.plot(complex_data.imag, label="imaginary")
   plt.show()
 
   spectrum = 20*np.log10(np.abs(np.fft.fftshift(np.fft.fft(np.hanning(len(complex_data)) * complex_data))))
@@ -50,7 +53,7 @@ def plot_results(lines):
 
   plt.figure()
   plt.grid(True)
-  plt.title("SSB Modulator Frequency Response")
+  plt.title("Modulator Frequency Response")
   plt.xlabel("Frequency (Hz)")
   plt.ylabel("Magnitude (dB)")
   plt.xlim([-6000, 6000])

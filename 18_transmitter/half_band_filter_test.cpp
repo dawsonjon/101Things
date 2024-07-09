@@ -22,7 +22,8 @@ int main() {
   half_band_filter filter;
 
   for (uint16_t idx = 0; idx < 1024; idx++) {
-    int16_t audio = idx == 0 ? 32767 : 0;
+    //int16_t audio = idx == 0 ? 32767 : 0;
+    int16_t audio = 32767;
     filter.filter(audio);
     printf("%i\n", audio);
   }

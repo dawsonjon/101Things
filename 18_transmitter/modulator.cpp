@@ -83,5 +83,7 @@ void modulator ::process_sample(tx_mode_t mode, int16_t audio, int16_t &i,
     q = (int32_t)q * 65500 >> 15;
 
     cordic_rectangular_to_polar(i, q, magnitude, phase);
+    magnitude = magnitude > 32767 ? 32767 : magnitude;
+    magnitude <<= 1;
   }
 }

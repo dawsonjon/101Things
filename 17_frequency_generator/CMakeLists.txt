@@ -1,6 +1,7 @@
 
 add_executable(frequency_generator
   frequency_generator.cpp
+  nco.cpp
 )
 
 pico_generate_pio_header(frequency_generator ${CMAKE_CURRENT_LIST_DIR}/stream_bits.pio)

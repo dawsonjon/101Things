@@ -482,6 +482,13 @@ cost of the material is a fraction of what a commercial enclosure would cost.
 I designed the enclosure using FreeCAD, the FreeCAD project and the STL files can be found 
 `here <https://github.com/dawsonjon/101Things/tree/master/22_inclinometer/enclosure>`_
 
+Power Supply
+------------
+
+Probably the simplest way to power a project like this would be using a car
+phone charger to directly power the Pi Pico. In my prototype, I wanted to wire
+the inclinometer directly. I went for the old-school option and used a 7805
+regulator with a suitable heatsink.
 
 Conclusion
 ----------

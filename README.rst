@@ -50,10 +50,17 @@ Raspberry Pi Pico FM Radio
   :target: https://youtu.be/bj8MgL6k2tU
 
 Raspberry Pi Pico Inclinometer
-"""""""""""""""""""""""""""
+""""""""""""""""""""""""""""""
 
 .. image:: docs/images/inclinometer_thumbnail.png
   :target: https://youtu.be/
+
+8-inch Dobsonian Telescope
+""""""""""""""""""""""""""
+
+.. image::  docs/images/telescope_thumbnail.png
+  :target: https://youtu.be/KxbAh8ndkbY
+
 
 Getting the Code
 ----------------

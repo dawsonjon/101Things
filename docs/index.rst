@@ -11,6 +11,7 @@ Welcome to 101 Things's documentation!
    :caption: Contents:
 
    inclinometer
+   telescope
    fm_radio
    power_swr_meter
    ham_transmitter

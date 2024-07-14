@@ -49,10 +49,10 @@ private:
                                   double normalised_frequency);
 
 public:
-  nco(const uint8_t rf_pin, double frequency_Hz);
+  nco(const uint8_t rf_pin, double clock_frequency_Hz, double frequency_Hz);
   ~nco();
-  double get_sample_frequency_Hz(uint8_t waveforms_per_sample);
-  uint8_t get_waveforms_per_sample(double sample_frequency_Hz);
+  double get_sample_frequency_Hz(double clock_frequency_Hz, uint8_t waveforms_per_sample);
+  uint8_t get_waveforms_per_sample(double clock_frequency_Hz, double sample_frequency_Hz);
   void output_sample(int16_t phase, uint8_t waveforms_per_sample);
 };
 

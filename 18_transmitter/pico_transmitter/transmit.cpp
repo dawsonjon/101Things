@@ -26,6 +26,7 @@ void transmit(tx_mode_t mode, double frequency_Hz,
   const uint8_t mic_pin = 28;
   const uint8_t magnitude_pin = 6;
   const uint8_t rf_pin = 8;
+  const double clock_frequency_Hz = rp2040.f_cpu();
 
   // Use ADC to capture MIC input
   adc mic_adc(mic_pin, 2);
@@ -34,13 +35,13 @@ void transmit(tx_mode_t mode, double frequency_Hz,
   pwm magnitude_pwm(magnitude_pin);
 
   // Use PIO to output phase/frequency controlled oscillator
-  nco rf_nco(rf_pin, frequency_Hz);
+  nco rf_nco(rf_pin, clock_frequency_Hz, frequency_Hz);
   const double sample_frequency_Hz = (mode == AM)    ? 12e3
                                      : (mode == FM)  ? 15e3
                                      : (mode == LSB) ? 10e3
                                                      : 10e3;
   const uint8_t waveforms_per_sample =
-      rf_nco.get_waveforms_per_sample(sample_frequency_Hz);
+      rf_nco.get_waveforms_per_sample(clock_frequency_Hz, sample_frequency_Hz);
 
   // create modulator
   modulator audio_modulator;
@@ -49,7 +50,7 @@ void transmit(tx_mode_t mode, double frequency_Hz,
   const double fm_deviation_Hz = 2.5e3; // 2.5kHz
   const uint32_t fm_deviation_f15 =
       round(2 * 32768.0 * fm_deviation_Hz /
-            rf_nco.get_sample_frequency_Hz(waveforms_per_sample));
+            rf_nco.get_sample_frequency_Hz(clock_frequency_Hz, waveforms_per_sample));
 
   int32_t audio;
   uint16_t magnitude;

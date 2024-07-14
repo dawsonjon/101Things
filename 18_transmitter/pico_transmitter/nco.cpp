@@ -36,12 +36,12 @@ void nco::initialise_waveform_buffer(uint32_t buffer[],
   }
 }
 
-nco::nco(const uint8_t rf_pin, double frequency_Hz) {
+nco::nco(const uint8_t rf_pin, double clock_frequency_Hz, double frequency_Hz) {
   m_rf_pin = rf_pin;
 
   // calculate some constants
-  const double normalised_frequency = frequency_Hz / 125e6;
-  const double period_clocks = 125e6 / frequency_Hz;
+  const double normalised_frequency = frequency_Hz / clock_frequency_Hz;
+  const double period_clocks = clock_frequency_Hz / frequency_Hz;
 
   // Each 256 bit waveform will not necessarily be a whole number of cycles,
   // we will probably be partway through a cycle at the end.
@@ -120,13 +120,13 @@ nco::~nco() {
 
 // returns the nearest number of waveforms per sample for a given sample
 // frequency
-uint8_t nco::get_waveforms_per_sample(double sample_frequency_Hz) {
-  return 125e6 / (waveform_length_bits * sample_frequency_Hz);
+uint8_t nco::get_waveforms_per_sample(double clock_frequency_Hz, double sample_frequency_Hz) {
+  return clock_frequency_Hz / (waveform_length_bits * sample_frequency_Hz);
 }
 
 // returns the exact sample frequency for a given number of waveforms per sample
-double nco::get_sample_frequency_Hz(uint8_t waveforms_per_sample) {
-  return 125e6 / (waveform_length_bits * waveforms_per_sample);
+double nco::get_sample_frequency_Hz(double clock_frequency_Hz, uint8_t waveforms_per_sample) {
+  return clock_frequency_Hz / (waveform_length_bits * waveforms_per_sample);
 }
 
 // Run NCO for one audio sample.

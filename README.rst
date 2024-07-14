@@ -49,6 +49,12 @@ Raspberry Pi Pico FM Radio
 .. image:: docs/images/fm_radio_thumbnail.png
   :target: https://youtu.be/bj8MgL6k2tU
 
+Raspberry Pi Pico Inclinometer
+"""""""""""""""""""""""""""
+
+.. image:: docs/images/inclinometer_thumbnail.png
+  :target: https://youtu.be/
+
 Getting the Code
 ----------------
 

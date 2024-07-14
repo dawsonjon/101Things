@@ -10,6 +10,7 @@ Welcome to 101 Things's documentation!
    :maxdepth: 1
    :caption: Contents:
 
+   inclinometer
    fm_radio
    power_swr_meter
    ham_transmitter

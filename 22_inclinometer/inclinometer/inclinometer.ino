@@ -156,114 +156,7 @@ class frame_buffer
 
 };
 
-// map constant onto a sector of flash 
-static const uint8_t __in_flash() __attribute__((aligned(FLASH_SECTOR_SIZE))) 
-flash_sector[FLASH_SECTOR_SIZE] = {0xff}; 
-
-float pitch_offset = 0.0f;
-float roll_offset = 0.0f;
-
-void save_setup_data()
-{
-    // store SSID for next time
-    uint8_t sector_to_write[FLASH_SECTOR_SIZE] = {0};
-    float * sector_as_floats = (float *)sector_to_write;
-    sector_as_floats[0] = pitch_offset;
-    sector_as_floats[1] = roll_offset;
-
-    const uint32_t address = (uint32_t) & (flash_sector[0]);
-    const uint32_t flash_address = address - XIP_BASE;
-
-    //!!! PICO is **very** fussy about flash erasing, there must be no code
-    //! running in flash.  !!!
-    //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    const uint32_t ints =
-        save_and_disable_interrupts(); // disable all interrupts
-
-    // safe to erase flash here
-    //--------------------------------------------------------------------------------------------
-    flash_range_erase(flash_address, FLASH_SECTOR_SIZE);
-    flash_range_program(flash_address, sector_to_write, FLASH_SECTOR_SIZE);
-    //--------------------------------------------------------------------------------------------
-
-    restore_interrupts(ints); // restore interrupts
-    //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    //!!! Normal operation resumed
-}
-
-void get_setup_data()
-{
-  volatile uint8_t *flash_sector_address = (uint8_t *)&flash_sector[0]; 
-  volatile float *sector_as_floats = (float *)flash_sector_address;
-
-  // settings stored
-  if (flash_sector_address[0] != 0xff) {
-    printf("Retrieving stored settings...\n");
-    pitch_offset = sector_as_floats[0];
-    roll_offset = sector_as_floats[1];
-    printf("pitch offset: %3.0f roll offset: %3.0f\r\n", pitch_offset, roll_offset);
-  }
-
-  // settings not stored - assume zero
-  else {
-    printf("No settings stored, use defaults\n");
-    pitch_offset = 0.0f;
-    roll_offset = 0.0f;
-    save_setup_data();
-  }
-
-}
-
-void setup_menu(float pitch, float roll)
-{
-
-  while(1)
-  {
-    printf("Menu\n");
-    printf(" p - enter pitch offset\n");
-    printf(" r - enter roll offset\n");
-    printf(" a - auto offset\n");
-    printf(" x - save and exit menu\n");
-
-    char command = getchar();
-    if (command == 'p') {
-      printf("pitch offfset degrees: \r\n");
-      char line [256];
-      float data;
-      while(1)
-      {
-        fgets(line, 256, stdin);
-        if (sscanf(line, "%f", &data) == 1) break;
-      }
-      pitch_offset = data;
-      printf("pitch offset: %3.0f roll offset: %3.0f\r\n", pitch_offset, roll_offset);
-    } else if (command == 'r') {
-      printf("roll offset degrees: \n");
-      char line [256];
-      float data;
-      while(1)
-      {
-        fgets(line, 256, stdin);
-        if (sscanf(line, "%f", &data) == 1) break;
-      }
-      roll_offset = data;
-      printf("pitch offset: %3.0f roll offset: %3.0f\r\n", pitch_offset, roll_offset);
-    } else if (command == 'a') {
-      printf("auto_offset\r\n");
-      pitch_offset = -pitch;
-      roll_offset = -roll;
-      printf("pitch offset: %3.0f roll offset: %3.0f\r\n", pitch_offset, roll_offset);
-    } else if (command == 'x') {
-      save_setup_data();
-      break;
-    }
-  }
-
-}
-
-int main() {
-  stdio_init_all();
-  stdio_set_translate_crlf(&stdio_usb, false);
+void setup() {
 
   printf("initializing display...");
   st7735 display1(spi1, 12, 10, 11, 7, 6, 5);
@@ -283,37 +176,42 @@ int main() {
   printf("initializing accelerometer...");
   mpu6050 accelerometer(i2c0, 16, 17);
   printf("initialized\n");
+  accelerometer.zero_gyro();
 
-  get_setup_data();
-  
+  uint64_t time_us=time_us_64();
+  float pitch_gyro = 0.0f;
+  float roll_gyro = 0.0f;
+
+  float pitch, roll, pitch_rate, roll_rate;
   while(1)
   {
+    uint64_t delta_time_us;
+    for(uint8_t idx=0; idx<100; ++idx)
+    {
+      accelerometer.get_pitch_roll(pitch, roll);
+      accelerometer.get_pitch_roll_rate(pitch_rate, roll_rate);
 
-    float pitch, roll;
-    accelerometer.get_pitch_roll(pitch, roll);
-    printf("pitch: %f roll: %f\n", pitch, roll);
-    
+      delta_time_us = time_us_64() - time_us;
+      time_us += delta_time_us;
+
+      pitch_gyro = (0.9999 * (pitch_gyro + (pitch_rate * delta_time_us / 1e6))) + (0.0001*pitch);
+      roll_gyro  = (0.9999 * (roll_gyro + (roll_rate * delta_time_us / 1e6))) + (0.0001*roll);
+    }
+
+    printf("pitch: %+8.1f roll: %+8.1f pitch_rate %+8.1f roll_rate %+8.1f pitch_gyro %+8.1f roll_gyro %+8.1f delta t %+8.1f\n", pitch, roll, pitch_rate, roll_rate, pitch_gyro, roll_gyro, delta_time_us/1e6);
     char angle_text[4];
-
-    snprintf(angle_text, 4, "%3.0f", pitch+pitch_offset); 
-    the_frame_buffer.image_rotate(s1_side, pitch+pitch_offset);
+    snprintf(angle_text, 4, "%3.0f", pitch_gyro); 
+    the_frame_buffer.image_rotate(s1_side, pitch_gyro);
     the_frame_buffer.text(angle_text, 56, 96, RGB565(255, 70, 0), Grotesk16x32);
     display1.draw(the_frame_buffer.get_buffer(), 160*128*2);
-    snprintf(angle_text, 4, "%3.0f", roll+roll_offset); 
-    the_frame_buffer.image_rotate(s1_back, roll+roll_offset);
+
+    snprintf(angle_text, 4, "%3.0f", roll_gyro); 
+    the_frame_buffer.image_rotate(s1_back, roll_gyro);
     the_frame_buffer.text(angle_text, 56, 96, RGB565(255, 70, 0), Grotesk16x32);
     display2.draw(the_frame_buffer.get_buffer(), 160*128*2);
-
-
-    printf("press x to enter setup\n");
-
-    char cmd = getchar_timeout_us(100000);
-    if (cmd == 'x') setup_menu(pitch, roll);
-
   }
-
-
-  printf("initialized\n");
-
 }
 
+void loop() {
+    
+}

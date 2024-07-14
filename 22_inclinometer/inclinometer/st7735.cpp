@@ -1,3 +1,16 @@
+//  _  ___  _   _____ _     _
+// / |/ _ \/ | |_   _| |__ (_)_ __   __ _ ___
+// | | | | | |   | | | '_ \| | '_ \ / _` / __|
+// | | |_| | |   | | | | | | | | | | (_| \__ \
+// |_|\___/|_|   |_| |_| |_|_|_| |_|\__, |___/
+//                                  |___/
+//
+// Copyright (c) Jonathan P Dawson 2024
+// filename: st7735.cpp
+// description: Interface to st7735 display
+// License: MIT
+//
+
 #include "st7735.h"
 
 const uint8_t NOP = 0x0;

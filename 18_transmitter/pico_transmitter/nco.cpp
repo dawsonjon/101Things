@@ -169,7 +169,6 @@ void nco::output_sample(int16_t phase, uint8_t waveforms_per_sample) {
 
   // check for PIO stalls
   if (pio->fdebug) {
-    printf("pio stall, potential lost samples debug: %x\n", pio->fdebug);
     pio->fdebug = 0xffffffff; // clear all
   }
 

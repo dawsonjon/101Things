@@ -6,22 +6,22 @@
 //                                  |___/
 //
 // Copyright (c) Jonathan P Dawson 2023
-// filename: half_band_filter.cpp
+// filename: half_band_filter2.cpp
 // description:
 // License: MIT
 //
 
-#include "half_band_filter.h"
-#include <cstdio>
+#include "half_band_filter2.h"
 
-half_band_filter ::half_band_filter() {
+half_band_filter2 ::half_band_filter2() {
   pointer = 0;
   for (uint8_t tap = 0; tap < buf_size; tap++) {
     bufi[tap] = 0;
+    bufq[tap] = 0;
   }
 }
 
-void half_band_filter ::filter(int16_t &i) {
+void half_band_filter2 ::filter(int16_t &i, int16_t &q) {
 
   // filter kernel:
   // 0, 0, 1, 0, -6, 0, 16, 0, -32, 0, 60, 0, -102, 0, 164, 0, -254, 0, 381, 0,
@@ -30,6 +30,7 @@ void half_band_filter ::filter(int16_t &i) {
   // -102, 0, 60, 0, -32, 0, 16, 0, -6, 0, 1, 0, 0
 
   bufi[pointer] = i;
+  bufq[pointer] = q;
   pointer++;
   pointer &= 0x3f;
   const uint8_t idx2 = pointer + 2 & 0x3f;
@@ -82,5 +83,25 @@ void half_band_filter ::filter(int16_t &i) {
           (((int32_t)bufi[idx28] + (int32_t)bufi[idx34]) * -3347) +
           (((int32_t)bufi[idx30] + (int32_t)bufi[idx32]) * 10387) +
           (((int32_t)bufi[idx31]) * 16384) >>
+      15);
+
+  q = (
+      //(bufi[pointer]  + bufi[idx62]) * 0) +
+      (((int32_t)bufq[idx2] + (int32_t)bufq[idx60]) * 1) +
+          (((int32_t)bufq[idx4] + (int32_t)bufq[idx58]) * -6) +
+          (((int32_t)bufq[idx6] + (int32_t)bufq[idx56]) * 16) +
+          (((int32_t)bufq[idx8] + (int32_t)bufq[idx54]) * -32) +
+          (((int32_t)bufq[idx10] + (int32_t)bufq[idx52]) * 60) +
+          (((int32_t)bufq[idx12] + (int32_t)bufq[idx50]) * -102) +
+          (((int32_t)bufq[idx14] + (int32_t)bufq[idx48]) * 164) +
+          (((int32_t)bufq[idx16] + (int32_t)bufq[idx46]) * -254) +
+          (((int32_t)bufq[idx18] + (int32_t)bufq[idx44]) * 381) +
+          (((int32_t)bufq[idx20] + (int32_t)bufq[idx42]) * -561) +
+          (((int32_t)bufq[idx22] + (int32_t)bufq[idx40]) * 818) +
+          (((int32_t)bufq[idx24] + (int32_t)bufq[idx38]) * -1209) +
+          (((int32_t)bufq[idx26] + (int32_t)bufq[idx36]) * 1876) +
+          (((int32_t)bufq[idx28] + (int32_t)bufq[idx34]) * -3347) +
+          (((int32_t)bufq[idx30] + (int32_t)bufq[idx32]) * 10387) +
+          (((int32_t)bufq[idx31]) * 16384) >>
       15);
 }

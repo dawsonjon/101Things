@@ -100,7 +100,7 @@ with serial.Serial(port, 12000000, rtscts=1) as ser:
     while 1:
         ser.write(bytes("f%u m%s s"%(frequency, mode), "utf8"))
         while ser.in_waiting:
-          ser.read(ser.in_waiting)
+          print(ser.read(ser.in_waiting))
 
         samples = bytes(generate_tone(mode, 1e3))
         while 1:

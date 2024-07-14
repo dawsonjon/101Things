@@ -12,7 +12,6 @@
 //
 
 #include <cmath>
-#include <stdio.h>
 
 #include "cordic.h"
 #include "modulator.h"

@@ -17,7 +17,6 @@
 #include "hardware/pwm.h"
 #include "pico/stdlib.h"
 #include <cmath>
-#include <stdio.h>
 
 class pwm {
 private:

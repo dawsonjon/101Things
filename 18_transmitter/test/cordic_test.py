@@ -15,7 +15,7 @@ import subprocess
 import numpy as np
 from matplotlib import pyplot as plt
 
-subprocess.run(["g++",  "cordic_test.cpp", "cordic.cpp",  "-o",  "cordic"], check=True)
+subprocess.run(["g++",  "cordic_test.cpp", "../pico_transmitter/cordic.cpp",  "-o",  "cordic"], check=True)
 process = subprocess.run(["./cordic"], check=True, capture_output=True)
 i_list = []
 q_list = []

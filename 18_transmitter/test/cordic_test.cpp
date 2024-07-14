@@ -15,7 +15,7 @@
 #include <math.h>
 #include <stdlib.h>
 
-#include "cordic.h"
+#include "../pico_transmitter/cordic.h"
 
 int main() {
 

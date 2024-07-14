@@ -14,8 +14,6 @@
 #ifndef __MODULATOR_H__
 #define __MODULATOR_H__
 
-#include <stdio.h>
-#include <cmath>
 #include "half_band_filter.h"
 #include "half_band_filter2.h"
 

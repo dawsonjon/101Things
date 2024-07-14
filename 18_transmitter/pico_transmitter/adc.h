@@ -17,7 +17,6 @@
 #include "hardware/adc.h"
 #include "hardware/pwm.h"
 #include "hardware/sync.h"
-#include "pico/stdlib.h"
 
 
 class adc {

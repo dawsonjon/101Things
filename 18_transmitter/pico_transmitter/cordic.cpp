@@ -12,9 +12,7 @@
 //
 
 #include <cstdint>
-#include <cstdio>
 #include <math.h>
-#include <stdlib.h>
 
 const uint8_t cordic_iterations = 16;
 int16_t thetas[cordic_iterations + 1];

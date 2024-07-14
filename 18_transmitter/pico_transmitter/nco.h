@@ -17,10 +17,8 @@
 #include "hardware/dma.h"
 #include "hardware/pio.h"
 #include "hardware/sync.h"
-#include "pico/stdlib.h"
 #include "stream_bits.pio.h"
 #include <cmath>
-#include <stdio.h>
 
 class nco {
 private:

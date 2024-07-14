@@ -11,10 +11,8 @@
 // License: MIT
 //
 
-#include "pico/stdlib.h"
-#include <cmath>
-#include <stdio.h>
-#include <ctype.h>
+
+#include "Arduino.h"
 
 #include "transmit.h"
 #include "adc.h"
@@ -72,17 +70,16 @@ void transmit(tx_mode_t mode, double frequency_Hz,
     if (enable_serial_data) {
 
       // timeout ends transmission
-      audio = getchar_timeout_us(1000);
-      if (audio == PICO_ERROR_TIMEOUT)
-        return;
-
+      if (!Serial.available()) return;
+      audio = Serial.read();
+      
       // read audio from serial port
       audio <<= 8;
 
     } else {
 
       // read audio from mic
-      audio = mic_adc.get_sample() * 96; // multiply by a gain value
+      audio = mic_adc.get_sample() * 16; // multiply by a gain value
     }
 
     // demodulate

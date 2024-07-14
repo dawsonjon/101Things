@@ -12,6 +12,7 @@
 //
 
 #include "signal_generator.h"
+#include <cmath>
 
 signal_generator::signal_generator() {
   // initialise lookup table

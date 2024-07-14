@@ -13,10 +13,7 @@
 
 #ifndef SIGNAL_GENERATOR_H__
 #define SIGNAL_GENERATOR_H__
-
-#include "pico/stdlib.h"
-#include <cmath>
-#include <stdio.h>
+#include <cstdint>
 
 static int16_t sin_table[1024];
 class signal_generator {

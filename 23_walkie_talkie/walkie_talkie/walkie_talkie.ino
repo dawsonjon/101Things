@@ -1,19 +1,17 @@
+#include <Updater.h>
+#include <Updater_Signing.h>
+
 #include <WiFi.h>
 #include <WiFiUdp.h>
 
 #include "PWMAudio.h"
 #include "ADCAudio.h"
+#include "GetWifiConnection.h"
 
-#include "pico/cyw43_arch.h"
+#include "pico/cyw43_arch.h" //needed to set regulator mode
 
-#ifndef STASSID
-#define STASSID
-#define STAPSK
-#endif
-
-//const char remoteIP[] = "192.168.1.101";
 arduino::IPAddress remoteIP;
-unsigned int dataPort = 5005;  // local port to listen on
+unsigned int dataPort = 5005;       // local port to listen on
 unsigned int advertisePort = 5006;  // local port to listen on
 WiFiUDP Udp;
 
@@ -27,20 +25,16 @@ PWMAudio audioOutput;
 uint16_t outputSamples[2][1024];
 uint8_t pingPong = 0;
 
-void blink_slow()
+void blink(uint8_t blinks)
 {
-  digitalWrite(LED_BUILTIN, HIGH);  // turn the LED on (HIGH is the voltage level)
-  delay(500);                      // wait for a second
-  digitalWrite(LED_BUILTIN, LOW);   // turn the LED off by making the voltage LOW
-  delay(500);                      // wait for a second
-}
-
-void blink_fast()
-{
-  digitalWrite(LED_BUILTIN, HIGH);  // turn the LED on (HIGH is the voltage level)
-  delay(100);                      // wait for a second
-  digitalWrite(LED_BUILTIN, LOW);   // turn the LED off by making the voltage LOW
-  delay(100);                      // wait for a second
+  for(uint8_t blink=0; blink<blinks; blink++)
+  {
+    digitalWrite(LED_BUILTIN, HIGH);  // turn the LED on (HIGH is the voltage level)
+    delay(100);                       // wait for a second
+    digitalWrite(LED_BUILTIN, LOW);   // turn the LED off by making the voltage LOW
+    delay(100);                       // wait for a second
+  }
+  delay(500);
 }
 
 void led_on()
@@ -50,52 +44,10 @@ void led_on()
 
 void led_off()
 {
-  digitalWrite(LED_BUILTIN, HIGH);  // turn the LED on (HIGH is the voltage level)
+  digitalWrite(LED_BUILTIN, LOW);  // turn the LED on (HIGH is the voltage level)
 }
 
-void setup() {
-
-  Serial.begin(115200);
-  WiFi.begin(STASSID, STAPSK);
-    while (WiFi.status() != WL_CONNECTED) {
-    Serial.print('.');
-    blink_slow();
-  }
-  Serial.print("Connected! IP address: ");
-  Serial.println(WiFi.localIP());
-  Serial.printf("UDP server on port %d\n", advertisePort);
-  
-  Serial.println("pairing....");
-  Udp.begin(advertisePort);
-  while(1)
-  {
-    //advertise presence by advertising
-    Udp.beginPacket(IPAddress(255, 255, 255, 255), advertisePort);
-    Udp.write("walkie talkie advertisement");
-    Udp.endPacket();
-
-    //check for advertisements
-    int packetSize = Udp.parsePacket();
-    if(packetSize)
-    {
-      remoteIP = Udp.remoteIP();
-      Serial.println();
-      Serial.print("pairing with: ");
-      Serial.println(remoteIP);
-      break;
-    }
-
-    Serial.print(".");
-    blink_fast();
-
-  }
-  //quite regulator
-  cyw43_arch_gpio_put(1, 1);
-  Serial.println("connecting....");  
-  audioInput.begin(16, 10000);
-  audioOutput.begin(0, 10000);
-}
-
+//use alaw compression to fit 12-bit pcm sample into a single byte
 uint8_t alaw_compress(int16_t pcm_val) {
    const uint16_t ALAW_MAX = 0xFFF;
    uint16_t mask = 0x800;
@@ -116,6 +68,7 @@ uint8_t alaw_compress(int16_t pcm_val) {
    return (sign | ((position - 4) << 4) | lsb) ^ 0x55;
 }
 
+//use alaw expansion to fit convert single byte to 12-bit PCM
 int16_t alaw_expand(uint8_t u_val) {
    uint8_t sign = 0x00;
    uint8_t position = 0;
@@ -146,12 +99,15 @@ void exchangeData(WiFiClient client, bool isClient)
   {
     //send audio data
     uint16_t *inputSamples;
+    int32_t amplitude = 0;
     audioInput.input_samples(inputSamples);
     for(uint16_t i = 0; i<1024; ++i)
     {
       int16_t sample = inputSamples[i];
       dc = dc + ((sample - dc) >> 1);
-      packetBuffer[i]=alaw_compress(sample-dc);
+      sample -= dc;
+      amplitude += sample * sample;
+      packetBuffer[i]=alaw_compress(sample);
     }
     client.write(packetBuffer, 1024);
 
@@ -169,54 +125,132 @@ void exchangeData(WiFiClient client, bool isClient)
       audioOutput.output_samples(outputSamples[pingPong], 1024);
       pingPong ^= 1;
     }
+    UDPAdvertisement();
   }
 }
 
-long lastAdvertisementTime = 0;
-void loop() {
-  
-  if(BOOTSEL)
+void UDPAdvertisement()
+{
+  static long lastAdvertisementTime = 0;
+  if(millis() - lastAdvertisementTime > 1000)
   {
-    Serial.println("connecting to server");
-    WiFiClient client;
-    client.connect(remoteIP, dataPort);
-    if(client)
-    {
-      exchangeData(client, true);
-    }
-    client.stop(); 
+    lastAdvertisementTime = millis();
+    //continue advertising
+    Udp.beginPacket(IPAddress(255, 255, 255, 255), advertisePort);
+    Udp.write("walkie talkie advertisement");
+    Udp.endPacket();
   }
-  else
+}
+
+void pair()
+{
+  Serial.println("Finding other walkie talkies on network");
+  
+  while(1)
   {
-    Serial.println("waiting for connection");
-    WiFiServer server(dataPort);
-    server.begin();
-    delay(1000);
+    //advertise presence by advertising
+    UDPAdvertisement();
+
+    //check for advertisements
+    int packetSize = Udp.parsePacket();
+    if(packetSize)
+    {
+      remoteIP = Udp.remoteIP();
+      Serial.println();
+      Serial.print("pairing with: ");
+      Serial.println(remoteIP);
+      break;
+    }
+
+    blink(2);
+  }
+}
+
+void runServer() {
+  Serial.println("server running waiting for connection");
+  WiFiServer server(dataPort);
+  server.begin();
+  while(!BOOTSEL)
+  {
+    blink(3);
     WiFiClient client = server.accept();
     if(client)
     {
       if(client.connected())
       {
         Serial.println("connected");
+        led_on();
         exchangeData(client, false);
+        led_off();
         Serial.println("disconnected");
       }
       client.stop();
     }
-    server.stop();
+    UDPAdvertisement();
   }
+  Serial.println("server stopped");
+  server.stop();
+}
 
-  delay(1000);
+void runClient()
+{
+    Serial.println("connecting to server");
+    while(BOOTSEL)
+    {
+      WiFiClient client;
 
+      client.connect(remoteIP, dataPort);
+      if(client)
+      {
+        Serial.println("connected");
+        led_on();
+        exchangeData(client, true);
+        led_off();
+        Serial.println("disconnected");
+      }
+      client.stop();
+      UDPAdvertisement();
+    }
+}
 
-  if(millis() - lastAdvertisementTime > 1000)
+void connectToWiFi() {
+  char ssid[33];
+  char password[64];
+  getWiFiConnection(ssid, password);
+  WiFi.begin(ssid, password);
+  while (WiFi.status() != WL_CONNECTED) {
+    Serial.print('.');
+    blink(1);
+  }
+  Serial.print("Connected! IP address: ");
+  Serial.println(WiFi.localIP());
+}
+
+void setup() {
+
+  Serial.begin(115200);
+  connectToWiFi();
+
+  //start UDP port and begin pairing
+  Serial.printf("UDP server on port %d\n", advertisePort);
+  Udp.begin(advertisePort);
+  pair();
+
+  //quiet regulator
+  cyw43_arch_gpio_put(1, 1);
+  audioInput.begin(16, 10000);
+  audioOutput.begin(0, 10000);
+}
+
+void loop() {
+  
+  if(BOOTSEL)
   {
-    lastAdvertisementTime = millis();
-    //continue advertising
-    Serial.println("advert");
-    Udp.beginPacket(IPAddress(255, 255, 255, 255), advertisePort);
-    Udp.write("walkie talkie advertisement");
-    Udp.endPacket();
+    runClient();
+  }
+  else
+  {
+    runServer();
   }
 
 }

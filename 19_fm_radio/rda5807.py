@@ -126,28 +126,28 @@ class Radio:
         
         if region == "US/Europe":
             self.start_frequency_MHz = 87.0
-            band = 0
+            self.band = 0
         elif region == "Japan":
             self.start_frequency_MHz = 76.0
-            band = 1
+            self.band = 1
         elif region == "World Wide":
             self.start_frequency_MHz = 76.0
-            band = 2
+            self.band = 2
         elif region == "East Europe":
             self.start_frequency_MHz = 65.0
-            band = 3
+            self.band = 3
             
         self.frequency_spacing_MHz = frequency_spacing_kHz/1000.0
         if frequency_spacing_kHz == 100:
-            spacing = 0
+            self.spacing = 0
         elif frequency_spacing_kHz == 200:
-            spacing = 1
+            self.spacing = 1
         elif frequency_spacing_kHz == 50:
-            spacing = 2
+            self.spacing = 2
         elif frequency_spacing_kHz == 25:
-            spacing = 3
+            self.spacing = 3
             
-        self.write_reg(RDA5807M_REG_TUNING, 0x10 | (band << 2) | spacing)
+        self.write_reg(RDA5807M_REG_TUNING, 0x10 | (self.band << 2) | self.spacing)
         self.clear_rds_data()
         
     def clear_rds_data(self):
@@ -269,7 +269,7 @@ class Radio:
 
         self.clear_rds_data()
         frequency_steps = int((frequency_MHz - self.start_frequency_MHz)/self.frequency_spacing_MHz)
-        data = (frequency_steps << 6) | 0x10
+        data = (frequency_steps << 6) | 0x10 | (self.band << 2) | self.spacing)
         self.write_reg(RDA5807M_REG_TUNING, data)
         
     def get_signal_strength(self):

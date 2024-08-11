@@ -55,6 +55,11 @@ Raspberry Pi Pico FM Radio
 .. image::  docs/images/telescope_thumbnail.png
   :target: https://youtu.be/KxbAh8ndkbY
 
+Breadboard Software Defined Radio
+"""""""""""""""""""""""""""""""""
+
+.. image::  docs/images/breadboard_radio_thumbnail.png
+  :target: https://youtu.be/lS1ZRMIYLjA
 
 Getting the Code
 ----------------

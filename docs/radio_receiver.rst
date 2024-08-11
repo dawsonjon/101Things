@@ -30,6 +30,9 @@ SDR receiver covering the LW, MW, and SW bands. With the ability to receive
 signals from halfway around the globe. I can't help but think that my younger
 self would have been truly impressed!
 
+If you are interested in a simpler version that can be built on a breadboard using mostly through-hole components, checkout the breadboard version
+`here <https://101-things.readthedocs.io/en/latest/breadboard_radio.html>`_. 
+
 .. image:: images/concept.svg
 
 Features
@@ -366,6 +369,10 @@ interested in these bands, it could even be built into a magnetic loop
 or ferrite antenna.
 
 .. image:: https://raw.githubusercontent.com/wiki/dawsonjon/PicoRX/images/low_pass_filters.png
+
+There are a few online tools that can be used to calculate the filter values, I used `this one. <https://markimicrowave.com/technical-resources/tools/lc-filter-design-tool/>`_
+
+.. image:: images/pi_pico_rx_filters.png
 
 In practice, strong local AM stations can cause interference, since
 these tend to be at lower frequencies the low-pass filters do little to

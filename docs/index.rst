@@ -10,6 +10,7 @@ Welcome to 101 Things's documentation!
    :maxdepth: 1
    :caption: Contents:
 
+   breadboard_radio
    telescope
    fm_radio
    power_swr_meter

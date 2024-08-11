@@ -33,7 +33,7 @@ self would have been truly impressed!
 If you are interested in a simpler version that can be built on a breadboard using mostly through-hole components, checkout the breadboard version
 `here <https://101-things.readthedocs.io/en/latest/breadboard_radio.html>`_. 
 
-.. image:: images/concept.svg
+.. image:: images/breadboard_radio_schematic.svg
 
 Features
 """"""""

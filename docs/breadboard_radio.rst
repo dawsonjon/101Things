@@ -186,6 +186,13 @@ to build with their pi-pico. While it might not live up to expensive commercial
 radios, its low cost and simplicity make it a valuable tool for receiving
 signals from around the globe.
 
+Breadboard Radio - Part 2
+-------------------------
+
+
+.. image:: images/breadboard_radio_thumbnail2.png
+  :target: https://youtu.be/QfNhv-COuvU
+
 
 Exploring the Pi Pico 2
 """""""""""""""""""""""

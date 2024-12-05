@@ -25,7 +25,7 @@ Quick Links
 -----------
 
 You can find the code on the `GitHub page <https://github.com/dawsonjon/PicoRX>`_ 
-including a precompiled `firmware in .uf2 format <https://github.com/dawsonjon/PicoRX/raw/master/build/picorx.uf2>`_.
+including a precompiled `firmware in .uf2 format <https://github.com/dawsonjon/PicoRX/releases>`_.
 
 What Can This Receiver Do?
 --------------------------

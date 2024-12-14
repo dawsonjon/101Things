@@ -1,6 +1,8 @@
 #ifndef __SSTV_DECODER_H__
 #define __SSTV_DECODER_H__
 
+#include "half_band_filter2.h"
+
 enum e_mode 
 {
   martin, 
@@ -58,9 +60,16 @@ class c_sstv_decoder
   uint32_t vis_accumulator[10];
   uint32_t pixel_accumulator;
   uint16_t pixel_n;
+  int16_t last_phase = 0;
+  uint8_t ssb_phase = 0;
+  half_band_filter2 ssb_filter;
+  int16_t frequency;
 
   public:
+  c_sstv_decoder();
   bool decode(uint16_t sample, uint16_t &line, uint16_t &col, uint8_t &colour, uint8_t &pixel, e_state &debug_state);
+  bool decode_iq(int16_t sample_i, int16_t sample_q, uint16_t &pixel_y, uint16_t &pixel_x, uint8_t &pixel_colour, uint8_t &pixel, int16_t &frequency);
+  bool decode_audio(int16_t audio, uint16_t &pixel_y, uint16_t &pixel_x, uint8_t &pixel_colour, uint8_t &pixel, int16_t &frequency);
   
 };
 

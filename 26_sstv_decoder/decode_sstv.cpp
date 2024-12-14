@@ -2,6 +2,7 @@
 #include <algorithm>
 #include <cmath>
 #include "decode_sstv.h"
+#include "cordic.h"
 
 #include <iostream>
 
@@ -59,12 +60,14 @@ void c_sstv_decoder :: decode_vis(uint16_t vis, s_sstv_mode & sstv_mode)
 
   if((vis & 0x30) == 0x20)
   {
+    std::cerr << "martin";
     sstv_mode.mode = martin;
     sstv_mode.hsync_pulse_ms = 4.862;
     sstv_mode.colour_gap_ms = 0.572;
   }
   else if((vis & 0x30) == 0x30)
   {
+    std::cerr << "scottie";
     sstv_mode.mode = scottie;
     sstv_mode.hsync_pulse_ms = 9;
     sstv_mode.colour_gap_ms = 1.5;
@@ -110,6 +113,8 @@ void c_sstv_decoder :: decode_vis(uint16_t vis, s_sstv_mode & sstv_mode)
     }
   }
 
+  std::cerr << " " << sstv_mode.width << " " << sstv_mode.height << std::endl;
+
 }
 
 uint8_t c_sstv_decoder :: frequency_to_brightness(uint16_t x)
@@ -124,6 +129,82 @@ bool parity_check(uint8_t x)
   x ^= x >> 2;
   x ^= x >> 1;
   return (~x) & 1;
+}
+
+c_sstv_decoder :: c_sstv_decoder()
+{
+  cordic_init();
+}
+
+bool c_sstv_decoder :: decode_audio(int16_t audio, uint16_t &pixel_y, uint16_t &pixel_x, uint8_t &pixel_colour, uint8_t &pixel, int16_t &frequency)
+{
+    // shift frequency by +FS/4
+    //       __|__
+    //   ___/  |  \___
+    //         |
+    //   <-----+----->
+
+    //        | ____
+    //  ______|/    \
+    //        |
+    //  <-----+----->
+
+    // filter -Fs/4 to +Fs/4
+
+    //        | __
+    //  ______|/  \__
+    //        |
+    //  <-----+----->
+
+    ssb_phase = (ssb_phase + 1) & 3u;
+    audio = audio >> 1;
+
+    const int16_t audio_i[4] = {audio, 0, (int16_t)-audio, 0};
+    const int16_t audio_q[4] = {0, (int16_t)-audio, 0, audio};
+    int16_t ii = audio_i[ssb_phase];
+    int16_t qq = audio_q[ssb_phase];
+    ssb_filter.filter(ii, qq);
+
+    // shift frequency by -FS/4
+    //         | __
+    //   ______|/  \__
+    //         |
+    //   <-----+----->
+
+    //     __ |
+    //  __/  \|______
+    //        |
+    //  <-----+----->
+
+    const int16_t sample_i[4] = {(int16_t)-qq, (int16_t)-ii, qq, ii};
+    const int16_t sample_q[4] = {ii, (int16_t)-qq, (int16_t)-ii, qq};
+    int16_t i = sample_i[ssb_phase];
+    int16_t q = sample_q[ssb_phase];
+
+    return decode_iq(i, q, pixel_y, pixel_x, pixel_colour, pixel, frequency);
+}
+
+
+bool c_sstv_decoder :: decode_iq(int16_t sample_i, int16_t sample_q, uint16_t &pixel_y, uint16_t &pixel_x, uint8_t &pixel_colour, uint8_t &pixel, int16_t &smoothed_sample_16)
+{
+
+  uint16_t magnitude;
+  int16_t phase;
+
+  cordic_rectangular_to_polar(sample_i, sample_q, magnitude, phase);
+  frequency = last_phase-phase;
+  last_phase = phase;
+
+  int16_t sample = (int32_t)frequency*15000>>16;
+
+
+  static uint32_t smoothed_sample = 0;
+  smoothed_sample = ((smoothed_sample << 3) + sample - smoothed_sample) >> 3;
+  smoothed_sample_16 = std::min(std::max(smoothed_sample, (uint32_t)1000u), (uint32_t)2500u);
+
+  e_state debug_state;
+  return decode(smoothed_sample_16, pixel_y, pixel_x, pixel_colour, pixel, debug_state);
+
 }
 
 bool c_sstv_decoder :: decode(uint16_t sample, uint16_t &pixel_y, uint16_t &pixel_x, uint8_t &pixel_colour, uint8_t &pixel, e_state &debug_state)
@@ -145,7 +226,7 @@ bool c_sstv_decoder :: decode(uint16_t sample, uint16_t &pixel_y, uint16_t &pixe
     case vsync_1:
 
 
-      if(sample < 2100 && sample > 1700)
+      if(sample < 2200 && sample > 1600)
       {
         sync_counter += scale;
       }
@@ -160,6 +241,7 @@ bool c_sstv_decoder :: decode(uint16_t sample, uint16_t &pixel_y, uint16_t &pixe
 
       if(sync_counter > 3*vsync_samples/4)
       {
+        std::cerr << "vsync_2" << std::endl;
         sync_counter = 0;
         state = vsync_2;
         timeout = (vsync_samples/4+vsync_gap_samples)>>fraction_bits;
@@ -185,6 +267,7 @@ bool c_sstv_decoder :: decode(uint16_t sample, uint16_t &pixel_y, uint16_t &pixe
 
       if(sync_counter > vsync_gap_samples/4 || timeout==0)
       {
+        std::cerr << "vsync_3" << std::endl;
         timeout = vsync_samples>>fraction_bits;
         sync_counter = 0;
         state = vsync_3;
@@ -193,6 +276,7 @@ bool c_sstv_decoder :: decode(uint16_t sample, uint16_t &pixel_y, uint16_t &pixe
       timeout--;
       if(timeout == 0)
       {
+        std::cerr << "vsync_0" << "timeout" << std::endl;
         sync_counter = 0;
         state = vsync_1;
       }
@@ -218,6 +302,7 @@ bool c_sstv_decoder :: decode(uint16_t sample, uint16_t &pixel_y, uint16_t &pixe
       timeout--;
       if((sync_counter > 3*vsync_samples/4) || (timeout == 0))
       {
+        std::cerr << "vis_start" << std::endl;
         timeout = (vsync_samples/4) >> fraction_bits;
         sync_counter = 0;
         state = vis_start;
@@ -352,8 +437,9 @@ bool c_sstv_decoder :: decode(uint16_t sample, uint16_t &pixel_y, uint16_t &pixe
       }
 
       //end of image
-      if(y == 256)
+      if(y == sstv_mode.height)
       {
+        std::cerr << "vsync_1" << std::endl;
         state = vsync_1;
         sync_counter = 0;
         break;

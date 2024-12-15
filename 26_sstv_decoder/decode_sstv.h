@@ -70,6 +70,7 @@ class c_sstv_decoder
   bool decode(uint16_t sample, uint16_t &line, uint16_t &col, uint8_t &colour, uint8_t &pixel, e_state &debug_state);
   bool decode_iq(int16_t sample_i, int16_t sample_q, uint16_t &pixel_y, uint16_t &pixel_x, uint8_t &pixel_colour, uint8_t &pixel, int16_t &frequency);
   bool decode_audio(int16_t audio, uint16_t &pixel_y, uint16_t &pixel_x, uint8_t &pixel_colour, uint8_t &pixel, int16_t &frequency);
+  void get_mode(s_sstv_mode &mode);
   
 };
 

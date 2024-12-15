@@ -54,35 +54,20 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     a = a + (~b) + 1;
 #endif
 
-ILI934X::ILI934X(spi_inst_t *spi, uint8_t cs, uint8_t dc, uint8_t rst, uint16_t width, uint16_t height, ILI934X_ROTATION rotation)
+ILI934X::ILI934X(spi_inst_t *spi, uint8_t cs, uint8_t dc, uint16_t width, uint16_t height, ILI934X_ROTATION rotation)
 {
     _spi = spi;
     _cs = cs;
     _dc = dc;
-    _rst = rst;
     _init_width = _width = width;
     _init_height = _height = height;
     _rotation = rotation;
+    _invert_colours = false;
 
-    dma_tx = dma_claim_unused_channel(true);
-    dma_config = dma_channel_get_default_config(dma_tx);
-    channel_config_set_transfer_data_size(&dma_config, DMA_SIZE_8);
-    channel_config_set_dreq(&dma_config, spi_get_dreq(_spi, true));
-    channel_config_set_read_increment(&dma_config, true);
-    channel_config_set_write_increment(&dma_config, false);
-}
-
-void ILI934X::reset()
-{
-    //gpio_put(_rst, 0);
-    //sleep_us(100);
-    gpio_put(_rst, 1);
 }
 
 void ILI934X::init()
 {
-    reset();
-
     _write(_SWRST, NULL, 0);
     sleep_ms(5);
     _write(_RDDSDR, (uint8_t *)"\x03\x80\x02", 3);
@@ -182,12 +167,12 @@ void ILI934X::_setRotation(ILI934X_ROTATION rotation, bool invert_colours)
     _write(_MADCTL, (uint8_t *)buffer, 1);
 }
 
-void ILI934X::writeHLine(uint16_t x, uint16_t y, uint16_t w, uint16_t line[])
+void ILI934X::writeHLine(uint16_t x, uint16_t y, uint16_t w, const uint16_t line[])
 {
     _writeBlock(x, y, x+w-1, y);
     _data((uint8_t *)line, w * 2);
 }
-void ILI934X::writeVLine(uint16_t x, uint16_t y, uint16_t h, uint16_t line[])
+void ILI934X::writeVLine(uint16_t x, uint16_t y, uint16_t h, const uint16_t line[])
 {
     _writeBlock(x, y, x, y+h-1);
     _data((uint8_t *)line, h * 2);
@@ -339,6 +324,7 @@ void ILI934X::clear(uint16_t colour)
 void ILI934X::_write(uint8_t cmd, uint8_t *data, size_t dataLen)
 {
     gpio_put(_dc, 0);
+    sleep_us(1);
     gpio_put(_cs, 0);
     sleep_us(1);
 
@@ -364,18 +350,11 @@ void ILI934X::_data(uint8_t *data, size_t dataLen)
 {
 
     gpio_put(_dc, 1);
+    sleep_us(1);
     gpio_put(_cs, 0);
     sleep_us(1);
-
-    //dma_channel_configure(dma_tx, &dma_config,
-    //                      &spi_get_hw(_spi)->dr,
-    //                      data,
-    //                      dataLen,
-    //                      true);
-
     spi_write_blocking(_spi, data, dataLen);
-    //dma_channel_wait_for_finish_blocking(dma_tx);
-    sleep_us(1);
+    sleep_us(2);
     gpio_put(_cs, 1);
 
 }

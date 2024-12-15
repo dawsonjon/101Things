@@ -109,14 +109,13 @@ enum ILI934X_ROTATION
 class ILI934X
 {
 public:
-    ILI934X(spi_inst_t *spi, uint8_t cs, uint8_t dc, uint8_t rst, uint16_t width = 240, uint16_t height = 320, ILI934X_ROTATION rotation = R0DEG);
+    ILI934X(spi_inst_t *spi, uint8_t cs, uint8_t dc, uint16_t width = 240, uint16_t height = 320, ILI934X_ROTATION rotation = R0DEG);
 
-    void reset();
     void init();
     void setRotation(ILI934X_ROTATION rotation, bool invert_colours);
     void setPixel(uint16_t x, uint16_t y, uint16_t colour);
-    void writeHLine(uint16_t x, uint16_t y, uint16_t w, uint16_t line[]);
-    void writeVLine(uint16_t x, uint16_t y, uint16_t h, uint16_t line[]);
+    void writeHLine(uint16_t x, uint16_t y, uint16_t w, const uint16_t line[]);
+    void writeVLine(uint16_t x, uint16_t y, uint16_t h, const uint16_t line[]);
     void fillRect(uint16_t x, uint16_t y, uint16_t h, uint16_t w, uint16_t colour);
     void drawLine(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16_t color);
     void clear(uint16_t colour = COLOUR_BLACK);

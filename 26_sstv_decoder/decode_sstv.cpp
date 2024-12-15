@@ -4,8 +4,6 @@
 #include "decode_sstv.h"
 #include "cordic.h"
 
-#include <iostream>
-
 //from the sample number work out the colour and x/y coordinates
 void c_sstv_decoder :: sample_to_pixel(uint16_t &x, uint16_t &y, uint8_t &colour, uint32_t image_sample)
 {
@@ -60,14 +58,12 @@ void c_sstv_decoder :: decode_vis(uint16_t vis, s_sstv_mode & sstv_mode)
 
   if((vis & 0x30) == 0x20)
   {
-    std::cerr << "martin";
     sstv_mode.mode = martin;
     sstv_mode.hsync_pulse_ms = 4.862;
     sstv_mode.colour_gap_ms = 0.572;
   }
   else if((vis & 0x30) == 0x30)
   {
-    std::cerr << "scottie";
     sstv_mode.mode = scottie;
     sstv_mode.hsync_pulse_ms = 9;
     sstv_mode.colour_gap_ms = 1.5;
@@ -112,9 +108,6 @@ void c_sstv_decoder :: decode_vis(uint16_t vis, s_sstv_mode & sstv_mode)
       sstv_mode.colour_time_ms = 73.216;
     }
   }
-
-  std::cerr << " " << sstv_mode.width << " " << sstv_mode.height << std::endl;
-
 }
 
 uint8_t c_sstv_decoder :: frequency_to_brightness(uint16_t x)
@@ -241,7 +234,6 @@ bool c_sstv_decoder :: decode(uint16_t sample, uint16_t &pixel_y, uint16_t &pixe
 
       if(sync_counter > 3*vsync_samples/4)
       {
-        std::cerr << "vsync_2" << std::endl;
         sync_counter = 0;
         state = vsync_2;
         timeout = (vsync_samples/4+vsync_gap_samples)>>fraction_bits;
@@ -267,7 +259,6 @@ bool c_sstv_decoder :: decode(uint16_t sample, uint16_t &pixel_y, uint16_t &pixe
 
       if(sync_counter > vsync_gap_samples/4 || timeout==0)
       {
-        std::cerr << "vsync_3" << std::endl;
         timeout = vsync_samples>>fraction_bits;
         sync_counter = 0;
         state = vsync_3;
@@ -276,7 +267,6 @@ bool c_sstv_decoder :: decode(uint16_t sample, uint16_t &pixel_y, uint16_t &pixe
       timeout--;
       if(timeout == 0)
       {
-        std::cerr << "vsync_0" << "timeout" << std::endl;
         sync_counter = 0;
         state = vsync_1;
       }
@@ -302,7 +292,6 @@ bool c_sstv_decoder :: decode(uint16_t sample, uint16_t &pixel_y, uint16_t &pixe
       timeout--;
       if((sync_counter > 3*vsync_samples/4) || (timeout == 0))
       {
-        std::cerr << "vis_start" << std::endl;
         timeout = (vsync_samples/4) >> fraction_bits;
         sync_counter = 0;
         state = vis_start;
@@ -353,7 +342,6 @@ bool c_sstv_decoder :: decode(uint16_t sample, uint16_t &pixel_y, uint16_t &pixe
               vis |= (1 << (idx-1));
             }
           }
-          std::cerr << "parity" << (int)parity_check(vis) << std::endl;
 
           //configure decoder based on vis code
           decode_vis(vis, sstv_mode);
@@ -439,7 +427,6 @@ bool c_sstv_decoder :: decode(uint16_t sample, uint16_t &pixel_y, uint16_t &pixe
       //end of image
       if(y == sstv_mode.height)
       {
-        std::cerr << "vsync_1" << std::endl;
         state = vsync_1;
         sync_counter = 0;
         break;
@@ -459,7 +446,6 @@ bool c_sstv_decoder :: decode(uint16_t sample, uint16_t &pixel_y, uint16_t &pixe
           {
             const uint32_t samples_since_confirmed = image_sample-confirmed_sync_sample;
             const uint16_t num_lines = round(1.0*samples_since_confirmed/samples_per_line);
-            //std::cerr << (image_sample - last_hsync_sample)/scale << " " << 1.0*samples_per_line/scale << " " << num_lines << " " << 1.0*samples_since_confirmed/(num_lines*scale) << std::endl;
             mean_samples_per_line = mean_samples_per_line - (mean_samples_per_line >> 2) + ((samples_since_confirmed/num_lines) >> 2);
           }
         }
@@ -480,4 +466,9 @@ bool c_sstv_decoder :: decode(uint16_t sample, uint16_t &pixel_y, uint16_t &pixe
   debug_state = state;
   return pixel_complete;
 
+}
+
+void c_sstv_decoder :: get_mode(s_sstv_mode &mode)
+{
+  mode = sstv_mode;  
 }

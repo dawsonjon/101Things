@@ -64,7 +64,7 @@ Breadboard Software Defined Radio
 SSTV Decoder
 """"""""""""
 
-.. image::  docs/images/sstv/sstv_decoder_thumbnail.png
+.. image::  docs/images/sstv/thumbnail.png
   :target: https://youtu.be/FraeQk6Fj2I
 
 Getting the Code

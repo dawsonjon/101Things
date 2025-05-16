@@ -43,9 +43,9 @@ While ILI9341 SPI displays are supported, and often used in earlier projects, th
 | Pi Pico 2W  | Yes           | Yes                      | Yes                    |
 +-------------+---------------+--------------------------+------------------------+
 
-The ST7796 display I used has an SPI interface, and is inexpensive and widely available. I chose a 4.0-inch version. Ensure the display you choose supports SPI and is supplied with the correct voltage. Some displays allow selection between 5V and 3.3V using a jumper.
+The ST7796 display I used has an SPI interface, and is inexpensive and widely available. I chose a 4.0-inch version. Ensure the display you choose supports SPI and is supplied with the correct voltage. Some displays allow selection between 5v and 3.3v using a jumper.
 
-Displays with 3.3V I/O are directly compatible with the Pico. The "4-wire" SPI interface requires only MOSI and SCK, along with chip select (CS) and data/command (DC) lines. While the display includes a hardware reset pin, it can be safely tied to 3.3V, and I have found software reset to be reliable.
+Displays with 3.3v I/O are directly compatible with the Pico. The "4-wire" SPI interface requires only MOSI and SCK, along with chip select (CS) and data/command (DC) lines. While the display includes a hardware reset pin, it can be safely tied to 3.3v, and I have found software reset to be reliable.
 
 The display wiring is shown below:
 
@@ -94,7 +94,7 @@ Software
 
 The core planetarium code is written in C++ and can even be compiled to run on a desktop PC. Some of the hardware-specific operations, such as the display driver have been tailored to the Raspberry Pi Pico platform.
 
-A demo version is available as an `Arduino sketch <https://github.com/dawsonjon/PicoSSTV/tree/main/sstv_decoder>`__. The easiest way to set up a C++ development environment for the Pico is via the `Arduino Pico port by Earle Philhower <https://github.com/earlephilhower/arduino-pico>`__, which supports both the standard Pico and the Wi-Fi-enabled Pico W.
+A demo version is available as an `Arduino sketch <https://github.com/dawsonjon/Pico-Planetarium/tree/main/pico_planetarium>`__. The easiest way to set up a C++ development environment for the Pico is via the `Arduino Pico port by Earle Philhower <https://github.com/earlephilhower/arduino-pico>`__, which supports both the standard Pico and the Wi-Fi-enabled Pico W.
 
 This toolchain can be installed in just a few minutes using the `Boards Manager instructions <https://github.com/earlephilhower/arduino-pico?tab=readme-ov-file#installing-via-arduino-boards-manager>`__, and is supported by extensive `online documentation <https://arduino-pico.readthedocs.io/en/latest/>`__.
 
@@ -187,7 +187,7 @@ For each star the catalog includes its Right Ascension (RA), Declination (DEC), 
 
 .. image:: images/planetarium/ra_dec.png
 
-I preprocess the data using a Python script that converts the coordinates to 3D Cartesian (x, y, z) format for efficient rendering. The preprocessing step avoids costly trigonometric calculations during rendering. The stars can then be rotated in real-time, using matrix multiplications, to match the observer’s time and location, ensuring fast performance even with 10,000 stars. 
+I preprocess the data using a Python script that converts the coordinates to 3D Cartesian (x, y, z) format. The preprocessing step avoids costly trigonometric calculations during rendering. The stars can then be rotated in real-time, using matrix multiplications, to match the observer’s time and location, ensuring fast performance even with 10,000 stars. 
 
 .. image:: images/planetarium/xyz.png
 
@@ -274,7 +274,7 @@ The final rotation compensates for the elevation angle of the observer’s line 
 
 Each of these rotations is expressed mathematically as a 3×3 rotation matrix. These matrices are multiplied together to form a single transformation matrix that is applied to all star coordinates. Although trigonometric functions are needed to generate the transformation matrix this operation only needs to be performed once for each time and location. Once calculated, the transformation matrix is computationally efficient requiring only multiplications and additions and can be rapidly repeated for each of the 10000 stars.
 
-The Bright Star Catalogue also provides magnitude and spectral class. The magnitude are used to determine the visual size of stars, this is represented by changing the size and brightness of the pixels on the screen. The spectral class is represented by the colour which varies from blue, white, and yellow to red.
+The Bright Star Catalogue also provides magnitude and spectral class. The magnitude is used to determine the visual size of stars, this is represented by changing the size and brightness of the pixels on the screen. The spectral class is represented by the colour which varies through blue, white, and yellow to red.
 
 .. image:: images/planetarium/star_colours.png
 
@@ -305,7 +305,11 @@ Planets
 
 Unlike stars, which can be modeled as fixed points on the celestial sphere, the planets move across the sky as they orbit the Sun. Their positions must be calculated dynamically for the current date and time. 
 
-The orbits of the planets can be calculated using Kepler's equation. A Planet's orbit around the Sun is described by several parameters which describe the size, shape and orientation of an elliptical orbit relative to a reference plane passing through the Sun's equator. If we also know the orbital period (e.g. the length of a planet's year or a related parameter) and the position of the Planet in its orbit at a known point in time (e.g. the J2000 epoch) we can calculate the position of a planet at a future time. 
+The orbits of the planets can be calculated using Kepler's equation. A Planet's orbit around the Sun is described by several parameters which describe the size, shape and orientation of an elliptical orbit relative to a reference plane passing through the Sun's equator.
+
+.. image:: images/planetarium/orbits.png
+
+If we also know the orbital period (e.g. the length of a planet's year or a related parameter) and the position of the planet in its orbit at a known point in time (e.g. the J2000 epoch) we can calculate the position of a planet at a future time. 
 
 This Python script doesn't include all the parameters describing the elliptical orbit, but it does give some idea of how the process works.
 
@@ -362,7 +366,7 @@ This Python script doesn't include all the parameters describing the elliptical 
 
 `Greg Miller's Celestial Programming <https://www.celestialprogramming.com/>`__ has proved to be an excellent resource providing many code examples for astronomical calculations. I adapted the approach used `in this JavaScript example <https://www.celestialprogramming.com/planets_with_keplers_equation.html>`__. It is based on an algorithm described in Chapter 8 of the Explanatory Supplement to the Astronomical Almanac 3rd ed P340. There is a description of the technique `here <https://ssd.jpl.nasa.gov/txt/aprx_pos_planets.pdf>`__. The technique uses the same orbital parameters, but also includes additional terms describing how the parameters change over time, yielding greater precision over a longer timescale.
 
-The function calculates the x, y and z coordinates of each planet relative to the Sun (heliocentric). These are then converted to geocentric coordinates by subtracting the Earth’s position from the planet’s position. After that, the planet’s coordinates are transformed into equatorial coordinates using the current obliquity of the ecliptic, and then rotated using the same matrix pipeline used for stars.
+The function calculates the x, y and z coordinates of each planet relative to the Sun (heliocentric). These are then converted to geocentric coordinates by subtracting the Earth’s position from the planet’s position. After that, the planet’s coordinates are transformed into equatorial coordinates, and then rotated using the same matrix pipeline used for stars.
 
 .. code:: cpp
 
@@ -406,11 +410,11 @@ Conclusion
 
 The Pi Pico Planetarium is a compact yet capable device that brings the night sky to life in the palm of your hand. It combines real-time astronomy, embedded graphics, and wireless connectivity in a way that is both accessible and extensible.
 
-From displaying over 10,000 stars to tracking planets and rendering the Moon's phase, the project demonstrates what’s possible with minimal hardware and thoughtful design. The use of C++ and low-level graphics ensures good performance, while modular code and open data sources allow for further customization and expansion.
+From displaying over 10,000 stars to tracking planets and rendering the Moon's position, the project demonstrates what’s possible with minimal hardware and thoughtful design. The use of C++ and low-level graphics ensures good performance, while modular code allows for further customization and expansion.
 
 This project has proven to be a rewarding challenge, blending software engineering, astronomy, and electronics. It’s a great tool for learning, teaching, or simply enjoying a more personal connection with the stars.
 
-There is still much room for experimentation—improving the UI, adding audio feedback, integrating a compass or GPS, or exploring more sophisticated celestial mechanics models. But even in its current form, the planetarium is a powerful and portable stargazing companion.
+There is still much room for experimentation—improving the UI, integrating a compass or GPS, or exploring more sophisticated celestial mechanics models. But even in its current form, the planetarium is a powerful and portable stargazing companion.
 
 Whether you’re a beginner learning about the sky, or a maker looking for a satisfying build, this project offers something to inspire and engage.
 

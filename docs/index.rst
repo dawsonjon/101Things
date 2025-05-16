@@ -10,6 +10,7 @@ Welcome to 101 Things's documentation!
    :maxdepth: 1
    :caption: Contents:
 
+   planetarium
    sstv_decoder
    breadboard_radio
    breadboard_radio_part2

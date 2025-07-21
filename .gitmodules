@@ -4,3 +4,6 @@
 [submodule "26_sstv_decoder"]
 	path = 26_sstv_decoder
 	url = https://github.com/dawsonjon/PicoSSTV.git
+[submodule "27_planetarium"]
+	path = 27_planetarium
+	url = https://github.com/dawsonjon/Pico-Planetarium.git

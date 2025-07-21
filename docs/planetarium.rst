@@ -6,6 +6,8 @@ Pi Pico Planetarium
 
 The Pi Pico Planetarium is a compact, low-cost astronomy viewer built around the Raspberry Pi Pico W and a 480x320 ST7796 TFT display. Designed with both beginners and experienced hobbyists in mind, it offers a hands-on introduction to microcontrollers, electronics, and astronomy, while remaining flexible and expandable for more advanced use. The device displays a real-time map of the night sky, including stars, constellations, planets, the Moon, and deep sky objects. By using Wi-Fi to retrieve accurate time data via NTP, the planetarium keeps the star chart aligned with the user’s current time and location.
 
+You can find the code on the `GitHub page <https://github.com/dawsonjon/Pico-Planetarium>`_.
+
 Hardware
 --------
 

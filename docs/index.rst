@@ -15,6 +15,7 @@ Welcome to 101 Things's documentation!
    breadboard_radio
    breadboard_radio_part2
    breadboard_radio_part3
+   breadboard_radio_part4
    telescope
    fm_radio
    power_swr_meter

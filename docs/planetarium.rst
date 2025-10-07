@@ -282,8 +282,9 @@ The Bright Star Catalogue also provides magnitude and spectral class. The magnit
 
 Constellations are overlaid using line segments between the brightest stars in each group. The source data for these connections comes from `Marc van der Sluys <https://github.com/MarcvdSluys/ConstellationLines?tab=readme-ov-file>`__, released under `Creative Commons Attribution 4.0 International (CC BY 4.0) licence <https://creativecommons.org/licenses/by/4.0/>`__. It is stored as coordinate pairs in a header file. These lines are transformed in the same way as the star data.
 
-.. image:: https://i.ytimg.com/vi/3rwerEt2inI/maxresdefault.jpg
-  :target: https://www.youtube.com/watch?v=3rwerEt2inI
+.. raw:: html
+
+  <iframe width="560" height="315" src="https://www.youtube.com/embed/3rwerEt2inI?si=A9o5u8dC-MO5Syfg" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 Constellation names and center points are based on data by `Greg Miller (celestialprogramming.com) <https://www.celestialprogramming.com/snippets/ConstellationCenterPoints/constellationCenterPoints.html>`__ (public domain). These are used for labeling on the star map.
 
@@ -296,8 +297,9 @@ Choosing which DSOs to include is challenging due to their vast number. For this
 
 Each deep sky object’s coordinates are stored similarly to stars and are transformed and rotated to the observer’s viewpoint.
 
-.. image:: https://i.ytimg.com/vi/8Xjfh-coyno/maxresdefault.jpg
-  :target: https://youtu.be/8Xjfh-coyno
+.. raw:: html
+
+  <iframe width="560" height="315" src="https://www.youtube.com/embed/8Xjfh-coyno?si=Myrq9-0n7hxXzRUg" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 
 Planets
@@ -363,8 +365,9 @@ This Python script doesn't include all the parameters describing the elliptical 
           z_list.append(z)
       return np.array(x_list), np.array(y_list), np.array(z_list)
 
-.. image:: https://i.ytimg.com/vi/6WDm4TmXejI/maxresdefault.jpg
-  :target: https://youtu.be/6WDm4TmXejI
+.. raw:: html
+
+  <iframe width="560" height="315" src="https://www.youtube.com/embed/6WDm4TmXejI?si=LtwUMCpXO2CuJ8Bf" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 `Greg Miller's Celestial Programming <https://www.celestialprogramming.com/>`__ has proved to be an excellent resource providing many code examples for astronomical calculations. I adapted the approach used `in this JavaScript example <https://www.celestialprogramming.com/planets_with_keplers_equation.html>`__. It is based on an algorithm described in Chapter 8 of the Explanatory Supplement to the Astronomical Almanac 3rd ed P340. There is a description of the technique `here <https://ssd.jpl.nasa.gov/txt/aprx_pos_planets.pdf>`__. The technique uses the same orbital parameters, but also includes additional terms describing how the parameters change over time, yielding greater precision over a longer timescale.
 
@@ -380,8 +383,9 @@ Interestingly, since the Earth's position relative to the Sun is known, we also 
 
   convert_to_ra_dec(-earth_x, -earth_y, -earth_z, ra, dec);
 
-.. image:: https://i.ytimg.com/vi/-D5T-8g2Lbg/maxresdefault.jpg
-  :target: https://youtu.be/-D5T-8g2Lbg
+.. raw:: html
+
+  <iframe width="560" height="315" src="https://www.youtube.com/embed/-D5T-8g2Lbg?si=-EgKwLTWLYeiYJWQ" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 The Sun, Moon and Planets are represented using actual photographs, however, at this scale they are only a few pixels accross!
 
@@ -394,8 +398,9 @@ The Moon
 
 The final touch is to plot the position of the Moon, this time I adapted `this JavaScript example <https://www.celestialprogramming.com/lowprecisionmoonposition.html>`__, based on an algorithm described in Astronomical Almanac page D22 (2017 ed).
 
-.. image:: https://i.ytimg.com/vi/57CUo21NMPE/maxresdefault.jpg
-  :target: https://youtu.be/57CUo21NMPE
+.. raw:: html
+
+  <iframe width="560" height="315" src="https://www.youtube.com/embed/57CUo21NMPE?si=y-w8Xw7BIQMhpQu8" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 3d Printed Enclosure
 --------------------
@@ -407,8 +412,10 @@ I designed a simple 3d-printed enclosure for the SSTV decoder. The FreeCAD desig
 Conclusion
 ----------
 
-.. image:: https://i.ytimg.com/vi/-zFnA6QKb48/maxresdefault.jpg
-  :target: https://youtu.be/-zFnA6QKb48
+.. raw:: html
+
+  <iframe width="560" height="315" src="https://www.youtube.com/embed/-zFnA6QKb48?si=aryKs33iVIZOu9Ch" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
 
 The Pi Pico Planetarium is a compact yet capable device that brings the night sky to life in the palm of your hand. It combines real-time astronomy, embedded graphics, and wireless connectivity in a way that is both accessible and extensible.
 

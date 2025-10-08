@@ -2,7 +2,7 @@ Slow Scan Television (SSTV) Part 2
 ===================================
 
 
-.. image::  images/sstv/thumbnail.png
+.. image::  images/sstv_part2/thumbnail.png
   :target: https://youtu.be/xxxxxx
 
 
@@ -59,7 +59,9 @@ My hope was that turning the SSTV project into a library would allow the code to
 SD Card Storage
 ---------------
 
-.. image:: images/sstv_part2/sd_card_circuit.png
+.. figure:: images/sstv_part2/sd_card_circuit.png
+  
+  Wiring for sd card example
 
 One of the most requested features is SD card storage. This makes the device a
 lot more useful, because it allows images to be stored automatically as they
@@ -84,7 +86,9 @@ them on the TFT display.
 SSTV Encoder (transmit)
 -----------------------
 
-.. image:: images/sstv_part2/transmit_circuit.png
+.. figure:: images/sstv_part2/transmit_circuit.png
+  
+  Wiring for transmit example
 
 Compared to the decoder, the encoder is relatively simple to implement. The
 audio output is generated using PWM, followed by a filter and a DC blocking
@@ -103,7 +107,9 @@ included in PC-based SSTV software. As well as including both transmit and
 receive functionality, this example provides a richer experience including a
 user interface that allows you to browse files and customise settings.
 
-.. image:: images/sstv_part2/full_circuit.png
+.. figure:: images/sstv_part2/full_circuit.png
+
+  Wiring for transmit example
 
 The user interface uses an additional 4 buttons to drive a menu, and the
 circuit shares a lot of similarity to the `planetarium <https://101-things.readthedocs.io/en/latest/planetarium.html>`__ design. A menu allows the

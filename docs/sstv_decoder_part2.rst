@@ -94,8 +94,8 @@ resolution allowing a very precise and stable frequency to be output. The
 output from the phase accumulator controls a lookup table that has been
 pre-programmed with a sin wave.
 
-Menu Driven Encoder/Decoder
----------------------------
+Full Example - Menu Driven Encoder/Decoder
+------------------------------------------
 
 While the basic examples give the minimal code needed to recieve or transmit an
 SSTV signal, this example is more complete, including many of the features
@@ -106,7 +106,7 @@ user interface that allows you to browse files and customise settings.
 .. image:: images/sstv_part2/full_circuit.png
 
 The user interface uses an additional 4 buttons to drive a menu, and the
-circuit shares a lot of similarity to the planetarium design. A menu allows the
+circuit shares a lot of similarity to the `planetarium <https://101-things.readthedocs.io/en/latest/planetarium.html>`__ design. A menu allows the
 user to switch between transmit, receive, file-browse (slideshow) mode as well
 as providing a settings menu that allows the decoder configuration to be
 customised.
@@ -114,6 +114,70 @@ customised.
 The Arduino Pico core includes a library to emulate an EEPROM using the Pi
 Pico's onboard flash. This feature is used to store user settings and restore
 them after each power cycle.
+
++-----------------------------------------+----------+---------------------------------+------------------------------+
+| Part                                    | Quantity | Example URL                     | Notes                        |
++=========================================+==========+=================================+==============================+
+| 320x240 ILI9341 or ILI9342 SPI Display  | 1        | `<https://shorturl.at/Kwjb0>`__ | for receive examples         |
++-----------------------------------------+----------+---------------------------------+------------------------------+
+| Raspberry Pi Pico                       | 1        | `<https://shorturl.at/bKibr>`__ |                              |
++-----------------------------------------+----------+---------------------------------+------------------------------+
+| Resistor 10k                            | 2        | `<https://shorturl.at/aSetc>`__ | for receive examples         |
++-----------------------------------------+----------+---------------------------------+------------------------------+
+| Capacitor Ceramic 100n                  | 2        | `<https://shorturl.at/smvFK>`__ | 1 for transmit 1 for receive |
++-----------------------------------------+----------+---------------------------------+------------------------------+
+| Resistor 100 ohm                        | 2        | `<https://shorturl.at/QXFMh>`__ | for transmit examples        |
++-----------------------------------------+----------+---------------------------------+------------------------------+
+| Capacitor Ceramic 470n                  | 1        | `<https://shorturl.at/hRgnC>`__ | for transmit examples        |
++-----------------------------------------+----------+---------------------------------+------------------------------+
+| 3.5mm Stereo Socket                     | 1        | `<https://shorturl.at/KUiZ2>`__ | 1 for transmit 1 for receive |
++-----------------------------------------+----------+---------------------------------+------------------------------+
+| Tactile buttons 6mm                     | 4        | `<https://shorturl.at/IHNVn>`__ | for menu driven interface    |
++-----------------------------------------+----------+---------------------------------+------------------------------+
+| SD Card                                 | 1        | `<https://shorturl.at/C5DyY>`__ | for SD Card Examples         |
++-----------------------------------------+----------+---------------------------------+------------------------------+
+| 3D Printed Enclosure                    | 1        | `<https://shorturl.at/M5z12>`__ |                              |
++-----------------------------------------+----------+---------------------------------+------------------------------+
+
+(Note: Links are for illustrative purposes and not necessarily recommendations.)
+
+The display wiring is shown below:
+
++-----------+---------------+----------------------+------------------+
+| Signal    | Display Pin   | Pico Pin Number      | Pico GPIO Number |
++===========+===============+======================+==================+
+| Vcc       | 1             | 36 (3v3 out)         | NA               |
++-----------+---------------+----------------------+------------------+
+| Gnd       | 2             | 18 (GND)             | NA               |
++-----------+---------------+----------------------+------------------+
+| CS        | 3             | 17                   | 13               |
++-----------+---------------+----------------------+------------------+
+| RESET     | 4             | 36 (3v3 out)         | NA               |
++-----------+---------------+----------------------+------------------+
+| DC        | 5             | 15                   | 11               |
++-----------+---------------+----------------------+------------------+
+| MOSI      | 6             | 20                   | 15               |
++-----------+---------------+----------------------+------------------+
+| SCK       | 7             | 19                   | 14               |
++-----------+---------------+----------------------+------------------+
+| LED       | 8             | 36 (3v3 out)         | NA               |
++-----------+---------------+----------------------+------------------+
+
+The four buttons used to navigate the menu each connect between GND and a spare GPIO pin:
+
++-----------+----------------------+------------------+
+| Signal    | Pico Pin Number      | Pico GPIO Number |
++===========+======================+==================+
+| Gnd       | 23 (GND)             | NA               |
++-----------+----------------------+------------------+
+| UP_BTN    | 22                   | 17               |
++-----------+----------------------+------------------+
+| DOWN_BTN  | 26                   | 20               |
++-----------+----------------------+------------------+
+| RIGHT_BTN | 27                   | 21               |
++-----------+----------------------+------------------+
+| LEFT_BTN  | 29                   | 22               |
++-----------+----------------------+------------------+
 
 Slideshow Mode
 --------------
@@ -137,7 +201,7 @@ embedded directly in the image.
 
 The text overlay is implemented using a frame buffer that allows text and
 drawing primitives to be drawn in an area of memory. The frame buffer code was
-reused from the pico planetarium project.
+reused from the `pico planetarium project <https://101-things.readthedocs.io/en/latest/planetarium.html>`__.
 
 Although I could have used a touch screen for text entry, I wanted to support
 non-touch TFT displays, and didn't want to add additional hardware at this
@@ -152,7 +216,7 @@ text entry with a little practice.
 .. image:: images/sstv_part2/enclosure_complete.jpg
 
 The 3D printed enclosure design has been reworked to accomodate the extended
-functinality. I used the planetarium design as a starting point, this allready
+functinality. I used the `planetarium <https://101-things.readthedocs.io/en/latest/planetarium.html>`__ design as a starting point, this allready
 includes provision for the 4 buttons and TFT display. 
 
 The enclosure allows easy access to the Pico's USB port, while also allowing

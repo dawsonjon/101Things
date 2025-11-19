@@ -13,7 +13,7 @@ In the first part of this series, I demonstrated a very simple SSTV decoder usin
 New Modes
 ---------
 
-The most popularly requested modes are the PD120 and PD180 modes. These are the modes used by the ISS for occasional transmissions from space. These were the first new moes to be implemented. These modes are much higher resolution than the existing Martin/Scottie modes, so they needed to be down-scaled to fit onto the ILI9341 display. 
+The most popularly requested modes are the PD120 and PD180 modes. These are the modes used by the ISS for occasional transmissions from space. These were the first new moes to be implemented. These modes are much higher resolution than the existing Martin/Scottie modes, so they needed to be down-scaled to fit onto the ILI9341 display.
 
 There are a number of audio files that can be downloaded from `spacecomms <https://spacecomms.wordpress.com/iss-sstv-audio-recordings>`__, and these were duly tested with the Pico SSTV decoder.
 
@@ -46,12 +46,12 @@ SD Card Storage
 ---------------
 
 .. figure:: images/sstv_part2/sd_card_circuit.png
-  
+
   Wiring for SD card example
 
 One of the most requested features is SD card storage. This makes the device a lot more useful because it allows images to be stored automatically as they are received, which means that the decoder can be left unattended. I have left mine running for several days at a time, and I periodically check back to see what has come in.
 
-.. image:: images/sstv_part2/poster.png 
+.. image:: images/sstv_part2/poster.png
 
 Although it is possible to purchase SD card holders, I opted to use the SD card holder that is built into most ILI9341 displays. A few extra wires are all that is needed to connect the SPI bus to the SD card. I opted to use the SDFS library included in the Arduino Pico core. In addition, the VFS library allows the SD card to be accessed using standard C library functions.
 
@@ -63,10 +63,10 @@ SSTV Encoder (transmit)
 -----------------------
 
 .. figure:: images/sstv_part2/transmit_circuit.png
-  
+
   Wiring for transmit example
 
-Compared to the decoder, the encoder is relatively simple to implement. The audio output is generated using PWM, followed by a filter and a DC blocking capacitor. The PWM audio code has been reused from other projects. 
+Compared to the decoder, the encoder is relatively simple to implement. The audio output is generated using PWM, followed by a filter and a DC blocking capacitor. The PWM audio code has been reused from other projects.
 
 The encoding process always starts with a fixed sequence consisting of 2 300ms bursts at 1900Hz. The generate_tone function accepts 2 parameters, the frequency and the duration. I use 16 fraction bits to represent the duration in ms. A high resolution is needed to maintain precise timings over the timescale of an image transmission. After this, the image encoding depends on the transmission mode.
 
@@ -94,9 +94,9 @@ The encoding process works through the image one line at a time. Each line consi
 
     uint16_t width, height;
     float colour_time_ms;
-    
+
     switch(mode)
-    { 
+    {
       case tx_martin_m1:
         width = 320;
         height = 240;
@@ -111,24 +111,24 @@ The encoding process works through the image one line at a time. Each line consi
 
       default: return;
     }
-    
+
     uint32_t hsync_pulse_ms_f16 = 4.862 * (1<<16);
     uint32_t colour_gap_ms_f16 = 0.572 * (1<<16);
     uint32_t pixel_time_ms_f16 = (colour_time_ms*(1<<16))/width;
-    
+
     //send rows
     for(uint16_t row=0u; row < height; ++row)
-    { 
+    {
       generate_tone(1500, colour_gap_ms_f16);
-      for(uint16_t col=0u; col < width; ++col) 
+      for(uint16_t col=0u; col < width; ++col)
         generate_tone(get_pixel(width, height, row, col, 1), pixel_time_ms_f16);
 
       generate_tone(1500, colour_gap_ms_f16);
-      for(uint16_t col=0u; col < width; ++col) 
+      for(uint16_t col=0u; col < width; ++col)
         generate_tone(get_pixel(width, height, row, col, 2), pixel_time_ms_f16);
 
       generate_tone(1500, colour_gap_ms_f16);
-      for(uint16_t col=0u; col < width; ++col) 
+      for(uint16_t col=0u; col < width; ++col)
         generate_tone(get_pixel(width, height, row, col, 0), pixel_time_ms_f16);
 
       generate_tone(1500, colour_gap_ms_f16);
@@ -255,7 +255,7 @@ Text Overlay
 
 .. image:: images/sstv_part2/text_overlay.jpg
 
-The text overlay feature allows a user-defined text banner to be added to an image prior to transmission. This allows call-signs and other messages to be embedded directly in the image. 
+The text overlay feature allows a user-defined text banner to be added to an image prior to transmission. This allows call-signs and other messages to be embedded directly in the image.
 
 The text overlay is implemented using a frame buffer that allows text and
 drawing primitives to be drawn in an area of memory. The frame buffer code was
@@ -269,7 +269,7 @@ keystrokes. Once you get used to the way it works, it allows reasonably fast tex
 
 .. image:: images/sstv_part2/enclosure_complete.jpg
 
-The 3D printed enclosure design has been reworked to accommodate the extended functionality. I used the `planetarium <https://101-things.readthedocs.io/en/latest/planetarium.html>`__ design as a starting point, which already includes provision for the 4 buttons and TFT display. 
+The 3D printed enclosure design has been reworked to accommodate the extended functionality. I used the `planetarium <https://101-things.readthedocs.io/en/latest/planetarium.html>`__ design as a starting point, which already includes provision for the 4 buttons and TFT display.
 
 The enclosure allows easy access to the Pico's USB port, while also allowing the bootsel button to be operated in-place, simplifying the process of USB programming.
 
@@ -281,7 +281,7 @@ For portable operation, the enclosure includes a generously sized battery compar
 
 .. image:: images/sstv_part2/enclosure_parts.jpg
 
-The enclosure allows 4x6mm tactile switches to be installed. These are soldered to a piece of "strip-board" or "veroboard" that has been cut to size and drilled. The strip-board is fixed to the panel using meltable features integrated in the front panel. The same meltable fixings are used to secure the TFT display. 
+The enclosure allows 4x6mm tactile switches to be installed. These are soldered to a piece of "strip-board" or "veroboard" that has been cut to size and drilled. The strip-board is fixed to the panel using meltable features integrated in the front panel. The same meltable fixings are used to secure the TFT display.
 
 .. image:: images/sstv_part2/enclosure_construction_1.jpg
 

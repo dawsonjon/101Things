@@ -10,6 +10,7 @@ Welcome to 101 Things's documentation!
    :maxdepth: 1
    :caption: Contents:
 
+   junkbox_arcade
    planetarium
    sstv_decoder
    sstv_decoder_part2

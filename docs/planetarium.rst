@@ -185,11 +185,11 @@ Stars and Constellations
 
 The foundation of the planetarium display is a realistic star field. Rather than use a large, memory-heavy star catalogue, I chose the `Bright Star Catalog (BSC) <http://tdc-www.harvard.edu/catalogs/bsc5.html>`__, which contains approximately 10,000 stars. This makes it a good fit for flash storage and covers nearly all stars visible to the naked eye.
 
-For each star the catalog includes its Right Ascension (RA), Declination (DEC), magnitude, and spectral class. 
+For each star the catalog includes its Right Ascension (RA), Declination (DEC), magnitude, and spectral class.
 
 .. image:: images/planetarium/ra_dec.png
 
-I preprocess the data using a Python script that converts the coordinates to 3D Cartesian (x, y, z) format. The preprocessing step avoids costly trigonometric calculations during rendering. The stars can then be rotated in real-time, using matrix multiplications, to match the observer’s time and location, ensuring fast performance even with 10,000 stars. 
+I preprocess the data using a Python script that converts the coordinates to 3D Cartesian (x, y, z) format. The preprocessing step avoids costly trigonometric calculations during rendering. The stars can then be rotated in real-time, using matrix multiplications, to match the observer’s time and location, ensuring fast performance even with 10,000 stars.
 
 .. image:: images/planetarium/xyz.png
 
@@ -208,7 +208,7 @@ The 3D transformation involves four sequential matrix rotations to properly orie
 
 **Sidereal Time Rotation (around the Z-axis)**
 
-This rotation compensates for the Earth's rotation around its axis. Because the Earth spins once approximately every 23 hours, 56 minutes, and 4 seconds (a sidereal day), the celestial sphere appears to rotate in the opposite direction.   
+This rotation compensates for the Earth's rotation around its axis. Because the Earth spins once approximately every 23 hours, 56 minutes, and 4 seconds (a sidereal day), the celestial sphere appears to rotate in the opposite direction.
 
 .. image:: images/planetarium/rotation1.png
 
@@ -256,19 +256,19 @@ position of the stars in our location.
  }
 
 
-**Latitude Rotation (around the X-axis)**  
+**Latitude Rotation (around the X-axis)**
 
 This rotation compensates for the observer’s latitude. At the North Pole (latitude +90°), the North Celestial Pole appears directly overhead; at the equator (0° latitude), it lies on the horizon. Rotating the celestial sphere around the X-axis adjusts the view of the star field to simulate this effect.
 
    .. image:: images/planetarium/rotation2.png
 
-**Azimuth Rotation (around the Z-axis)**  
+**Azimuth Rotation (around the Z-axis)**
 
 This rotation adjusts for the compass direction in which the observer is looking. By rotating around the Z-axis, the view can be oriented towards north, east, south, west, or any intermediate direction.
 
    .. image:: images/planetarium/rotation3.png
 
-**Altitude Rotation (around the X-axis)**  
+**Altitude Rotation (around the X-axis)**
 
 The final rotation compensates for the elevation angle of the observer’s line of sight. An altitude of 90° corresponds to looking straight up at the zenith, while 0° means looking along the horizon. This rotation adjusts the celestial sphere accordingly.
 
@@ -307,13 +307,13 @@ Planets
 
 .. image:: images/planetarium/planets.png
 
-Unlike stars, which can be modeled as fixed points on the celestial sphere, the planets move across the sky as they orbit the Sun. Their positions must be calculated dynamically for the current date and time. 
+Unlike stars, which can be modeled as fixed points on the celestial sphere, the planets move across the sky as they orbit the Sun. Their positions must be calculated dynamically for the current date and time.
 
 The orbits of the planets can be calculated using Kepler's equation. A Planet's orbit around the Sun is described by several parameters which describe the size, shape and orientation of an elliptical orbit relative to a reference plane passing through the Sun's equator.
 
 .. image:: images/planetarium/orbits.png
 
-If we also know the orbital period (e.g. the length of a planet's year or a related parameter) and the position of the planet in its orbit at a known point in time (e.g. the J2000 epoch) we can calculate the position of a planet at a future time. 
+If we also know the orbital period (e.g. the length of a planet's year or a related parameter) and the position of the planet in its orbit at a known point in time (e.g. the J2000 epoch) we can calculate the position of a planet at a future time.
 
 This Python script doesn't include all the parameters describing the elliptical orbit, but it does give some idea of how the process works.
 

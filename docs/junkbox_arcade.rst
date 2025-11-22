@@ -3,7 +3,7 @@ Junkbox Arcade
 
 .. raw:: html
 
-   <a></a>
+    <iframe width="560" height="315" src="https://www.youtube.com/embed/QSweNG6Ulxg?si=j3-Dnz5GzisLwLft" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 Junkbox Arcade grew out of a simple goal: build a tiny retro-style game machine using nothing more than the parts already rattling around in my drawer. No fancy modules, no exotic hardware—just a Pi Pico, an SPI TFT, a few buttons, and whatever else was lying around. I wanted something anyone could put
 together on a breadboard in an afternoon, especially if they’ve just finished the classic “blink an LED” stage and are ready for a project that feels like a real step up.
@@ -51,7 +51,7 @@ The user interface uses an additional 4 buttons to drive a menu, and the circuit
 +-----------------------------------------+----------+---------------------------------+------------------------------+
 | Raspberry Pi Pico                       | 1        | `<https://shorturl.at/bKibr>`__ |                              |
 +-----------------------------------------+----------+---------------------------------+------------------------------+
-| Tactile buttons 6mm                     | 4        | `<https://shorturl.at/IHNVn>`__ | for menu driven interface    |
+| Tactile buttons 6mm                     | 4        | `<https://shorturl.at/IHNVn>`__ |                              |
 +-----------------------------------------+----------+---------------------------------+------------------------------+
 | Passive Piezzo Buzzer                   | 1        | `<https://shorturl.at/beNCw>`__ | Must be a passive type       |
 +-----------------------------------------+----------+---------------------------------+------------------------------+
@@ -115,7 +115,7 @@ This toolchain can be installed in just a few minutes using the `Boards Manager 
 
 The game graphics are all generated using a frame buffer that allows text, images, and drawing primitives to be drawn in an area of memory. The frame buffer code was reused from the `pico planetarium project <https://101-things.readthedocs.io/en/latest/planetarium.html>`__.
 
-.. image:: images/junkbox_arcade/gameplay.png
+.. image:: images/junkbox_arcade/gameplay.gif
     :align: center
     :width: 100%
 
@@ -129,16 +129,31 @@ The synthesiser allows musical tones to be generated using sinusoidal, triangula
 The synthesiser can also generate white noise using a pseudo-random number generator. The white noise can be used to generate percussion or explosion sounds.
 
 The musical tones and random noise are then shaped using an envelope generator. The envelope generator uses a simple exponential decay that simulates the natural decay found in musical notes, a plucked string, for example.
-
 The sound generator is capable of generating multiple tones simultaneously, the sounds are generated in 50ms blocks that are synchronised to the 50ms video frames. The sound generator uses a ping-pong buffer and DMA to transfer the sounds to the PWM-based audio DAC. The DMA carries out the transfer
 autonomously while the CPU processes generate the next audio/video frame.
 
+.. image:: images/junkbox_arcade/sound.png
+
 The game sound effects are generated using a combination of musical tones and white noise, with various envelopes employed. I found that the sound from the white noise generator was too refined to represent an explosion, so I added an additional quantization stage to give a much cruder sound.
+
+.. raw:: html
+
+   <audio controls="controls" title="Game Sound Effects">
+         <source src="_static/effects.wav" type="audio/wav">
+         Your browser does not support the <code>audio</code> element.
+   </audio>
 
 To generate the music, I adapted the RTTTL generator that I used in the kitchen timer project. A simple Python script converts music in RTTTL format into a C++ array of note pitches and durations. A simple software synthesiser plays each note using a specified waveform and envelope to crudely represent an
 instrument. It is possible to generate polyphonic music by combining several RTTTL files to generate multiple tracks.
 
 To give the game a retro feel, I am using fast arpegios. This was a common technique in PSG based games where hardware limitations prevented the use of chord sequences. Breaking the chord into fast arpegios gives the gives a greater depth to the music without requiring multiple notes to be played simultaneously. Not having the necessary musical skills to compose a theme, I turned to chatGPT to generate a suitable sequence.
+
+.. raw:: html
+
+   <audio controls="controls" title="Game Sound Effects">
+         <source src="_static/theme.wav" type="audio/wav">
+         Your browser does not support the <code>audio</code> element.
+   </audio>
 
 Breadboard Build
 ----------------

@@ -7,3 +7,6 @@
 [submodule "27_planetarium"]
 	path = 27_planetarium
 	url = https://github.com/dawsonjon/Pico-Planetarium.git
+[submodule "29_ham_fist"]
+	path = 29_ham_fist
+	url = https://github.com/dawsonjon/HamFist

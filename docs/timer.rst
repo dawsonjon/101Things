@@ -11,7 +11,7 @@ Hardware
 --------
 
 This project is based on the versatile Swiss-army PCB, with some components
-omitted for simplicity. 
+omitted for simplicity.
 
 Components excluded:
 
@@ -111,7 +111,7 @@ signal to better represent a musical note.
       const float amplitude = note.pitch_Hz == 0 ? 0 : 2047; // frequency of zero means silence
 
       uint32_t samples_left = note.duration_samples - 50;
-      while (samples_left) 
+      while (samples_left)
       {
         uint32_t block_size = std::min(static_cast<uint32_t>(1024u), samples_left);
         for (uint16_t idx = 0; idx < block_size; idx++) {
@@ -143,7 +143,7 @@ signal to better represent a musical note.
     }
 
 
-RTTTL Format: An Introduction 
+RTTTL Format: An Introduction
 -----------------------------
 
 Now that we have straightforward code for playing tunes, the next step is to
@@ -155,7 +155,7 @@ text-based format used for representing melodies in mobile phones and other
 compatible devices. Developed for easy exchange of ringtones, RTTTL provides a
 concise way to describe musical sequences.
 
-RTTTL Syntax 
+RTTTL Syntax
 """"""""""""
 
 The syntax of an RTTTL string consists of three main components: the name,
@@ -163,12 +163,12 @@ default values, and the note sequence. Each component is separated by colons,
 and the note sequence is further divided into segments denoting the note,
 duration, and optional control parameters.
 
-Example RTTTL String 
+Example RTTTL String
 """"""""""""""""""""
 
 Here's an example of a basic RTTTL string:
 
-.. code:: 
+.. code::
 
   InspectorGadgetTheme : d=4,o=5,b=140:16d,8e,8f,16g,8a,8f,8g#,8e,8g,8f,16d,16e,16f,16g,8a,8d6,c#7,p,16d,16e,16f,16g,8a,8f,8g#,8e
 
@@ -233,7 +233,7 @@ Parsing a note is done as follows:
       dotted = True
       note = note[1:]
 
-    # parse pitch 
+    # parse pitch
     pitch = note[0]
     note = note[1:]
     if note and note[0] == "#":

@@ -10,3 +10,6 @@
 [submodule "29_ham_fist"]
 	path = 29_ham_fist
 	url = https://github.com/dawsonjon/HamFist
+[submodule "28_junkbox_arcade"]
+	path = 28_junkbox_arcade
+	url = https://github.com/dawsonjon/JunkboxArcade.git

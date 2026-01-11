@@ -1,9 +1,9 @@
-#  _  ___  _   _____ _     _                 
-# / |/ _ \/ | |_   _| |__ (_)_ __   __ _ ___ 
+#  _  ___  _   _____ _     _
+# / |/ _ \/ | |_   _| |__ (_)_ __   __ _ ___
 # | | | | | |   | | | '_ \| | '_ \ / _` / __|
 # | | |_| | |   | | | | | | | | | | (_| \__ \
 # |_|\___/|_|   |_| |_| |_|_|_| |_|\__, |___/
-#                                  |___/    
+#                                  |___/
 #
 # Copyright (c) Jonathan P Dawson 2024
 # filename: rda5807.py
@@ -89,7 +89,7 @@ rds_program_types_europe = [
 class Radio:
 
     """ Access RDA5807M Device """
-    
+
     def __init__(self, i2c, region="US/Europe", frequency_spacing_kHz=100):
 
         """ Configure RDA5807M Device
@@ -107,12 +107,12 @@ class Radio:
         self.bass_boost_flag = True
         self.mono = False
         self.rtc = RTC()
-        
+
         #read chip ID and check
         data = self.read_reg(RDA5807M_REG_CHIPID)
         if(data>>8 == 0x58):
             print("Radio Found!")
-        
+
         #configure radio
         flags = RDA5807M_FLG_DHIZ | RDA5807M_FLG_BASS | RDA5807M_FLG_ENABLE | RDA5807M_FLG_NEW | RDA5807M_FLG_SEEKUP | RDA5807M_FLG_RDS
         self.write_reg(RDA5807M_REG_CONFIG, 0b11000001 | RDA5807M_FLG_RESET)
@@ -121,9 +121,9 @@ class Radio:
         self.write_reg(RDA5807M_REG_VOLUME, 0x880f)
         self.write_reg(RDA5807M_REG_I2S, 0x0000)
         self.write_reg(RDA5807M_REG_BLEND, 0x4202)
-        
+
         self.write_reg(RDA5807M_REG_CONFIG, flags)
-        
+
         if region == "US/Europe":
             self.start_frequency_MHz = 87.0
             self.band = 0
@@ -136,7 +136,7 @@ class Radio:
         elif region == "East Europe":
             self.start_frequency_MHz = 65.0
             self.band = 3
-            
+
         self.frequency_spacing_MHz = frequency_spacing_kHz/1000.0
         if frequency_spacing_kHz == 100:
             self.spacing = 0
@@ -146,10 +146,10 @@ class Radio:
             self.spacing = 2
         elif frequency_spacing_kHz == 25:
             self.spacing = 3
-            
+
         self.write_reg(RDA5807M_REG_TUNING, 0x10 | (self.band << 2) | self.spacing)
         self.clear_rds_data()
-        
+
     def clear_rds_data(self):
 
         """ Clear RDS data, e.g. after retuning """
@@ -178,7 +178,7 @@ class Radio:
 
         data = bytes([reg, data >> 8, data&0xff])
         self.i2c.writeto(random_access_address, data)
-        
+
     def update_reg(self, reg, mask, value):
 
         """ Update specific bits in I2C register """
@@ -186,20 +186,20 @@ class Radio:
         data = self.read_reg(reg)
         data = (data & ~mask) | value
         self.write_reg(reg, data)
-        
+
     def set_volume(self, volume):
 
         """ Set volume 0 to 15 """
 
         volume &= 0xf
         self.update_reg(RDA5807M_REG_VOLUME, 0xf, volume) #bits 3:0
-        
+
     def get_volume(self):
 
         """ Get Volume 0 to 15 """
 
         return self.read_reg(RDA5807M_REG_VOLUME) & 0xf #bits 3:0
-    
+
     def mute(self, mute):
 
         """ Mute True = mute False = Normal """
@@ -209,7 +209,7 @@ class Radio:
         else:
           self.update_reg(RDA5807M_REG_CONFIG, RDA5807M_FLG_DMUTE, 0)
         self.mute_flag = mute
-        
+
     def bass_boost(self, bass_boost):
 
         """ Bass Boost True = enable bass boost False = disable bass boost """
@@ -219,7 +219,7 @@ class Radio:
         else:
           self.update_reg(RDA5807M_REG_CONFIG, RDA5807M_FLG_BASS, 0)
         self.bass_boost_flag = bass_boost
-        
+
     def mono(self, mono):
 
         """ Force Mono True = force mono False = stereo """
@@ -236,13 +236,13 @@ class Radio:
 
         self.clear_rds_data()
         self.update_reg(RDA5807M_REG_CONFIG,
-            (RDA5807M_FLG_SEEKUP | RDA5807M_FLG_SEEK), 
+            (RDA5807M_FLG_SEEKUP | RDA5807M_FLG_SEEK),
             (RDA5807M_FLG_SEEKUP | RDA5807M_FLG_SEEK))
         while 1:
             data = self.read_reg(RDA5807M_REG_CONFIG)
             if not data & RDA5807M_FLG_SEEK:
                 break
-        
+
     def seek_down(self):
 
         """ Find previous station (blocks until tuning completes) """
@@ -255,80 +255,80 @@ class Radio:
             data = self.read_reg(RDA5807M_REG_CONFIG)
             if not data & RDA5807M_FLG_SEEK:
                 break
-        
+
     def get_frequency_MHz(self):
 
         """ Get tuned frequency in MHz """
 
         frequency = self.start_frequency_MHz + ((self.read_reg(RDA5807M_REG_STATUS) & 0x3ff) * self.frequency_spacing_MHz)
         return frequency
-    
+
     def set_frequency_MHz(self, frequency_MHz):
 
         """ Set tuned frequency in MHz """
 
         self.clear_rds_data()
         frequency_steps = int((frequency_MHz - self.start_frequency_MHz)/self.frequency_spacing_MHz)
-        data = (frequency_steps << 6) | 0x10 | (self.band << 2) | self.spacing)
+        data = (frequency_steps << 6) | 0x10 | (self.band << 2) | self.spacing
         self.write_reg(RDA5807M_REG_TUNING, data)
-        
+
     def get_signal_strength(self):
 
         """ Recieved Signal Strength Indicator 0 = low, 7 = high (logarithmic)"""
 
         rssi = round(7*(self.read_reg(RDA5807M_REG_RSSI) >> 9)/127)
         return rssi
-    
+
     def get_rds_block_group(self):
 
         """ Read all 4 RDS blocks from device """
 
         return self.read_reg(RDA5807M_REG_RDSA), self.read_reg(RDA5807M_REG_RDSB), self.read_reg(RDA5807M_REG_RDSC), self.read_reg(RDA5807M_REG_RDSD)
-    
+
     def update_rds(self):
-        
+
         """ Check for new RDS messages and decode if present
 
         Should be polled regularly so that we don't miss any.
         Returns true if new data received.
-        
+
         .station_name, .radio_text contain decoded data.
 
         machine RTC is updated upon reception of time/date messages"""
 
         if (self.read_reg(RDA5807M_REG_STATUS) & 0x8000):
-        
+
             #check for uncorrectable errors
             if (self.read_reg(RDA5807M_REG_RSSI) & 0x3) == 0x3:
                 return False
             if (self.read_reg(RDA5807M_REG_RSSI) & 0xc) == 0xc:
                 return False
-            
-            a, b, c, d = self.get_rds_block_group()           
-            
+
+            a, b, c, d = self.get_rds_block_group()
+
             program_information = a
             group_type = b >> 12
             group_version = (b >> 11) & 1
             traffic_program = (b >> 10) & 1
             program_type = (b >> 5) & 0x1f
-            
+
             #station name
             if group_type == 0:
                 offset = b & 0x3
                 character_a = chr(d >> 8)
                 character_b = chr(d & 0xff)
-                
-                #Check multiple messages for consistency          
+
+                #Check multiple messages for consistency
                 self.station_name_buffer[offset*2] = character_a
                 self.station_name_buffer[(offset*2)+1] = character_b
                 if offset < self.last_st_offset:
                     self.station_name = self.station_name_buffer
                 self.last_st_offset = offset
-                            
-            #radio text   
+
+            #radio text
             elif group_type == 2 and group_version == 0:
                 offset = b & 0xf
-                
+
                 ab = (b >> 4) & 1
                 character_a = c >> 8
                 character_b = c & 0xff
@@ -342,11 +342,11 @@ class Radio:
                 self.radio_text_buffer[(offset*4)+1] = chr(character_b)
                 self.radio_text_buffer[(offset*4)+2] = chr(character_c)
                 self.radio_text_buffer[(offset*4)+3] = chr(character_d)
-                
+
                 if offset < self.last_offset:
                     self.radio_text = self.radio_text_buffer
                 self.last_offset = offset
-        
+
             #radio text type 2
             elif group_type == 2 and group_version == 1:
                 offset = b & 0xf
@@ -357,24 +357,24 @@ class Radio:
                     self.radio_text_buffer = [" " for i in range(64)]
                 self.radio_text_buffer[(offset*2)+0] = chr(character_c)
                 self.radio_text_buffer[(offset*2)+1] = chr(character_d)
-                
+
                 if offset < self.last_offset:
                     self.radio_text = self.radio_text_buffer
                 self.last_offset = offset
-                
+
             elif group_type == 4 and group_version == 0:
                 hours_utc = ((c & 1) << 4) | ((d & 0xf000) >> 12)
                 minutes = ((d & 0xfc0) >> 6)
                 utc_offset = (d & 0x1f) * 0.25
                 utc_sign = d & 0x20
-                
+
                 if utc_sign:
                     hours = hours_utc + utc_offset
                 else:
                     hours = hours_utc - utc_offset
                 try:
-                    self.rtc.datetime((2000, 01, 01, 01, int(hours), int(minutes), 0, 0))
+                    self.rtc.datetime((2000, 1, 1, 1, int(hours), int(minutes), 0, 0))
                 except OSError:
                     pass
-                
+
         return True

@@ -11,8 +11,10 @@ Welcome to 101 Things's documentation!
    :caption: Contents:
 
    ham_fist
+   junkbox_arcade
    planetarium
    sstv_decoder
+   sstv_decoder_part2
    breadboard_radio
    breadboard_radio_part2
    breadboard_radio_part3

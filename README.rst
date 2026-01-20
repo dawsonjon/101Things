@@ -67,6 +67,18 @@ SSTV Decoder
 .. image::  docs/images/sstv/thumbnail.png
   :target: https://youtu.be/FraeQk6Fj2I
 
+Junkbox Arcade
+""""""""""""""
+
+.. image::  docs/images/junkbox_arcade/thumbnail.png
+  :target: https://youtu.be/QSweNG6Ulxg
+
+Hamfist CW Decoder
+""""""""""""""""""
+
+.. image::  docs/images/ham_fist/thumbnail.png
+  :target: https://youtu.be/rBRf3QOt4wc
+
 Getting the Code
 ----------------
 
@@ -87,7 +99,7 @@ Follow the `Getting started with the Raspberry Pi Pico <https://datasheets.raspb
   wget https://raw.githubusercontent.com/raspberrypi/pico-setup/master/pico_setup.sh
   chmod +x pico_setup.sh
   ./pico_setup.sh
-  
+
 
 Build Projects
 --------------

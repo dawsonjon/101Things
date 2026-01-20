@@ -19,6 +19,13 @@ The original wishlist for the project looked like this:
 
 In addition to decoding, the project also includes a CW encoder. The intention is for both the encoder and decoder to run on the same hardware, sharing a simple button-driven interface. This makes the platform suitable for both receive and transmitting experiments, portable operation, and further extensions.
 
+Quick Links
+-----------
+
+ - `github page <https://github.com/dawsonjon/HamFist>`__
+ - `Arduino sketch <https://github.com/dawsonjon/HamFist/tree/main/cw_decoder>`__
+ - `3D printed enclosure sketch <https://github.com/dawsonjon/HamFist/tree/main/enclosure>`__
+
 Hardware Description
 --------------------
 

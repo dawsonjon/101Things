@@ -190,7 +190,7 @@ The Arduino Pico core includes a library to emulate an EEPROM using the Pi Pico'
 +-----------------------------------------+----------+---------------------------------+------------------------------+
 | Capacitor Ceramic 100n                  | 2        | `<https://shorturl.at/smvFK>`__ | 1 for transmit 1 for receive |
 +-----------------------------------------+----------+---------------------------------+------------------------------+
-| Resistor 100 ohm                        | 2        | `<https://shorturl.at/QXFMh>`__ | for transmit examples        |
+| Resistor 100 ohm                        | 1        | `<https://shorturl.at/QXFMh>`__ | for transmit examples        |
 +-----------------------------------------+----------+---------------------------------+------------------------------+
 | Capacitor Ceramic 470n                  | 1        | `<https://shorturl.at/hRgnC>`__ | for transmit examples        |
 +-----------------------------------------+----------+---------------------------------+------------------------------+

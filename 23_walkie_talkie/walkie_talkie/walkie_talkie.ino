@@ -4,7 +4,7 @@
 #include <WiFi.h>
 #include <WiFiUdp.h>
 
-#include "PWMAudio.h"
+#include <I2S.h>
 #include "ADCAudio.h"
 #include "GetWifiConnection.h"
 
@@ -17,12 +17,17 @@ WiFiUDP Udp;
 
 //audio input and buffer
 ADCAudio audioInput;
-int oversample = 16;
 char packetBuffer[UDP_TX_PACKET_MAX_SIZE];
 
 //audio output and ping pong buffer
-PWMAudio audioOutput;
-uint16_t outputSamples[2][1024];
+
+#define pBCLK 14
+#define pWS (pBCLK+1)
+#define pDOUT 13
+
+// Create the I2S port using a PIO state machine
+I2S audioOutput(OUTPUT, pBCLK, pDOUT);
+uint16_t outputSamples[ADC_BUFFER_SIZE*2];
 uint8_t pingPong = 0;
 
 void blink(uint8_t blinks)
@@ -68,7 +73,7 @@ uint8_t alaw_compress(int16_t pcm_val) {
    return (sign | ((position - 4) << 4) | lsb) ^ 0x55;
 }
 
-//use alaw expansion to fit convert single byte to 12-bit PCM
+//use alaw expansion to convert single byte to 12-bit PCM
 int16_t alaw_expand(uint8_t u_val) {
    uint8_t sign = 0x00;
    uint8_t position = 0;
@@ -92,38 +97,141 @@ int16_t alaw_expand(uint8_t u_val) {
    return (sign==0)?(decoded):(-decoded);
 }
 
+void sendData(WiFiClient client)
+{
+
+  int16_t dc = 2048;
+  float envelope = 0;
+  bool gate_open = false;
+  float gain = 0, smoothed_gain = 0;
+  while(client.connected() && BOOTSEL)
+  {
+      
+    //send audio data
+    uint16_t *inputSamples;
+    audioInput.input_samples(inputSamples);
+
+    if(inputSamples)
+    {
+      if(audioInput.get_overflow()) Serial.println("overflow");
+      uint32_t t0 = micros();
+      for(uint16_t i = 0; i<ADC_BUFFER_SIZE; ++i)
+      {
+        int16_t sample = inputSamples[i];
+        dc = dc + ((sample - dc) >> 1);
+        sample -= dc;
+        envelope = 0.9f*envelope + 0.1f*abs(sample);
+        if(gate_open){
+          if(envelope < 3) gate_open = false;
+          gain = 1.0f;
+          smoothed_gain = 0.95f*smoothed_gain + 0.05f*gain;
+        } else {
+          if(envelope > 50) gate_open = true;
+          gain = 0.0f;
+          smoothed_gain = 0.99f*smoothed_gain + 0.01f*gain;
+        }
+        packetBuffer[i]=alaw_compress(sample * smoothed_gain);
+      }
+      client.write(packetBuffer, ADC_BUFFER_SIZE);
+      //Serial.print("rx time us ");
+      //Serial.print(micros()-t0);
+      //Serial.print(" ");
+      //Serial.println(audioInput.get_overflow());
+    }
+  
+    UDPAdvertisement();
+  }
+}
+
+void recvData(WiFiClient client)
+{    
+  while(client.connected())
+  {
+    //get audio data
+    if (client.available()) {
+      uint32_t bytesToSend = audioOutput.availableForWrite();
+      if(bytesToSend > ADC_BUFFER_SIZE*4) bytesToSend = ADC_BUFFER_SIZE*4;
+      if(bytesToSend)
+      {
+        uint32_t t0 = micros();
+        // read the packet into packetBufffer
+        for (uint16_t i = 0; i < bytesToSend/2; i+=2) {
+          // form 12 bit sample from 8 bits bit sample
+          int16_t sample = alaw_expand(client.read()) << 4;
+          //write same sample into L and R channel
+          outputSamples[i] = sample;
+          outputSamples[i+1] = sample; 
+          
+        }
+     
+        uint32_t samples_written = audioOutput.write((uint8_t*)outputSamples, bytesToSend);
+        //Serial.print("samples ");
+        //Serial.print(samples_written/4);
+        //Serial.print(" tx time us ");
+        //Serial.println(micros()-t0);
+        if(audioOutput.getUnderflow()) Serial.println("underflow");
+        if(audioOutput.getOverflow()) Serial.println("overflow");
+      }
+
+    }
+  
+    UDPAdvertisement();
+  }
+}
+
 void exchangeData(WiFiClient client, bool isClient)
 {
   int16_t dc = 2048;
   while(client.connected() && (!isClient || BOOTSEL))
   {
+      
     //send audio data
     uint16_t *inputSamples;
-    int32_t amplitude = 0;
     audioInput.input_samples(inputSamples);
-    for(uint16_t i = 0; i<1024; ++i)
+
+    if(inputSamples)
     {
-      int16_t sample = inputSamples[i];
-      dc = dc + ((sample - dc) >> 1);
-      sample -= dc;
-      amplitude += sample * sample;
-      packetBuffer[i]=alaw_compress(sample);
+      uint32_t t0 = micros();
+      for(uint16_t i = 0; i<ADC_BUFFER_SIZE; ++i)
+      {
+        int16_t sample = inputSamples[i];
+        dc = dc + ((sample - dc) >> 1);
+        sample -= dc;
+        packetBuffer[i]=alaw_compress(sample);
+      }
+      client.write(packetBuffer, ADC_BUFFER_SIZE);
+      Serial.print("rx time us ");
+      Serial.print(micros()-t0);
+      Serial.print(" ");
+      Serial.println(audioInput.get_overflow());
     }
-    client.write(packetBuffer, 1024);
 
     //get audio data
     if (client.available()) {
-      // read the packet into packetBufffer
-      for (uint16_t i = 0; i < 1024; i++) {
-        // form 12 bit sample from 8 bits bit sample
-        if(client.available())
-        {
-          uint16_t sample = alaw_expand(client.read())+2048;
-          outputSamples[pingPong][i] = sample;
-        } 
+      uint32_t bytesToSend = audioOutput.availableForWrite();
+      if(bytesToSend > ADC_BUFFER_SIZE*4) bytesToSend = ADC_BUFFER_SIZE*4;
+      if(bytesToSend)
+      {
+        uint32_t t0 = micros();
+        // read the packet into packetBufffer
+        for (uint16_t i = 0; i < bytesToSend/2; i+=2) {
+          // form 12 bit sample from 8 bits bit sample
+          int16_t sample = alaw_expand(client.read()) << 2;
+          //write same sample into L and R channel
+          outputSamples[i] = sample;
+          outputSamples[i+1] = sample; 
+          
+        }
+     
+        uint32_t samples_written = audioOutput.write((uint8_t*)outputSamples, bytesToSend);
+        Serial.print("samples ");
+        Serial.print(samples_written/4);
+        Serial.print(" tx time us ");
+        Serial.println(micros()-t0);
+        if(audioOutput.getUnderflow()) Serial.println("underflow");
+        if(audioOutput.getOverflow()) Serial.println("overflow");
       }
-      audioOutput.output_samples(outputSamples[pingPong], 1024);
-      pingPong ^= 1;
+
     }
     UDPAdvertisement();
   }
@@ -180,7 +288,8 @@ void runServer() {
       {
         Serial.println("connected");
         led_on();
-        exchangeData(client, false);
+        //exchangeData(client, false);
+        recvData(client);
         led_off();
         Serial.println("disconnected");
       }
@@ -204,7 +313,8 @@ void runClient()
       {
         Serial.println("connected");
         led_on();
-        exchangeData(client, true);
+        //exchangeData(client, true);
+        sendData(client);
         led_off();
         Serial.println("disconnected");
       }
@@ -235,15 +345,22 @@ void setup() {
   Serial.printf("UDP server on port %d\n", advertisePort);
   Udp.begin(advertisePort);
   pair();
+  gpio_init(0);
+  gpio_set_dir(0, GPIO_OUT);
 
   //quiet regulator
   cyw43_arch_gpio_put(1, 1);
   audioInput.begin(16, 10000);
-  audioOutput.begin(0, 10000);
+  audioOutput.setBitsPerSample(16);
+  if (!audioOutput.begin(10000)) {
+    Serial.println("Failed to initialize I2S!");
+    while (1); // do nothing
+  }
+  Serial.println("setup complete");
 }
 
 void loop() {
-  
+
   if(BOOTSEL)
   {
     runClient();

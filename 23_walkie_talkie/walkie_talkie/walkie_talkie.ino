@@ -7,18 +7,18 @@
 #include "WiFiManager.h"
 #include "pico/cyw43_arch.h" //needed to set regulator mode
 
-
-#define pBCLK 14
+#define pDOUT 0
+#define pBCLK 1
 #define pWS (pBCLK+1)
-#define pDOUT 13
+
 
 //Non-Volatile Storage
-const int eeprom_version = 401;
+const int eeprom_version = 400;
 const int eeprom_address = 256;
 
 enum e_connection_method {
   WIFI_MANAGER,
-  PSUEDO_P2P
+  P2P
 };
 
 enum e_p2p_role {
@@ -36,7 +36,7 @@ struct s_settings {
 
 s_settings settings = {
   eeprom_version,
-  PSUEDO_P2P,
+  WIFI_MANAGER,
   STA,
   false,
   0
@@ -46,7 +46,9 @@ s_settings settings = {
 unsigned int dataPort = 5005;       // local port to listen on
 unsigned int advertisePort = 5006;  // local port to listen on
 unsigned int peer_last_seen = 0;
+unsigned int peer_last_audio = 0;
 WiFiUDP Udp;
+WiFiUDP UdpData;
 bool wifi_up = false;
 
 //audio input and buffer
@@ -125,75 +127,118 @@ int16_t alaw_expand(uint8_t u_val) {
    return (sign==0)?(decoded):(-decoded);
 }
 
-void sendData(WiFiClient client)
+void sendData()
 {
 
   int16_t dc = 2048;
   float envelope = 0;
   bool gate_open = false;
   float gain = 0, smoothed_gain = 0;
-  while(client.connected() && BOOTSEL)
-  {
-      
-    //send audio data
-    uint16_t *inputSamples;
-    audioInput.input_samples(inputSamples);
 
-    if(inputSamples)
+  while (BOOTSEL)
+  {
+    uint16_t *inputSamples;
+    if(audioInput.get_overflow()) Serial.println("overflow in audio input");
+    audioInput.input_samples(inputSamples);
+    
+    if (inputSamples)
     {
-      if(audioInput.get_overflow()) Serial.println("overflow");
-      uint32_t t0 = micros();
-      for(uint16_t i = 0; i<ADC_BUFFER_SIZE; ++i)
+      for (uint16_t i = 0; i < ADC_BUFFER_SIZE; ++i)
       {
         int16_t sample = inputSamples[i];
-        dc = dc + ((sample - dc) >> 1);
+        dc += (sample - dc) >> 1;
         sample -= dc;
-        envelope = 0.9f*envelope + 0.1f*abs(sample);
-        if(gate_open){
-          if(envelope < 3) gate_open = false;
+
+        envelope = 0.9f * envelope + 0.1f * abs(sample);
+
+        if (gate_open)
+        {
+          if (envelope < 3) gate_open = false;
           gain = 1.0f;
-          smoothed_gain = 0.95f*smoothed_gain + 0.05f*gain;
-        } else {
-          if(envelope > 20) gate_open = true;
-          gain = 0.0f;
-          smoothed_gain = 0.99f*smoothed_gain + 0.01f*gain;
+          smoothed_gain = 0.95f * smoothed_gain + 0.05f * gain;
         }
-        packetBuffer[i]=alaw_compress(sample * smoothed_gain);
+        else
+        {
+          if (envelope > 30) gate_open = true;
+          gain = 0.0f;
+          smoothed_gain = 0.99f * smoothed_gain + 0.01f * gain;
+        }
+        packetBuffer[i] = alaw_compress(sample * smoothed_gain);
       }
-      client.write(packetBuffer, ADC_BUFFER_SIZE);
+
+
+      //UDP unicast audio packet
+      UdpData.beginPacket(settings.remoteIP, dataPort);
+      UdpData.write(packetBuffer, ADC_BUFFER_SIZE);
+      UdpData.endPacket();
+
+
     }
-  
-    UDPAdvertisement();
+
   }
 }
 
-void recvData(WiFiClient client)
-{    
-  while(client.connected())
+void recvData()
+{
+  uint32_t inp = 0, outp = 0, fill=0;
+  bool play = false;
+  static uint8_t jitter_buffer[4][ADC_BUFFER_SIZE];
+  while (!BOOTSEL)
   {
-    //get audio data
-    if (client.available()) {
-      uint32_t bytesToSend = audioOutput.availableForWrite();
-      if(bytesToSend > ADC_BUFFER_SIZE*4) bytesToSend = ADC_BUFFER_SIZE*4;
-      if(bytesToSend)
+  
+    int packetSize = UdpData.parsePacket();
+    if (packetSize == ADC_BUFFER_SIZE)
+    {  
+      if(fill < 4) {
+        UdpData.read(jitter_buffer[inp], ADC_BUFFER_SIZE);
+        inp = (inp+1) & 3;
+        fill++;
+        peer_last_audio = peer_last_seen = millis();
+
+      } else {
+        while (UdpData.available()) UdpData.read(); //drop packet
+        peer_last_audio = peer_last_seen = millis();
+      }
+      
+    } else if (packetSize > 0) {
+      // Drain junk
+      while (UdpData.available()) UdpData.read();
+      peer_last_seen = millis();
+    }
+
+    if(fill == 2) play = true;
+    if(fill == 0) play = false;
+
+    if(play && (audioOutput.availableForWrite()>=ADC_BUFFER_SIZE*4)) {
+      for (uint16_t i = 0; i < ADC_BUFFER_SIZE*2; i += 2)
       {
-        uint32_t t0 = micros();
-        // read the packet into packetBufffer
-        for (uint16_t i = 0; i < bytesToSend/2; i+=2) {
-          // form 12 bit sample from 8 bits bit sample
-          int16_t sample = alaw_expand(client.read()) << 4;
-          //write same sample into L and R channel
-          outputSamples[i] = sample;
-          outputSamples[i+1] = sample; 
-          
-        }
-     
-        uint32_t samples_written = audioOutput.write((uint8_t*)outputSamples, bytesToSend);
-        if(audioOutput.getUnderflow()) Serial.println("underflow");
-        if(audioOutput.getOverflow()) Serial.println("overflow");
+        int16_t sample = alaw_expand(jitter_buffer[outp][i/2]) << 4;
+        outputSamples[i]     = sample;
+        outputSamples[i + 1] = sample;
       }
 
+      if(audioOutput.getOverflow()) Serial.println("Overflow in audio output");
+      if(audioOutput.getUnderflow()) Serial.println("Underflow in audio output");
+      audioOutput.write((uint8_t*)outputSamples, ADC_BUFFER_SIZE * 4);
+      
+      outp = (outp+1) & 3;
+      fill--;
     }
+
+    if(millis()-peer_last_audio < 1000) {
+      led_on();
+    } else if(millis()-peer_last_seen < 3000) {
+      blink(3);
+    } else {
+      blink(2);
+    }
+
+    if(settings.connection_method == P2P && settings.p2p_role == STA && millis()-peer_last_seen > 3000) {
+      Serial.println("no connection to AP, reboot");
+      reboot();
+    }
+
+    pair();
   }
 }
 
@@ -220,8 +265,7 @@ void pair()
   if(packetSize)
   {
     arduino::IPAddress remoteIP = Udp.remoteIP();
-    Serial.println();
-    Serial.print("pairing with: ");
+    Serial.print("paired with: ");
     Serial.println(remoteIP);
     peer_last_seen = millis();
     if(remoteIP != settings.remoteIP){
@@ -229,65 +273,6 @@ void pair()
       save();
     }
   }
-}
-
-void runServer() {
-  Serial.println("server running waiting for connection");
-  WiFiServer server(dataPort);
-  server.begin();
-  while(!BOOTSEL)
-  {
-    pair();
-    if(millis() - peer_last_seen < 3000) {
-      blink(3);
-    } else {
-      blink(2);
-    }
-
-    WiFiClient client = server.accept();
-    if(client)
-    {
-      if(client.connected())
-      {
-        Serial.println("connected");
-        led_on();
-        recvData(client);
-        led_off();
-        Serial.println("disconnected");
-      }
-      client.stop();
-      peer_last_seen = millis();
-    }
-
-    if(settings.connection_method == PSUEDO_P2P && settings.p2p_role == STA && millis()-peer_last_seen > 3000) {
-      Serial.println("no connection to AP, reboot");
-      reboot();
-    }
-
-  }
-  Serial.println("server stopped");
-  server.stop();
-}
-
-void runClient()
-{
-    Serial.println("connecting to server");
-    while(BOOTSEL)
-    {
-      WiFiClient client;
-
-      client.connect(settings.remoteIP, dataPort);
-      if(client)
-      {
-        Serial.println("connected");
-        led_on();
-        sendData(client);
-        led_off();
-        Serial.println("disconnected");
-      }
-      client.stop();
-      UDPAdvertisement();
-    }
 }
 
 void GetWIFIWIFIManager() {
@@ -423,26 +408,22 @@ void setup() {
 
   Serial.begin(115200);
   EEPROM.begin(512);
-  sleep_ms(10000);
 
+  Serial.println();
   Serial.println("PiPico Walkie Talkie");
   load();
 
-
-  Serial.println(settings.connection_method);
   if(settings.connection_method == WIFI_MANAGER) {
     Serial.println("Use WIFI Manager");
     GetWIFIWIFIManager();
   }
-  else if(settings.connection_method == PSUEDO_P2P) {
-    Serial.println("Use PSUEDO P2P");
+  else if(settings.connection_method == P2P) {
+    Serial.println("Use P2P");
     GetWIFIP2P();
   }
 
   Udp.begin(advertisePort);
-
-  gpio_init(0);
-  gpio_set_dir(0, GPIO_OUT);
+  UdpData.begin(dataPort);
 
   //quiet regulator
   cyw43_arch_gpio_put(1, 1);
@@ -460,11 +441,13 @@ void loop() {
 
   if(BOOTSEL)
   {
-    runClient();
+    led_on();
+    sendData();
+    led_off();
   }
   else
   {
-    runServer();
+    recvData();
   }
 
 }

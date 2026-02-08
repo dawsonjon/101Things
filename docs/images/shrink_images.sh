@@ -1,5 +1,5 @@
-mogrify -resize 800x800\> -strip *.jpg */*.jpg
-jpegoptim --max=85 *.jpg */*.jpg
-mogrify -resize 800x800\> -strip *.png */*.png
-optipng -o7 *.png */*.png
+mogrify -resize 800x800\> -strip walkie_talkie/*.jpg
+jpegoptim --max=85 walkie_talkie/*.jpg
+mogrify -resize 800x800\> -strip walkie_talkie/*.png
+optipng -o7 walkie_talkie/*.png
 

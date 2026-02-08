@@ -8,6 +8,7 @@ The goal of this project was to create a minimalist, retro-style walkie-talkie w
 
 The project is ideal for beginners—it is inexpensive, uses readily available components and modules, and can be assembled in just a few hours. A 3D-printed enclosure completes the design, allowing a compact, pocket-sized, and robust device to be put together quickly, making it both practical and visually appealing.
 
+
 Parts List
 ----------
 
@@ -29,13 +30,15 @@ Parts List
 +-----------------------------------------+----------+---------------------------------+------------------------------+
 | Battery Holder 3xAA                     | 1        | `<https://shorturl.at/0Rlrp>`__ |                              |
 +-----------------------------------------+----------+---------------------------------+------------------------------+
-| 3D Printed Enclosure                    | 1        |                                 |                              |
+| 3D Printed Enclosure                    | 1        | `<https://shorturl.at/cmBcH>`__ |                              |
 +-----------------------------------------+----------+---------------------------------+------------------------------+
 
 (Note: Links are for illustrative purposes and not necessarily recommendations.)
 
 Circuit
 -------
+
+.. image:: images/walkie_talkie/circuit.png
 
 Wiring Table
 ------------
@@ -76,15 +79,15 @@ Using rechargeable NiMH AA cells slightly reduces total runtime due to their low
 
 **Typical Current Consumption**
 
-+----------+---------------------------------------------------------------+-----------------+
-| Mode     | Description                                                   | Approx. Current |
-+==========+===============================================================+=================+
-| Idle     | Wi-Fi connected, no audio activity                            | 70–90 mA        |
-+----------+---------------------------------------------------------------+-----------------+
-| Receive  | Wi-Fi active, UDP audio receive, I²S audio playback           | 100–130 mA      |
-+----------+---------------------------------------------------------------+-----------------+
-| Transmit | ADC sampling, A-law encoding, UDP audio transmit (PTT active) | 130–180 mA      |
-+----------+---------------------------------------------------------------+-----------------+
++----------+---------------------------------------------------------------+---------------------------------+
+| Mode     | Description                                                   | Approx. Current (measured at 4v)|
++==========+===============================================================+=================================+
+| Idle     | Wi-Fi connected, no audio activity                            | 70 mA                           |
++----------+---------------------------------------------------------------+---------------------------------+
+| Receive  | Wi-Fi active, UDP audio receive, I²S audio playback           | 75-80 mA                        |
++----------+---------------------------------------------------------------+---------------------------------+
+| Transmit | ADC sampling, A-law encoding, UDP audio transmit (PTT active) | 80-90 mA                        |
++----------+---------------------------------------------------------------+---------------------------------+
 
 *Figures are indicative and depend on Wi-Fi activity, audio level, and supply voltage.*
 
@@ -96,10 +99,18 @@ With three AA alkaline cells (typically 2000–2500 mAh), these current levels t
 3D-Printed Enclosure
 --------------------
 
+.. image:: images/walkie_talkie/enclosure1.jpg
+
+For the enclosure, I am using a simple 3-D printed design. Since I am using the built-in LED and the BOOTSEL button, I've arranged for these to be easily accessible. There are recesses for the amplifier, speaker and microphone. Even with the large AA battery case, the project still makes for a very compact device that easily fits in a pocket.
+
+.. image:: images/walkie_talkie/enclosure2.jpg
+
 Microphone Module and Noise Mitigation
 --------------------------------------
 
-The project uses a MAX9418 microphone module, which provides a convenient output level that can be sampled directly by the Pico’s ADC input. During testing, it was observed that enabling the Pico W’s radio introduced significant power supply noise, which coupled into the microphone signal and degraded audio quality. This issue was effectively mitigated by placing a 1 kΩ resistor in series between the Pico’s 3.3 V supply and the microphone’s VCC pin. Combined with the capacitors already present on the microphone module, this forms a simple low-pass filter that attenuates high-frequency noise from the power supply. Since the MAX9418 draws very little current, the voltage drop across the resistor is minimal, so the microphone still receives sufficient voltage for proper operation while the PSU noise is strongly suppressed.
+.. image:: images/walkie_talkie/mic.jpg
+
+The project uses a MAX4466 microphone module, which provides a convenient output level that can be sampled directly by the Pico’s ADC input. During testing, it was observed that enabling the Pico W’s radio introduced significant power supply noise, which coupled into the microphone signal and degraded audio quality. This issue was effectively mitigated by placing a 1 kΩ resistor in series between the Pico’s 3.3 V supply and the microphone’s VCC pin. Combined with the capacitors already present on the microphone module, this forms a simple low-pass filter that attenuates high-frequency noise from the power supply. Since the MAX4466 draws very little current, the voltage drop across the resistor is minimal, so the microphone still receives sufficient voltage for proper operation while the PSU noise is strongly suppressed.
 
 Capturing Audio from the ADC
 ----------------------------
@@ -108,6 +119,8 @@ Audio input is captured directly from the built-in ADC of the microcontroller. T
 
 Audio Output Stage
 ------------------
+
+.. image:: images/walkie_talkie/i2samp.jpg
 
 Audio output is handled by a MAX98357A digital audio amplifier, which can be obtained very cheaply while still providing excellent audio quality. The device is driven directly from a digital I²S interface, eliminating the need for a DAC or analog filtering stages and keeping the audio path simple and noise-resistant. As a switch-mode (Class-D) amplifier, the MAX98357A is highly efficient, which is particularly important for a battery-powered walkie-talkie and helps to extend operating time between charges. The amplifier is paired with a 20 mm miniature speaker; while small, these speakers sound surprisingly good when mounted in a sealed enclosure, which significantly improves low-frequency response and overall clarity.
 
@@ -174,6 +187,8 @@ A noise gate is implemented to automatically silence the audio path when no spee
 Conclusion
 ----------
 
-This project demonstrates that it is possible to build a fully functional, low-cost digital walkie-talkie with minimal hardware and a retro, pocket-sized form factor. By leveraging the Pico’s built-in peripherals, readily available modules like the MAX9418 microphone and MAX98357A amplifier, and efficient software techniques such as DMA-driven audio capture, A-law compression, and UDP-based communication, the device achieves clear voice transmission with low latency while remaining compact and energy-efficient.
+.. image:: images/walkie_talkie/walkie_talkies.jpg
+
+This project demonstrates that it is possible to build a fully functional, low-cost digital walkie-talkie with minimal hardware and a retro, pocket-sized form factor. By leveraging the Pico’s built-in peripherals, readily available modules like the MAX4466 microphone and MAX98357A amplifier, and efficient software techniques such as DMA-driven audio capture, A-law compression, and UDP-based communication, the device achieves clear voice transmission with low latency while remaining compact and energy-efficient.
 
 The minimalist design—using the BOOTSEL button as push-to-talk and the built-in LED as a status indicator—keeps the build simple, inexpensive, and approachable for beginners, while the 3D-printed enclosure ensures a robust and portable final device. Overall, this project is a fun, practical introduction to microcontroller-based audio and wireless communication, and it provides a solid foundation for further experimentation or enhancements.

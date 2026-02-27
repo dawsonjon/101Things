@@ -1,7 +1,7 @@
 Pico W Walkie Talkie
 ====================
 
-.. image:: images/full_circuit.png
+.. image:: images/circuit.png
 
 
 Features

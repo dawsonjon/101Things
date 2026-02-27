@@ -11,6 +11,7 @@ The project is ideal for beginners—it is inexpensive, uses readily available c
 Quick Links
 -----------
 
++ `Walkie Talkie <https://github.com/dawsonjon/101Things/blob/master/23_walkie_talkie/README.rst`__
 + `Arduino Sketch <https://github.com/dawsonjon/101Things/tree/master/23_walkie_talkie/walkie_talkie>`__
 + `3D Printed Enclosusure <https://github.com/dawsonjon/101Things/tree/master/23_walkie_talkie/enclosure>`__
 

@@ -8,6 +8,12 @@ The goal of this project was to create a minimalist, retro-style walkie-talkie w
 
 The project is ideal for beginners—it is inexpensive, uses readily available components and modules, and can be assembled in just a few hours. A 3D-printed enclosure completes the design, allowing a compact, pocket-sized, and robust device to be put together quickly, making it both practical and visually appealing.
 
+Quick Links
+-----------
+
++ `Arduino Sketch <https://github.com/dawsonjon/101Things/tree/master/23_walkie_talkie/walkie_talkie>`__
++ `3D Printed Enclosusure <https://github.com/dawsonjon/101Things/tree/master/23_walkie_talkie/enclosure>`__
+
 
 Parts List
 ----------
@@ -15,7 +21,6 @@ Parts List
 +-----------------------------------------+----------+---------------------------------+------------------------------+
 | Part                                    | Quantity | Example URL                     | Notes                        |
 +=========================================+==========+=================================+==============================+
-+-----------------------------------------+----------+---------------------------------+------------------------------+
 | Raspberry Pi Pico W                     | 1        | `<https://shorturl.at/mVJ0G>`__ |                              |
 +-----------------------------------------+----------+---------------------------------+------------------------------+
 | Resistor 1k                             | 1        | `<https://shorturl.at/ipgdH>`__ |                              |

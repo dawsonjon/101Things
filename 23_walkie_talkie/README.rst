@@ -15,7 +15,7 @@ Features
 Install Arduino Pico
 --------------------
 
-The Walkie Talkie code is written in C++, a demo application is provided as an `Arduino library <https://github.com/dawsonjon/101Things/tree/master/23_walkie_talkie/walkie_talkie>`__. The `Arduino Pico <https://github.com/earlephilhower/arduino-pico>`__ port by Earle Philhower is probably the easiest way to install and configure a C++ development environment for the Raspberry Pi Pico. It is possible to install the tool and get up and running with example applications in just a few minutes. Refer to the `installation instructions <https://github.com/earlephilhower/arduino-pico?tab=readme-ov-file#installing-via-arduino-boards-manager>`__ and the `online documentation <https://arduino-pico.readthedocs.io/en/latest/>`__ to get started.
+The Walkie Talkie code is written in C++, the application is provided as an `Arduino sketch <https://github.com/dawsonjon/101Things/tree/master/23_walkie_talkie/walkie_talkie>`__. The `Arduino Pico <https://github.com/earlephilhower/arduino-pico>`__ port by Earle Philhower is probably the easiest way to install and configure a C++ development environment for the Raspberry Pi Pico. It is possible to install the tool and get up and running with example applications in just a few minutes. Refer to the `installation instructions <https://github.com/earlephilhower/arduino-pico?tab=readme-ov-file#installing-via-arduino-boards-manager>`__ and the `online documentation <https://arduino-pico.readthedocs.io/en/latest/>`__ to get started.
 
 Documentation
 -------------

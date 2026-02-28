@@ -1,7 +1,9 @@
 Walkie Talkie with Pi-Pico W
 ============================
 
+.. raw:: html
 
+    <iframe width="560" height="315" src="https://www.youtube.com/embed/U8cwK0G3OJc?si=SyfPydHGK2z0bJEL" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 
 The goal of this project was to create a minimalist, retro-style walkie-talkie with a simple and compact design. The hardware is kept as minimal as possible, avoiding any conventional user interface: the BOOTSEL button doubles as a push-to-talk control, and the built-in LED serves as a status indicator. This makes the device easy to build, fun to use, and gives it a charmingly retro feel.
@@ -11,7 +13,7 @@ The project is ideal for beginners—it is inexpensive, uses readily available c
 Quick Links
 -----------
 
-+ `Walkie Talkie <https://github.com/dawsonjon/101Things/blob/master/23_walkie_talkie/README.rst`__
++ `Walkie Talkie <https://github.com/dawsonjon/101Things/blob/master/23_walkie_talkie/README.rst>`__
 + `Arduino Sketch <https://github.com/dawsonjon/101Things/tree/master/23_walkie_talkie/walkie_talkie>`__
 + `3D Printed Enclosusure <https://github.com/dawsonjon/101Things/tree/master/23_walkie_talkie/enclosure>`__
 

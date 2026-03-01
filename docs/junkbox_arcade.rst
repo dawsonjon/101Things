@@ -202,6 +202,4 @@ Whether you keep it on a breadboard, tuck it into the 3D-printed enclosure, or u
 
 If you build your own version—or add your own twists—I  would love to hear how it turns out. Retro games have a way of bringing out everyone’s creativity, and this tiny arcade machine is a great place to start experimenting.
 
-
-
-
+If you would like to support 101Things, buy me a coffee: https://ko-fi.com/101things

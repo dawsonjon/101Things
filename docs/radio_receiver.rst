@@ -2,7 +2,7 @@ Pi Pico Rx - A crystal radio for the digital age?
 =================================================
 
 
-My first step into the world of electronics was with a crystal radio, just like this one. 
+My first step into the world of electronics was with a crystal radio, just like this one.
 
 .. image:: images/crystal_radio.jpg
 
@@ -19,19 +19,19 @@ computing power that could have filled an entire room just a few decades ago.
 
 I often wonder how we can still capture that sense of awe and excitement from
 my first crystal radio experience. Is it still possible to create something
-simple yet captivating? 
+simple yet captivating?
 
 The Pi Pico Rx - may be the answer to that question. While it may not be quite
 as straightforward as the crystal radio, the Pi Pico Rx presents a remarkably
-simple solution. Armed with just a 
-`Raspberry Pi Pico <https://www.raspberrypi.com/products/raspberry-pi-pico/>`__, 
+simple solution. Armed with just a
+`Raspberry Pi Pico <https://www.raspberrypi.com/products/raspberry-pi-pico/>`__,
 an analogue switch, and an op-amp, we now have the power to construct a capable
 SDR receiver covering the LW, MW, and SW bands. With the ability to receive
 signals from halfway around the globe. I can't help but think that my younger
 self would have been truly impressed!
 
 If you are interested in a simpler version that can be built on a breadboard using mostly through-hole components, checkout the breadboard version
-`here <https://101-things.readthedocs.io/en/latest/breadboard_radio.html>`_. 
+`here <https://101-things.readthedocs.io/en/latest/breadboard_radio.html>`_.
 
 .. image:: images/breadboard_radio_schematic.svg
 
@@ -48,16 +48,13 @@ Features
 + runs on 3 AAA batteries
 + less than 50mA current consumption
 
-
-
-
 Pi Pico Rx
 ----------
 
 .. image:: images/thumbnail5.png
   :target: https://github.com/dawsonjon/PicoRX/assets/717535/4846c78d-21c3-42e8-bcdf-278cc2bdadcb
 
-Pi Pico Rx is a minimal SDR receiver based around the `Raspberry Pi Pico <https://www.raspberrypi.com/products/raspberry-pi-pico/>`__. 
+Pi Pico Rx is a minimal SDR receiver based around the `Raspberry Pi Pico <https://www.raspberrypi.com/products/raspberry-pi-pico/>`__.
 The design uses a “Tayloe” Quadrature Sampling Detector (QSD) popularised by
 `Dan Tayloe <https://www.norcalqrp.org/files/Tayloe_mixer_x3a.pdf>`__.
 And used in *many* HF SDR radio designs. This simple, design allows a
@@ -1034,8 +1031,8 @@ Construction
 
 
 + The full schematics for the PCB can be found `here <https://github.com/dawsonjon/PicoRX/raw/master/PCB/pico_rx/pipicorx.pdf>`__.
-+ There are 3 PCBs in total, the front and back panels are contructed from PCBs to form a sandwich enclosure. The Gerber files for the PCBs can be found `here <https://github.com/dawsonjon/PicoRX/raw/master/PCB/pico_rx/gerbers/gerbers.zip>`__, `here <https://github.com/dawsonjon/PicoRX/raw/master/PCB/front_panel/gerbers/gerbers.zip>`__ and `here <https://github.com/dawsonjon/PicoRX/raw/master/PCB/back_panel/gerbers/gerbers.zip>`__.  
-+ A bill of materials can be found `here <https://github.com/dawsonjon/PicoRX/raw/master/PCB/pico_rx/BOM.ods>`__.  
++ There are 3 PCBs in total, the front and back panels are contructed from PCBs to form a sandwich enclosure. The Gerber files for the PCBs can be found `here <https://github.com/dawsonjon/PicoRX/raw/master/PCB/pico_rx/gerbers/gerbers.zip>`__, `here <https://github.com/dawsonjon/PicoRX/raw/master/PCB/front_panel/gerbers/gerbers.zip>`__ and `here <https://github.com/dawsonjon/PicoRX/raw/master/PCB/back_panel/gerbers/gerbers.zip>`__.
++ A bill of materials can be found `here <https://github.com/dawsonjon/PicoRX/raw/master/PCB/pico_rx/BOM.ods>`__.
 + The USB loadable firmware for the pi pico can be found `here <https://github.com/dawsonjon/PicoRX/raw/master/build/picorx.uf2>`__.
 
 .. image:: https://github.com/dawsonjon/PicoRX/assets/717535/c46863a0-d919-4a2d-a47c-f318970170d0
@@ -1072,3 +1069,5 @@ CW on the 40m band
 """""""""""""""""""
 .. image:: images/thumbnail4.png
   :target: https://github.com/dawsonjon/PicoRX/assets/717535/ed986087-fee0-48f2-ac1a-aabef4a694ca
+
+If you would like to support 101Things, buy me a coffee: https://ko-fi.com/101things

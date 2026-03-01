@@ -19,7 +19,7 @@ can be connected to a microcontroller using the `I2C <https://en.wikipedia.org/w
 includes everything you need to add an FM radio capability to a microcontroller
 project with only a couple of extra components. It can even directly drive a 32
 ohm load (e.g. headphones) without using an external amplifier. There is a
-plentiful supply of very cheap modules based on this chip that make it 
+plentiful supply of very cheap modules based on this chip that make it
 easy to design an FM radio or to add an FM radio to another project.
 
 Apart from the chip itself, they include a crystal oscillator and a couple of
@@ -166,19 +166,19 @@ serial port to control the device.
       time.sleep_ms(100)
 
 Installing Thonny and Micropython
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Thonny is one of the easiest tools to get started with MicroPython development
 on the Pi-Pico. Details about how to download and install Thonny can be found
 `here <https://thonny.org/>`_.  Once Thonny has been installed, installing
 Micropython on the Pi-Pico is a simple operation.
 
-.. image:: images/install_micropython.png 
- 
-.. image:: images/install_micropython2.png 
+.. image:: images/install_micropython.png
+
+.. image:: images/install_micropython2.png
 
 Trying the serial example
-~~~~~~~~~~~~~~~~~~~~~~~~~ 
+~~~~~~~~~~~~~~~~~~~~~~~~~
 
 By default, micropython will load and run the module called `main.py` in the
 root folder. Loading the example is simply a matter of transferring
@@ -250,9 +250,9 @@ Most parts are commonly available and could be purchased from multiple sources, 
 + 1x `128x64 OLED Display <https://www.amazon.co.uk/dp/B08ZKW6KM1?ref_=pe_27063361_487360311_302_E_DDE_dt_1&th=1>`_
 + 1x `3.5mm stereo headphone socket <https://uk.farnell.com/cliff-electronic-components/fc68133/stereo-jack-3-5mm-5pos-pcb/dp/2518190>`_
 + 3x `TPA2012D <https://uk.farnell.com/texas-instruments/tpa2012d2rtjtg4/amp-audio-classd-power-smd-qfn20/dp/3116929?st=TPA2012D2RTJTG4>`_
-+ 5x 10uF ceramic capacitor X7R 0805 
-+ 3x 1uF ceramic capacitor X7R 0805 
-+ 1x 100nF ceramic capacitor X7R 0805 
++ 5x 10uF ceramic capacitor X7R 0805
++ 3x 1uF ceramic capacitor X7R 0805
++ 1x 100nF ceramic capacitor X7R 0805
 + 1x `ferrite bead 0805 <https://uk.farnell.com/tdk/mmz2012y102b/ferrite-bead-0-3ohm-500ma-0805/dp/1669727>`_
 + 1x resistor 10R 0805
 + 2x resistor 1K 0805
@@ -271,7 +271,7 @@ directly from 2xAA batteries. This worked quite well, but there were a couple
 of downsides to this approach.
 
 The first issue was that noise from the pico reduced the performance of the FM
-receiver so that some of the weaker stations could no longer be received. 
+receiver so that some of the weaker stations could no longer be received.
 
 The second was that the voltage range of the RDA5807 is quite narrow from 2.7v to
 3.3v. 2xNiMH cells should produce 2.4v when charged, reducing to 2.0v when
@@ -302,7 +302,7 @@ the usual SSD1306 OLED display. Fortunately, MicroPython has inbuild support for
 this type of display which helps to keep the development simple. I could have
 shared the I2C bus between the RDA5807M and the SSD1306, but I'm not doing much
 else with the Pi-Pico and I have plenty of spare IO so I used a separate bus.
-A few tactile push buttons are all that is needed to control the device. 
+A few tactile push buttons are all that is needed to control the device.
 
 MicroPython provides a flash-based file system so it is quite easy to store the
 settings by writing them to a file. This is certainly a lot easier than writing
@@ -330,7 +330,7 @@ to Flash using the C/C++ SDK.
                   settings[key] = value
       except OSError:
           pass
-      
+
       return settings
 
   def save_settings(settings):
@@ -373,15 +373,15 @@ full and flat battery depends on the battery chemistry.
    # based on 2 AA cell
    batt_voltage_max = 3.0
    batt_voltage_min = 2.0
-    
-   # based on 3 AA cell 
+
+   # based on 3 AA cell
    #batt_voltage_max = 4.5
    #batt_voltage_min = 3.0
-    
+
    # based on 1 3.7/4.2v Lithium Polymer cell
    #batt_voltage_max = 4.2
    #batt_voltage_min = 3.4
-    
+
    if average_batt_voltage > batt_voltage_max:
        batt_level = 10
    elif average_batt_voltage < batt_voltage_min:
@@ -444,10 +444,10 @@ Class-D Amplifier
 
 Although the RDA5807M can drive headphones directly, it is nice to have a bit
 more power to drive a speaker. The LM386 might be the traditional choice, but I
-opted for the `TPA2012D2 <https://www.ti.com/lit/ds/symlink/tpa2012d2.pdf?ts=1711052806354&ref_url=https%253A%252F%252Fwww.google.com%252F>`_. 
+opted for the `TPA2012D2 <https://www.ti.com/lit/ds/symlink/tpa2012d2.pdf?ts=1711052806354&ref_url=https%253A%252F%252Fwww.google.com%252F>`_.
 This class-D stereo amplifier is very efficient and
 can supply as much as 2.1W per channel into 4-ohm speakers. It is cheap and
-requires only a couple of supporting components, so really is ideal for a battery-powered application like this. 
+requires only a couple of supporting components, so really is ideal for a battery-powered application like this.
 
 One potential downside of the TPA2012D2 is that the WQFN package isn't
 particularly beginner-friendly. Fortunately, several ready-made modules such
@@ -465,7 +465,7 @@ surround would have been ideal, but I went for a lower-tech solution and just
 used a bottle cap secured with adhesive. Although not Hi-Fi quality, once
 sealed in an enclosure I was quite happy with the quality. You can
 get miniature speakers that have a built-in enclosure. I would have taken this
-route but didn't have the space in the enclosure. 
+route but didn't have the space in the enclosure.
 
 A larger speaker (in a suitable enclosure) would give even better (and louder)
 audio, and would be worth considering if you have the space.
@@ -510,7 +510,7 @@ To limit the amount of processing that needs to be done in Python, I
 pre-process the image into a `bytearray` of the correct format using a Python
 script on a PC.
 
-.. code:: python 
+.. code:: python
 
   import imageio
   import sys
@@ -551,7 +551,7 @@ white.
   :align: center
 
 Installing the SSD1306 library
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Assuming you have already installed Thonny and MicroPython, it is easy to install the SSD1306 library.
 
@@ -593,4 +593,7 @@ Useful Links
 
 `C/C++SDK library for RDA5807 <https://github.com/vmilea/pico_rda5807>`_
 
-`TPA2012D2 datasheet <https://www.ti.com/lit/ds/symlink/tpa2012d2.pdf?ts=1711052806354&ref_url=https%253A%252F%252Fwww.google.com%252F>`_. 
+`TPA2012D2 datasheet <https://www.ti.com/lit/ds/symlink/tpa2012d2.pdf?ts=1711052806354&ref_url=https%253A%252F%252Fwww.google.com%252F>`_.
+
+
+If you would like to support 101Things, buy me a coffee: https://ko-fi.com/101things

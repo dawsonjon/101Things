@@ -192,7 +192,7 @@ the waveform. For each sample, we add a fixed amount `frequency_steps` to the
 phase-accumulator. The higher the frequency, the more phase we add, and the
 more frequently the phase accumulator overflows. The maximum value of a 16-bit
 number is 65535, with a 20kHz sample rate that gives a range of 0-10kHz with a
-resolution of 0.3 Hz. We can convert from Hz to frequency steps using this 
+resolution of 0.3 Hz. We can convert from Hz to frequency steps using this
 function.
 
 .. code:: cpp
@@ -234,7 +234,7 @@ pedals or software plugins, waveshapers manipulate the guitar's audio waveform
 by introducing non-linearities, achieved through techniques like soft clipping.
 As the guitar signal passes through, these devices alter the waveform by
 compressing or clipping specific parts, resulting in harmonically rich
-overtones and a gritty texture. 
+overtones and a gritty texture.
 
 .. image:: images/waveshapers.svg
   :align: center
@@ -365,7 +365,7 @@ using a matrix resulting in much denser and more random-sounding echos.
 
 There is still room for improvement here, we could make a better more
 natural-sounding reverb by increasing the number of delay lines. The design
-would also benefit from a diffuser stage. 
+would also benefit from a diffuser stage.
 
 
 Modulation Effects
@@ -441,3 +441,5 @@ Useful Links
 + `Pedal Shield <https://www.electrosmash.com/pedalshield-mega>`__
 + `Spin Semiconductor <http://www.spinsemi.com/knowledge_base/effects.html>`__
 
+
+If you would like to support 101Things, buy me a coffee: https://ko-fi.com/101things

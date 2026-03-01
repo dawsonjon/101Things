@@ -9,7 +9,7 @@ FFT-based filtering
 -------------------
 
 One significant change in this release of firmware is the introduction of
-frequency-domain filtering using an FFT. 
+frequency-domain filtering using an FFT.
 
 In the time domain, filtering is achieved by convolving a signal with a filter
 kernel containing the impulse response of a filter. To build better filters
@@ -25,7 +25,7 @@ representing the magnitude of the frequency response. Of course, we first need
 to convert the signal from a time domain to a frequency domain and back again.
 We use the Fast Fourier Transform (FFT) and its close relation, the Inverse
 Fast Fourier Transform (IFFT) to transform between the time and frequency
-representations. 
+representations.
 
 The FFT algorithm is so efficient, that even when the additional effort of
 transforming to a from the frequency domain is considered, it is still faster
@@ -41,7 +41,7 @@ Key Steps Involved
 """"""""""""""""""
 
 1. Divide the Signal into Overlapping Segments. The input signal is split
-into shorter, overlapping segments using a windowing function. 
+into shorter, overlapping segments using a windowing function.
 
 2. Apply FFT to Each Segment. For each segment, the windowed signal is
 transformed into the frequency domain using the Fast Fourier Transform
@@ -52,7 +52,7 @@ chosen so that the overlapped signals add to a constant value.
 3. Multiply with the Frequency Response of the Filter. In the frequency
 domain, each segment is element-wise multiplied by the frequency response
 of the desired filter. This multiplication effectively filters the frequency
-content of the segment. 
+content of the segment.
 
 4. Inverse FFT (IFFT) to Convert Back to the Time Domain. Each filtered
 segment is converted back to the time domain using the Inverse
@@ -95,7 +95,7 @@ bits of data.
 During the forward FFT, a growth of 256 can occur. With no scaling at all, a
 sin wave with an amplitude of 16 in the time domain would result in a peak with
 a magnitude of 4096 in the frequency domain. Various scaling strategies can be
-employed in an FFT to allow for this growth. 
+employed in an FFT to allow for this growth.
 
 Scaling by a factor of 2 after each stage is safe and prevents any possibility
 of overflow. The downside of this approach is that we truncate the lowest 8
@@ -106,7 +106,7 @@ To preserve as many useful bits as possible, a smaller scaling factor is used
 in this design. Scaling by a factor of 2 after every *second* stage means that
 we truncate by 4 bits overall, losing only the bits that contain noise. This
 means that there is a possibility of overflow under worst-case conditions if
-the input data exceeds 12 bits. 
+the input data exceeds 12 bits.
 
 However, the worst-case growth can only occur for a single tone of large
 amplitude, and with our 13-bit input, the conditions needed to cause overflow
@@ -173,7 +173,7 @@ signal.
 
    <audio controls="controls" title="AM Demodulator">
          <source src="_static/ANF_before.wav" type="audio/wav">
-         Your browser does not support the <code>audio</code> element. 
+         Your browser does not support the <code>audio</code> element.
    </audio>
 
 **Interfering tone with ANF**
@@ -182,7 +182,7 @@ signal.
 
    <audio controls="controls" title="Synchronous AM Demodulator">
          <source src="_static/ANF_after.wav" type="audio/wav">
-         Your browser does not support the <code>audio</code> element. 
+         Your browser does not support the <code>audio</code> element.
    </audio>
 
 Synchronous Amplitude Modulation
@@ -196,7 +196,7 @@ The existing AM demodulation is a very simple implementation that calculates
 the magnitude of the IQ baseband signal using a simple magnitude approximation.
 A more sophisticated method of AM demodulation is synchronous demodulation.
 Synchronous AM demodulation uses a Phase Locked Loop (PLL) to remove any
-frequency and phase offset. 
+frequency and phase offset.
 
 .. image:: images/breadboard_radio_sam_demodulation.gif
 
@@ -219,7 +219,7 @@ introduced by the magnitude approximation.
 
    <audio controls="controls" title="AM Demodulator">
          <source src="_static/AMS_before.wav" type="audio/wav">
-         Your browser does not support the <code>audio</code> element. 
+         Your browser does not support the <code>audio</code> element.
    </audio>
 
 **Synchronous AM Demodulator**
@@ -228,7 +228,7 @@ introduced by the magnitude approximation.
 
    <audio controls="controls" title="Synchronous AM Demodulator">
          <source src="_static/AMS_after.wav" type="audio/wav">
-         Your browser does not support the <code>audio</code> element. 
+         Your browser does not support the <code>audio</code> element.
    </audio>
 
 
@@ -376,7 +376,7 @@ which provides a rich set of graphical tools, and loads of fonts. The u8g2 also
 supports loads of different display types which should make it easier to adapt
 the software to new displays in future.
 
-Scan/Search 
+Scan/Search
 -----------
 
 Thanks to Penfold42 for contributing the scanning/search functionality!
@@ -419,7 +419,7 @@ This allows a host device to easily make audio recordings (e.g. using
 Audacity), and is compatible with software such as wsjtx, fldigi and QSSTV.
 When combined with USB cat control allows a fully functional PC connection
 using only a single USB cable. The direct digital audio connection provides
-superior audio quality compared to an analogue connection using a sound card. 
+superior audio quality compared to an analogue connection using a sound card.
 
 .. image:: images/breadboard_radio_audacity.png
 
@@ -428,7 +428,7 @@ USB CAT Control
 ---------------
 
 CAT control is provided through a USB serial port interface. The Pi Pico Rx
-emulates a subset Kenwood TS-480. 
+emulates a subset Kenwood TS-480.
 
 The neat thing about USB is that a device can support multiple endpoints. This
 means that with a single USB connection, the receiver can appear as both a USB
@@ -471,7 +471,7 @@ item that allows the oscillator error to be specified in parts per million
 known frequency. Another method is to tune in to a radio station with a known
 frequency. WSJTX includes a nice frequency calibration feature that we can use
 for this purpose. I chose to tune in to BBC Radio 4 on 198kHz, the carrier is
-controlled by a rubidium clock. The 500kW transmitter is based at `Droitwich <https://en.wikipedia.org/wiki/Droitwich_Transmitting_Station>`_, 
+controlled by a rubidium clock. The 500kW transmitter is based at `Droitwich <https://en.wikipedia.org/wiki/Droitwich_Transmitting_Station>`_,
 only a few miles away, so I don't have any issues getting a signal. I found
 that with my receiver, a setting of 5ppm gave me the best accuracy.  This is
 well within the +/-30ppm tolerance of the pi-pico's crystal oscillator. With
@@ -553,7 +553,7 @@ Project Gallery
 ---------------
 
 .. figure:: images/breadboard_radio_with_waterfall.jpg
-  
+
   Pi Pico Rx Build with waterfall (courtesy Jim Reagan W0CHL)
 
 A growing number of people have now completed a build of the breadboard
@@ -561,3 +561,4 @@ receiver, and there is now a gallery of receiver builds. If you have built the
 pico breadboard receiver, I would love to hear from you! `Gallery
 <https://github.com/dawsonjon/PicoRX/issues/99>`_.
 
+If you would like to support 101Things, buy me a coffee: https://ko-fi.com/101things

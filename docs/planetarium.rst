@@ -438,3 +438,5 @@ Here are some references and useful links.
 + `Jet Propulsion Laboratory - Approximate Positions of the Planets <https://ssd.jpl.nasa.gov/txt/aprx_pos_planets.pdf>`__
 + `Bright Star Catalog <http://tdc-www.harvard.edu/catalogs/bsc5.html>`__
 + `WiFi Manager Pico <https://github.com/mthorley/wifimanager-pico>`_
+
+If you would like to support 101Things, buy me a coffee: https://ko-fi.com/101things

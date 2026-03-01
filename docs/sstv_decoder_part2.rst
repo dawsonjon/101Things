@@ -305,3 +305,5 @@ I haven't had much luck yet receiving SSTV from the International Space Station,
 
 There is still plenty more I would like to achieve in the future. Among other things, I would like to extend the code to include support for a small camera. I'm also keen to extend the decoder to include other digital modes such as FT8, PSK31, and RTTY. I would also like to look at designing CW functionality. Watch this space for more updates!
 
+If you would like to support 101Things, buy me a coffee: https://ko-fi.com/101things
+

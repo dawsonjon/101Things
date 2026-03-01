@@ -8,14 +8,14 @@ Pi-Pico RX - Breadboard Version
 A couple of years ago, I built a basic yet capable radio receiver using a Pi
 Pico, and while I originally designed a custom PCB for it, this time I'm
 building an even simpler and cheaper version that can be built on a breadboard
-using (mostly) through-hole components. 
+using (mostly) through-hole components.
 
 I wanted to build a very minimal (but useful) design that I could
 use as a platform for experiments, tweaks and upgrades.
 
 If you are interested in the original design or want to find out more about
 the technical details you can find all
-the info `here <https://101-things.readthedocs.io/en/latest/radio_receiver.html>`_. 
+the info `here <https://101-things.readthedocs.io/en/latest/radio_receiver.html>`_.
 Most of the technical details are the same, so I will focus on the new features and
 improvements here.
 
@@ -24,7 +24,7 @@ improvements here.
 Quick Links
 -----------
 
-You can find the code on the `GitHub page <https://github.com/dawsonjon/PicoRX>`_ 
+You can find the code on the `GitHub page <https://github.com/dawsonjon/PicoRX>`_
 including a precompiled `firmware in .uf2 format <https://github.com/dawsonjon/PicoRX/releases>`_.
 
 What Can This Receiver Do?
@@ -33,7 +33,7 @@ What Can This Receiver Do?
 The receiver covers frequencies up to 30MHz, including commercial broadcasts on
 Longwave, Medium Wave, Shortwave, and the HF amateur radio bands. What’s great
 about this design is that it’s completely standalone—it doesn’t need a PC or
-sound card and can run for hours on just three AAA batteries. 
+sound card and can run for hours on just three AAA batteries.
 
 .. image:: images/breadboard_radio_front.png
 
@@ -48,7 +48,7 @@ Here are the specs:
 + runs on 3 AAA batteries
 + less than 50mA current consumption
 
-Parts List 
+Parts List
 ----------
 +---------------------+------------+-------+--------------------------------------------+------------------------------+
 | Item                | Value      | QTY   | Description                                | Example                      |
@@ -142,8 +142,8 @@ several key improvements to enhance both performance and usability.
 One of the issues that has been addressed was the saturation of the op-amps at
 higher frequencies. One or both op-amps in the Tayloe detector would
 saturate, leading to poor rejection of aliased signals. I quite a few
-changes to remedy the solution, but in the end the solution came from the 
-`truSDX transceiver <https://dl2man.de/wp-content/uploads/2023/07/truSDX_Main_1_2-1.pdf>`_. 
+changes to remedy the solution, but in the end the solution came from the
+`truSDX transceiver <https://dl2man.de/wp-content/uploads/2023/07/truSDX_Main_1_2-1.pdf>`_.
 The addition of these two capacitors solved all the issues of op-amp saturation
 on the high bands and I am getting much better performance.
 
@@ -163,7 +163,7 @@ The firmware originally ran at 125MHz, but by tweaking the PLL, the system clock
 frequency can be varied between 125MHz and 133MHz. 133MHz is the maximum
 frequency without overclocking.  There are 23 possible system clock frequencies
 in this range.  Choosing the best combination of system clock and PIO divider
-gives a resolution of ~ +/-8kHz of the desired frequency. 
+gives a resolution of ~ +/-8kHz of the desired frequency.
 
 This improvement also allows for a narrower bandwidth of about +/-12kHz, now we
 can oversample the I and Q signals by a factor of 10, which greatly improves
@@ -177,7 +177,7 @@ NCO and mixer in the front end of the receiver to do the fine-tuning.**
 3. Switching to a More Affordable Op-Amp
 
 With the improved frequency accuracy and reduced bandwidth, it is now possible
-to switch to a more affordable operational amplifier. The LT6231 op-amp, is a 
+to switch to a more affordable operational amplifier. The LT6231 op-amp, is a
 popular choice in Tayloe detector designs due to its
 exceptionally low noise performance. The original design required a
 gain-bandwidth product (GBP) of 60MHz, well within the 215MHz limit of the
@@ -199,14 +199,14 @@ Antenna and Enclosure
 A random wire antenna in a high location preferably outdoors, or in the attic
 would be ideal for this type of receiver. If you want an indoor antenna, or something a bit more
 portable, I have had pretty good results using a you-loop antenna, it is a clever
-design that cancels noise. 
+design that cancels noise.
 
 .. image:: images/breadboard_radio_lna.jpg
 
 The only downside is that the output level tends to be
 quite low, so you need a sensitive receiver or some kind of pre-amplifier. I'm
 just using a cheap wideband LNA I bought online. I have used this setup for all
-the experiments in this demo. 
+the experiments in this demo.
 
 Enclosure
 ---------
@@ -236,3 +236,4 @@ to build with their pi-pico. While it might not live up to expensive commercial
 radios, its low cost and simplicity make it a valuable tool for receiving
 signals from around the globe.
 
+If you would like to support 101Things, buy me a coffee: https://ko-fi.com/101things

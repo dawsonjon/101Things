@@ -18,7 +18,7 @@ controlled phase and frequency, reducing the part count and keeping the cost
 down. The transmitter also employs a PWM output to generate an RF envelope for
 amplitude modulation.  `C++ Code for Pi Pico <https://github.com/dawsonjon/101Things/tree/master/18_transmitter>`_
 
-**Note:** 
+**Note:**
 
 *Feel free to experiment, but please keep in mind that it is still an
 experimental prototype and not a fully tested design. There are areas that
@@ -39,7 +39,7 @@ assess the quality of the output.
 
 The hardware is pretty simple, the Pi Pico has 3 outputs. The RF oscillator is
 output on an IO pin, the phase and the frequency are precisely controlled by
-software. 
+software.
 
 .. image:: images/ham_transmitter_RF_Oscillator.png
 
@@ -142,7 +142,7 @@ In FM mode, the amplitude is held at the maximum value.
 While AM and FM modulation only affects either the phase or magnitude of the
 signal, SSB modulation requires both the phase and frequency components to be
 modulated. The SSB signal is first generated in rectangular representation and
-then converted to phase and magnitude representation using the 
+then converted to phase and magnitude representation using the
 `CORDIC <https://dspguru.com/dsp/faqs/cordic/>`__ algorithm.
 
 The microphone input consists only of real samples. The I component is taken
@@ -158,16 +158,16 @@ frequency component is the lower sideband, we need to remove the opposite
 sideband leaving us with only positive (for USB) or negative (for LSB). One
 method of achieving this is to use a Hilbert transform, but I find that using
 frequency shifts and filters is more intuitive, although the process is
-equivalent. 
+equivalent.
 
 The process is to up-shift the frequency by Fs/4 using a complex multiplier and
 filter the signal using a symmetrical half-band filter retaining only the
 negative frequency components. The frequency is then down-shifted by Fs/4
-leaving only the lower sideband. 
+leaving only the lower sideband.
 
 Fs/4 is chosen because it can be implemented efficiently. A complex sine wave
 with a frequency of Fs/4 consists of only 0,1 and -1. Multiplication by 0, 1,
-or -1 can be implemented using trivial arithmetic operations. 
+or -1 can be implemented using trivial arithmetic operations.
 
 Choosing a half-band filter -Fs/4 to Fs/4 allows further efficiency
 improvements. The kernel of a half-band filter is symmetrical, potentially this
@@ -294,7 +294,7 @@ calculated to give the required output power at a particular supply voltage. In
 this design, an impedance of 8 ohms is chosen to give an output power of 5W
 with a 12V supply. In practice, the impedance of the actual load is not 8 ohms
 and we need an impedance matching circuit to make the standard 50 ohms load
-appear to the amplifier as an 8 ohm load. C3, C5 and L3 form a 
+appear to the amplifier as an 8 ohm load. C3, C5 and L3 form a
 `pi impedance matching network <https://www.allaboutcircuits.com/tools/pi-match-impedance-matching-calculator/>`__
 to achieve this. The resonant circuits within the class-E amplifier have a
 band-pass characteristic which attenuates high-order harmonics sufficiently.
@@ -310,7 +310,7 @@ purpose and aids in designing class-E amplifiers.
 
 Although the BS170 and IRF510 have traditionaly been popular choices for
 home-brew HF amplifiers, the FDT86256 has been used successfully in other designs.
-The advantages of this device are the very low Coss of only 8pF. The max Vds 
+The advantages of this device are the very low Coss of only 8pF. The max Vds
 voltage of 150V and Id of 3A provide plenty of design margin for a 5W amplifier.
 
 To simplify the design process, I developed a Python script based on the
@@ -326,7 +326,7 @@ to note that these calculated values should be considered as a starting point.
 In real-world scenarios, component errors, parasitic capacitances, and
 inductances can introduce unpredictable effects. Therefore, some adjustments
 and tweaking may be necessary to optimize performance and achieve the best
-results. 
+results.
 
 
 
@@ -347,7 +347,7 @@ results.
 
 .. code:: bash
 
-    $python class_e_design.py 
+    $python class_e_design.py
     Class-E Amplifier Design
     ========================
 
@@ -359,15 +359,15 @@ results.
            o VDD     Class-E Amplifier        |  Impedance Match and Harmonic Notch
            |                                  |
            |                                  |
-         [ L1 ]                               | 
+         [ L1 ]                               |
            |                                  |        +---[ C4 ]---+
            |                                  |        |            |
            +---------+-----[ L2 ]----[ C2 ]-- | -----+-+---[ L3 ]---+-+------------o
-           | d       |                        |      |                |                
-       g |-+         |                        |      |                |                
+           | d       |                        |      |                |
+       g |-+         |                        |      |                |
       o--| Q1      [ C1 ]                     |   [ C3 ]           [ C5 ]       [50 Ohm]
-         |-+         |                        |      |                |                
-           | s       |                        |      |                |                
+         |-+         |                        |      |                |
+           | s       |                        |      |                |
            +---------+----------------------- | -----+----------------+------------o
            |                                  |
            o GND                              |
@@ -376,7 +376,7 @@ results.
 
     1. http://www.wa0itp.com/class%20e%20design.html
     2. Cripe, David, NMØS, "class-E Power Amplifiers for QRP"
-       QRP Quarterly Vol 50 Number 3 Summer 2009, pp 32-37 
+       QRP Quarterly Vol 50 Number 3 Summer 2009, pp 32-37
        Errata: Volume 50 Number 4 Fall 2009 p4
 
 
@@ -419,7 +419,7 @@ A prototype of the class-E amplifier was built using copper-clad board. For
 this experiment, the 20M band was chosen using a centre frequency of 14.175MHz.
 The analogue switch that we previously used to mix the envelope with the RF
 output is no longer needed. The polar modulated amplifier is in effect a
-high-power unbalanced mixer. 
+high-power unbalanced mixer.
 
 **Note:**
 
@@ -445,7 +445,7 @@ The prototype used a combination of through-hole
 and surface mount components, whatever I had lying around. In the class-E
 amplifier, it is important to use NP0/C0G type capacitors rated for 100V or
 more. The L3 winding forms part of the second harmonic notch filter, the
-frequency of the notch can be measured using a `nanoVNA <https://nanovna.com/>`__, 
+frequency of the notch can be measured using a `nanoVNA <https://nanovna.com/>`__,
 and fine adjustments can be made to the notch frequency by adjusting the
 spacing of the inductor windings. With the calculated number of turns the
 frequency was too low, to achieve the correct frequency at twice the
@@ -458,7 +458,7 @@ best efficiency. I found it difficult to measure the efficiency with sufficient
 accuracy to give a confident efficiency figure. In practical terms, however, it
 was possible to achieve an output power of close to 5 watts into a dummy load.
 Although the transistor did get a little warm, it didn't overheat and the case
-temperature leveled off at around 44 degrees C. 
+temperature leveled off at around 44 degrees C.
 
 
 Class-D Audio Amplifier
@@ -516,7 +516,7 @@ results.
 Spurious Emissions
 """"""""""""""""""
 
-The output of the amplifier was connected (via an attenuator) to a 
+The output of the amplifier was connected (via an attenuator) to a
 `tinySA <https://www.tinysa.org>`__ to analyze the frequency spectrum of the signal.
 The resonant filters in the Class-E amplifier have effectively filtered out the
 second and third harmonics, reducing them to acceptable levels. However, some
@@ -573,7 +573,7 @@ Serial Example
 
 *transmitter_serial_example.cpp*
 
-This is a more complete usage example, the transmit mode and frequency are 
+This is a more complete usage example, the transmit mode and frequency are
 controlled through the USB serial interface. Audio data is streamed from a host PC
 via the USB serial connection.
 
@@ -621,7 +621,7 @@ LSB       10
 USB       10
 ==== ================
 
-The sox utility can be used to convert from most common audio formats. 
+The sox utility can be used to convert from most common audio formats.
 
 .. code:: bash
 
@@ -637,7 +637,7 @@ To send audio using FM modulation at 10MHz.
 
 .. code:: bash
 
-  $python transmit.py test_file_15k.wav 
+  $python transmit.py test_file_15k.wav
   Available Ports
   0 /dev/ttyS4: n/a [n/a]
   1 /dev/ttyACM0: Pico - Board CDC [USB VID:PID=2E8A:000A SER=E6609CB2D37B9828 LOCATION=1-1:1.0]
@@ -652,7 +652,7 @@ To send audio using USB modulation at 14.175MHz.
 
 .. code:: bash
 
-  $python transmit.py test_file_10k.wav 
+  $python transmit.py test_file_10k.wav
   Available Ports
   0 /dev/ttyS4: n/a [n/a]
   1 /dev/ttyACM0: Pico - Board CDC [USB VID:PID=2E8A:000A SER=E6609CB2D37B9828 LOCATION=1-1:1.0]
@@ -662,3 +662,5 @@ To send audio using USB modulation at 14.175MHz.
   14.175e6
   Enter mode AM/FM/LSB/USB >
   USB
+
+If you would like to support 101Things, buy me a coffee: https://ko-fi.com/101things

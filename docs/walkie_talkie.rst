@@ -200,3 +200,6 @@ Conclusion
 This project demonstrates that it is possible to build a fully functional, low-cost digital walkie-talkie with minimal hardware and a retro, pocket-sized form factor. By leveraging the Pico’s built-in peripherals, readily available modules like the MAX4466 microphone and MAX98357A amplifier, and efficient software techniques such as DMA-driven audio capture, A-law compression, and UDP-based communication, the device achieves clear voice transmission with low latency while remaining compact and energy-efficient.
 
 The minimalist design—using the BOOTSEL button as push-to-talk and the built-in LED as a status indicator—keeps the build simple, inexpensive, and approachable for beginners, while the 3D-printed enclosure ensures a robust and portable final device. Overall, this project is a fun, practical introduction to microcontroller-based audio and wireless communication, and it provides a solid foundation for further experimentation or enhancements.
+
+
+If you would like to support 101Things, buy me a coffee: https://ko-fi.com/101things

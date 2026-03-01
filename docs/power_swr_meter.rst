@@ -23,7 +23,7 @@ ubiquitous SSD1306 display, a couple of hand-wound transformers, a couple of
 diodes and a handful of resistors and capacitors.
 
 Although I have used a Pi-Pico in my design, you could easily build an
-RF power meter using any microcontroller and display. 
+RF power meter using any microcontroller and display.
 
 Hardware
 --------
@@ -33,7 +33,7 @@ Hardware
 Stockton Bridge
 '''''''''''''''
 
-The heart of the design is a `Stockton Bridge <https://www.sm7ucz.se/Meters/Stockton_pwr_meter.pdf>`_. 
+The heart of the design is a `Stockton Bridge <https://www.sm7ucz.se/Meters/Stockton_pwr_meter.pdf>`_.
 The Stockton Bridge is a "bidirectional inline wattmeter" that sits between the
 transmitter and the load and gives an indication of the forward and reflected
 power. From the forward and reflected power, it is possible to calculate the
@@ -140,7 +140,7 @@ pair of FT50-43 ferrite cores but found that they didn't fit inside the
 Swiss-army PCB enclosure. I replaced them with an unknown binocular core from
 my junk box.
 
-If you were going to purchase a binocular core, `G8GYW <https://g8gyw.github.io/>`_ 
+If you were going to purchase a binocular core, `G8GYW <https://g8gyw.github.io/>`_
 uses a BN-43-202 in his design which looks ideal.
 
 I opted to build a hand-held device using a couple of AAA batteries to power the
@@ -160,7 +160,7 @@ download over USB.
 
 I opted to design the software in C++ using the Pi-Pico SDK. This is by no
 means the only choice, the software is very simple and doesn't need much memory
-or CPU. This would be an ideal project to build using `MicroPython <https://micropython.org/>`_ 
+or CPU. This would be an ideal project to build using `MicroPython <https://micropython.org/>`_
 or your favourite programming language.
 
 The software reads the fwd and reverse voltages from the ADC, and the raw ADC value
@@ -298,9 +298,10 @@ Useful Links
 
 Here are some useful links about Stockton Bridge power meters.
 
-- `Stockton Bridge <https://www.sm7ucz.se/Meters/Stockton_pwr_meter.pdf>`_. 
+- `Stockton Bridge <https://www.sm7ucz.se/Meters/Stockton_pwr_meter.pdf>`_.
 - `G8GYW <https://g8gyw.github.io/>`_
 - `Owen Duffy <https://owenduffy.net/blog/?p=9138>`_
 - `KK5JY <http://kk5jy.net/swr-meter-v1/>`_
 - `K6JCA <https://k6jca.blogspot.com/2015/01/notes-on-directional-couplers-for-hf.html>`_
 
+If you would like to support 101Things, buy me a coffee: https://ko-fi.com/101things

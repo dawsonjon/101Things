@@ -12,7 +12,7 @@ occurred to me that you could build a telescope, but years ago I ran into
 some instructions to build a Dobsonian telescope. At the time I found it quite
 difficult to find the optical parts and even struggled to source the specified
 10-inch cardboard tube, and moved on to other projects. Recently I stumbled
-across the `Stellafane guide <https://stellafane.org/tm/dob/index.html>`__, 
+across the `Stellafane guide <https://stellafane.org/tm/dob/index.html>`__,
 an excellent introduction to Amateur Telescope Making and with renewed
 enthusiasm I set about sourcing the parts I would need.  I was excited to
 discover that telescope parts could be sourced quite easily online and that the
@@ -89,20 +89,20 @@ designed, the utility calculates a handy table with all the measurements.
 .. image:: images/telescope_dimensions.png
 
 
-.. [#f1] I'm sure I could find some if I tried, but when I can have the 
+.. [#f1] I'm sure I could find some if I tried, but when I can have the
          optical parts delivered to my door, the effort seems disproportionate.
 
 Optical Tube Assembly
 ---------------------
 
 Now we have the dimensions it is a simple matter to design the optical tube
-assembly using the 2020 profile. 
+assembly using the 2020 profile.
 
 .. image:: images/telescope_optical_tube_assembly.png
 
 The tube is a basic cuboid, at first, I just used
 corner connectors but found that the tube wasn't stiff enough and needed some
-trianglation. 
+trianglation.
 
 .. image:: images/telescope_corner_connectors_1.jpg
   :width: 75%
@@ -184,9 +184,9 @@ Focuser
 -------
 
 This is another area where economics plays a factor, I opted for a `relatively
-inexpensive <https://www.ebay.co.uk/itm/144815207453?var=444035499240>`__ 
+inexpensive <https://www.ebay.co.uk/itm/144815207453?var=444035499240>`__
 1.25-inch rack and pinion focuser. This seemed like a good compromise between
-cost and quality. The focuser is an all-metal design that seems to be well-made. 
+cost and quality. The focuser is an all-metal design that seems to be well-made.
 The focuser is attached to the tube using a 6mm sheet of black phenolic
 resin, and a matching sheet sits behind the focuser.
 
@@ -255,7 +255,7 @@ the finished mount and I was surprised by the smoothness of the motion and the
 stability. I did find that there was some deflection in the unsupported corners
 of the rocker box and added some additional bracing to add stiffness in this
 area. I finished all the plywood parts using about half a dozen coats of lacquer
-to provide some protection from moisture. 
+to provide some protection from moisture.
 
 Testing
 -------
@@ -297,3 +297,5 @@ entry-level FDM printer.
 Another area I would like to explore is electronic control of the scope. I
 would like to think about designing an electronic finder to build a
 "push-to", or even a motorised "go-to" mount.
+
+If you would like to support 101Things, buy me a coffee: https://ko-fi.com/101things

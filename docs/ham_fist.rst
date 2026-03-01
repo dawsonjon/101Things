@@ -433,3 +433,5 @@ Hamfist demonstrates that surprisingly sophisticated CW decoding is possible on 
 
 While the decoder does not yet match the performance of a skilled human operator, it delivers solid and consistent results that compare favourably with many existing decoders, especially given the modest hardware platform. The ticker-tape style waterfall provides an intuitive view of dots and dashes across multiple channels, making it easy to understand what the decoder is seeing and why it is making particular decisions. Overall, Hamfist is both a practical CW tool and a useful exploration of how far modern signal processing and probabilistic techniques can be pushed on resource-constrained embedded hardware.
 
+
+If you would like to support 101Things, buy me a coffee: https://ko-fi.com/101things

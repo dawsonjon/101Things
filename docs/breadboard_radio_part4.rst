@@ -29,7 +29,7 @@ further 24dB. In practice, this is enough to push most alias signals below the n
 Frequency Calibration and Tuning Aids
 -------------------------------------
 
-The receiver already includes a mechanism to calibrate the frequency to compensate for any inaccuracy of the crystal oscillator on the Pi Pico. The latest software introduces a frequency measurement feature that can make the calibration process easier. The receiver can be calibrated by tuning to an AM station with a known carrier frequency. Most broadcast stations have a very accurate carrier frequency, and some, e.g. Radio 4 Longwave on 198kHz in the UK (there are alternatives in other parts of the world), have been deliberately designed to act as an accurate frequency reference. 
+The receiver already includes a mechanism to calibrate the frequency to compensate for any inaccuracy of the crystal oscillator on the Pi Pico. The latest software introduces a frequency measurement feature that can make the calibration process easier. The receiver can be calibrated by tuning to an AM station with a known carrier frequency. Most broadcast stations have a very accurate carrier frequency, and some, e.g. Radio 4 Longwave on 198kHz in the UK (there are alternatives in other parts of the world), have been deliberately designed to act as an accurate frequency reference.
 
 The firmware measures the carrier frequency of the received station, with a perfectly accurate crystal; the carrier would have a frequency of zero, but a positive or negative reading of a few Hz indicates an inaccuracy. This frequency measurement is used to provide an indicator in the frequency calibration menu. If a right arrow is displayed, the ppm value should be increased, and a left arrow means that the ppm value should be decreased. When the arrow changes direction, it indicates that we are within 1ppm. The measurement process takes a couple of seconds to complete, so allow some time for the measurements to stabilise each time you adjust. Using this mechanism, calibrating the receiver is a fairly quick and simple process that can achieve good accuracy.
 
@@ -79,7 +79,7 @@ instantaneous signal level and how the signal and noise estimates evolve. The ri
 **After**
 
 .. raw:: html
-  
+
   <iframe width="560" height="315" src="https://www.youtube.com/embed/f4NLKdcR-LU?si=g6bZ-CSWyF3MEju9" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 Overall, the simplified noise reduction algorithm provides a very noticeable reduction in background noise without adding significant CPU or memory overhead.
@@ -141,13 +141,13 @@ Integrated SSTV Decoder
 
 .. image:: images/breadboard_radio/integrated_sstv_decoder.jpg
 
-One of the other projects I have been working on recently is the `Pi Pico SSTV decoder <https://101-things.readthedocs.io/en/latest/sstv_decoder.html>`_. It is a very minimal SSTV decoder design that has a reasonably small CPU and Memory footprint. The Pico SSTV decoder uses the audio output from a receiver, but I have been curious whether the SSTV decoder and receiver could be integrated into the same device. The receiver already supports an ILI9341 TFT display, which is ideal for displaying SSTV images, so an integrated SSTV receiver can be built using a fairly simple software upgrade. 
+One of the other projects I have been working on recently is the `Pi Pico SSTV decoder <https://101-things.readthedocs.io/en/latest/sstv_decoder.html>`_. It is a very minimal SSTV decoder design that has a reasonably small CPU and Memory footprint. The Pico SSTV decoder uses the audio output from a receiver, but I have been curious whether the SSTV decoder and receiver could be integrated into the same device. The receiver already supports an ILI9341 TFT display, which is ideal for displaying SSTV images, so an integrated SSTV receiver can be built using a fairly simple software upgrade.
 
 .. image:: images/breadboard_radio/standalone_sstv_decoder.jpg
 
 
 From the beginning, I had tried to make the SSTV code as flexible as possible, so it was a fairly simple task to adapt the code to accept an I/Q output from the Pico Rx rather than the real-only samples used in the standalone decoder.
-This was simply a matter of bypassing the Hilbert transform that converts the real sample to complex samples before passing them to the frequency measurement function. The receiver does most of the real-time signal processing using CPU core 1, while CPU core 0 handles most of the IO tasks. 
+This was simply a matter of bypassing the Hilbert transform that converts the real sample to complex samples before passing them to the frequency measurement function. The receiver does most of the real-time signal processing using CPU core 1, while CPU core 0 handles most of the IO tasks.
 
 I opted to implement the SSTV decoder using CPU core 0, which can be displayed on the TFT as an alternative to the waterfall. When the waterfall isn't running, some of the CPU and memory resources are freed to run the SSTV decoder, so the overhead of decoding SSTV images isn't that great.
 
@@ -186,7 +186,7 @@ Early designs used a single clock output from the clock generator at 4 times the
 Hans Summers (from QRP Labs) discovered that it was possible to configure the device to directly generate two clocks separated by 90 degrees. He explains the technique in `this document <https://qrp-labs.com/images/news/dayton2018/fdim2018.pdf>`_
 
 To understand this technique, it is worth looking in a bit more detail at the
-structure of the device. The device is driven by a crystal oscillator, typically running at 25MHz. The crystal oscillator drives two independent phase-locked loops, each of which contains an integer/fractional frequency divider in the feedback loop. This has the effect of multiplying the crystal frequency to generate a PLL frequency in the 600MHz to 900MHz range. 
+structure of the device. The device is driven by a crystal oscillator, typically running at 25MHz. The crystal oscillator drives two independent phase-locked loops, each of which contains an integer/fractional frequency divider in the feedback loop. This has the effect of multiplying the crystal frequency to generate a PLL frequency in the 600MHz to 900MHz range.
 
 The chip provides another integer/fractional frequency divider for each clock divider. This has the effect of dividing the clock down to a smaller frequency; in our case, this could be up to 30MHz. Although this frequency divider can be programmed with fractional values, this introduces jitter; an even integer
 gives the best performance. Each of the output frequency dividers can be driven
@@ -196,7 +196,7 @@ from the same PLL. The output dividers also provide the ability to add a phase d
 
 To generate two clocks with a 90-degree offset, we first configure the PLL to generate a clock which is an even integer multiple of the output frequency. So to generate a 30MHz clock, we might set the PLL to 600MHz, which is 20 times the output frequency. We can then configure two outputs to be driven from the same 600MHz PLL, and set the divider for both outputs to 20.
 
-And now the clever bit... Since the phase offset is specified in units of 1/4 of a PLL clock cycle, setting the phase offset of one of the outputs to the same value as the divider (in this case, 20) always results in a 90-degree phase offset between the two outputs! 
+And now the clever bit... Since the phase offset is specified in units of 1/4 of a PLL clock cycle, setting the phase offset of one of the outputs to the same value as the divider (in this case, 20) always results in a 90-degree phase offset between the two outputs!
 
 .. image:: images/breadboard_radio/si5351_quadrature_1.png
 
@@ -227,3 +227,5 @@ When I was developing SI5351 support, I did have some issues with the quality of
 .. image:: images/breadboard_radio/si5351_module.jpg
 
 From initial testing, the PLL in the SI5351 provides a lower jitter output and fewer spurs. From the very small sample of two branded modules I have received, the frequency accuracy of the SI5351 modules has been variable, with a frequency error in the region of 50ppm, although this can easily be corrected using the frequency calibration facility in the receiver. This is dependent on the quality of the crystal fitted to the module and is likely to depend on the source.
+
+If you would like to support 101Things, buy me a coffee: https://ko-fi.com/101things

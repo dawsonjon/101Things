@@ -62,7 +62,7 @@ Fortunately, the op-amps used in this project are not particularly special, and
 suitable substitutes are widely available. Here are the key specifications to
 look for in an op-amp for this SDR.
 
-**Operating Voltage** 
+**Operating Voltage**
 
 The design uses the 3.3V output from the pico to drive the Tayloe detector.
 This is mainly so that the voltage stays constant regardless of the battery
@@ -70,12 +70,12 @@ level. It also means that we don't have to worry about over-driving the ADC
 which only works at up to 3.3V. A starting point is to select a dual output
 with a minimum supply voltage of 3V or less.
 
-**Gain-Bandwidth Product:** 
+**Gain-Bandwidth Product:**
 
 A product of around 10 MHz is sufficient, given the reduced bandwidth of the
-detector (12 kHz) and a gain of 600.  
+detector (12 kHz) and a gain of 600.
 
-**Noise Performance:** 
+**Noise Performance:**
 
 Dan Tayloe's `paper <https://www.norcalqrp.org/files/Tayloe_mixer_x3a.pdf>`_
 provides some guidance on the noise specification and presents a formula to
@@ -84,7 +84,7 @@ calculate the Minimum Detectable Signal based on the op-amp performance.
 .. image:: images/breadboard_radio_tayloe_noise.png
 
 At HF frequencies there is a great deal of noise on the bands, `RECOMMENDATION ITU-R P.372-7 <https://www.itu.int/dms_pubrec/itu-r/rec/p/R-REC-P.372-7-200102-S!!PDF-E.pdf>`_
-tells us the expected level of man-made noise at different frequencies. 
+tells us the expected level of man-made noise at different frequencies.
 
 .. image:: images/breadboard_radio_itu.png
 
@@ -165,3 +165,5 @@ Conclusion
 
 This SDR project continues to evolve, with numerous upgrades and improvements planned for the future.
 
+
+If you would like to support 101Things, buy me a coffee: https://ko-fi.com/101things

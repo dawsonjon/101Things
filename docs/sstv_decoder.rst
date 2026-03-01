@@ -108,7 +108,7 @@ calibrated.
 SSTV signals are designed to work over narrow bandwidth voice channels. They
 use a frequency modulation scheme, where the intensity of a pixel is
 represented by a tone between 1500 Hz and 1900 Hz with 1200Hz horizontal
-synchronisation pulses between each line. 
+synchronisation pulses between each line.
 
 .. image:: images/sstv/martin.png
 
@@ -149,12 +149,12 @@ transform as an asymmetrical filter that removes the negative sideband, at the
 same time adding an imaginary component to the signal exactly 90 degrees out of phase.
 
 The process is identical to the method used to generate a single sideband
-modulation so I reused the code from the 
+modulation so I reused the code from the
 `transmitter project <https://101-things.readthedocs.io/en/latest/ham_transmitter.html#modulator>`__
 
 The next step is to work out the phase of each sample. This can be achieved
 using an `atan2(i, q)`. The transmitter project implemented a fast (yet
-reasonably accurate) approximation using the 
+reasonably accurate) approximation using the
 `CORDIC <https://dspguru.com/dsp/faqs/cordic/>`__ algorithm. Again I have
 reused the code from the transmitter project.
 
@@ -226,7 +226,7 @@ be possible to get the code working with most display variants.
   #define PIN_MISO 12 //not used by TFT but part of SPI bus
   #define PIN_CS   13
   #define PIN_SCK  14
-  #define PIN_MOSI 15 
+  #define PIN_MOSI 15
   #define PIN_DC   11
   #define SPI_PORT spi1
 
@@ -282,6 +282,4 @@ Here are some useful links about Slow Scan Television.
 + `pySSTV <https://github.com/dnet/pySSTV>`__
 + `SSTV Handbook <https://www.sstv-handbook.com/>`__
 
-
-
-
+If you would like to support 101Things, buy me a coffee: https://ko-fi.com/101things

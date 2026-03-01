@@ -323,4 +323,4 @@ The Python script outputs a header file that can be included in C++ code. An exa
   };
 
 
-
+If you would like to support 101Things, buy me a coffee: https://ko-fi.com/101things

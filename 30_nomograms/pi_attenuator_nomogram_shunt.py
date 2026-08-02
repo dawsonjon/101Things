@@ -20,7 +20,6 @@ z1 = np.log10(Z_max)
 
 a0 = np.log10(func(A_max))
 a1 = np.log10(func(A_min))
-print(func(A_min), func(A_max))
 
 r0 = np.log10(r_min)
 r1 = np.log10(r_max)
@@ -133,7 +132,7 @@ def draw_scale(x, colour, label, right, transform, major_values, minor_values, m
                 format_value(value),
                 ha="right" if right else "left",
                 va="center",
-                fontsize=8,
+                fontsize=6,
                 color=colour
             )
 
@@ -184,8 +183,6 @@ draw_scale(x_Z, "darkblue", "Z0 (Ω)",      True,  Z_to_y, Z_ticks, Z_minor_tic
 draw_scale(x_R, "darkred",  "$R_{shunt}$ (Ω)",  False, R_to_y, R_ticks, R_minor_ticks)
 draw_scale(x_A, "darkgreen","Gain lin/dB", True,  A_to_y, A_ticks, A_minor_ticks)
 draw_scale(x_A, "darkgreen","",            False, dB_to_y, dB_ticks, dB_minor_ticks, False)
-
-ax.plot([x_Z, x_A], [Z_to_y(50), A_to_y(10)])
 
 
 # ------------------------------------------------------------

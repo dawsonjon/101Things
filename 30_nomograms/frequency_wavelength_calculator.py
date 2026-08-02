@@ -196,11 +196,6 @@ ax.set_title(
 # ------------------------------------------------------------
 
 plt.savefig(
-    "frequency_wavelength_calculator.svg",
-    bbox_inches="tight"
-)
-
-plt.savefig(
     "frequency_wavelength_calculator.pdf",
     bbox_inches="tight"
 )

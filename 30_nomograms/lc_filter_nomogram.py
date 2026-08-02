@@ -208,11 +208,6 @@ ax.set_title(
 # ------------------------------------------------------------
 
 plt.savefig(
-    "lc_filter_nomogram.svg",
-    bbox_inches="tight"
-)
-
-plt.savefig(
     "lc_filter_nomogram.pdf",
     bbox_inches="tight"
 )

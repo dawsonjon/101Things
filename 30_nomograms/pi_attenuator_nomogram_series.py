@@ -174,7 +174,7 @@ A_minor_ticks = [i for i in [1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9] if i <
 R_minor_ticks = [i for i in e24 if i <= r_max and i >= r_min]
 
 dB_ticks = [i for i in np.arange(0, 100, 10) if np.power(10, i/20) <= A_max and np.power(10, i/20) >= A_min]
-dB_minor_ticks = [i for i in np.arange(0, 100) if np.power(10, i/20) <= A_max and np.power(10, i/20) >= A_min]
+dB_minor_ticks = [i for i in np.arange(0, 100) if np.power(10, i/20) <= A_max and np.power(10, i/20) >= A_min and i not in np.arange(0, 100, 10)]
 
 draw_scale(x_Z, "darkblue", "Z0 (Ω)",      True,  Z_to_y, Z_ticks, Z_minor_ticks, False)
 draw_scale(x_R, "darkred",  "$R_{series}$ (Ω)",  False, R_to_y, R_ticks, R_minor_ticks)
@@ -227,7 +227,7 @@ ax.set_title(
 # ------------------------------------------------------------
 
 plt.savefig(
-    "pi_atteniator_series_nomogram.pdf",
+    "pi_attenuator_series_nomogram.pdf",
     bbox_inches="tight"
 )
 

@@ -8,7 +8,7 @@ def func(a):
 
 # Scale ranges
 Z_min, Z_max = 20, 100
-A_min, A_max = 1.4, 1000
+A_min, A_max = 1.4, 100
 r_min, r_max = func(A_min)*Z_min, func(A_max)*Z_max
 
 # Logarithmic ranges in decades
@@ -43,7 +43,7 @@ def R_to_y(f):
 m=1
 c=0
 
-y=R_to_y(func(A_min)*Z_max)
+y=R_to_y(func(A_max)*Z_min)
 x=(y-c)/m
 
 x_Z = 0

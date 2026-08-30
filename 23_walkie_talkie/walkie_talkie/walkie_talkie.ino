@@ -36,7 +36,7 @@ struct s_settings {
 
 s_settings settings = {
   eeprom_version,
-  WIFI_MANAGER,
+  P2P,
   STA,
   false,
   0
@@ -175,21 +175,23 @@ void sendData()
 
     }
 
+
   }
+  peer_last_seen = millis();
 }
 
 void recvData()
 {
   uint32_t inp = 0, outp = 0, fill=0;
   bool play = false;
-  static uint8_t jitter_buffer[4][ADC_BUFFER_SIZE];
+  static uint8_t jitter_buffer[5][ADC_BUFFER_SIZE];
   while (!BOOTSEL)
   {
   
     int packetSize = UdpData.parsePacket();
     if (packetSize == ADC_BUFFER_SIZE)
     {  
-      if(fill < 4) {
+      if(fill < 5) {
         UdpData.read(jitter_buffer[inp], ADC_BUFFER_SIZE);
         inp = (inp+1) & 3;
         fill++;
@@ -206,7 +208,7 @@ void recvData()
       peer_last_seen = millis();
     }
 
-    if(fill == 2) play = true;
+    if(fill >= 3) play = true;
     if(fill == 0) play = false;
 
     if(play && (audioOutput.availableForWrite()>=ADC_BUFFER_SIZE*4)) {
@@ -323,10 +325,12 @@ void GetWIFIP2P() {
     {
       WiFi.mode(WIFI_AP);
       WiFi.softAP(ssid, password);
-      while (WiFi.status() != WL_CONNECTED) {
-        Serial.print('.');
-        blink(1);
+
+      while (WiFi.softAPgetStationNum() == 0)
+      {
+          blink(1);
       }
+
       Serial.println("Peer connected to AP");
       Serial.println(WiFi.softAPIP());
       return;

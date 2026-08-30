@@ -222,18 +222,27 @@ int8_t WiFiManager::connectWifi() const
 bool WiFiManager::startConfigPortal()
 {
     if (!_accessPointRunning) {
-        // Go into AP mode, configure IP (so DNS can use it)
-        WiFi.config(AP_IP);
-        WiFi.beginAP(_apSSID, _apPassword);
-        while (WiFi.status() != WL_CONNECTED)
+        WiFi.mode(WIFI_AP);
+
+        WiFi.softAPConfig(
+            AP_IP,
+            AP_IP,
+            IPAddress(255, 255, 255, 0)
+        );
+
+        int apResult = WiFi.beginAP(_apSSID, _apPassword);
+
+        LOGF_DEBUG("beginAP result = %d", apResult);
+
+        if (apResult != WL_CONNECTED)
         {
-            delay(500);
-            LOG_DEBUG(".");  // waiting
+            LOG_DEBUG(F("Failed to start Access Point"));
+            return false;
         }
 
-        delay(500);             // wait for AP to stabalise
+        delay(500);
 
-        String ip = WiFi.localIP().toString();
+        String ip = WiFi.softAPIP().toString();
         LOGF_DEBUG("AccessPoint IP address %s", ip.c_str());
         _accessPointRunning = true;
     }
